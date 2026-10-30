@@ -576,54 +576,89 @@ async function selectModel(idx) {
 
   try {
     const geom = await plyLoader.loadAsync(m.file);
-    geom.computeVertexNormals();
-
-    if (currentObject) {
-      scene.remove(currentObject);
-      if (currentObject.geometry) currentObject.geometry.dispose();
-      if (currentObject.material) currentObject.material.dispose();
-    }
-
-    currentGeometry = geom;
-
-    // Shift geometry so floor rests right on Y = 0
-    geom.computeBoundingBox();
-    const bbox = geom.boundingBox;
-    const center = new THREE.Vector3();
-    bbox.getCenter(center);
-    const size = new THREE.Vector3();
-    bbox.getSize(size);
-
-    const hasColors = !!geom.getAttribute("color");
-
-    if (m.isPoints) {
-      const mat = new THREE.PointsMaterial({
-        size: 0.026,
-        vertexColors: hasColors,
-        color: hasColors ? 0xffffff : 0x38bdf8
-      });
-      currentObject = new THREE.Points(geom, mat);
-    } else {
-      const mat = new THREE.MeshStandardMaterial({
-        vertexColors: hasColors,
-        color: hasColors ? 0xffffff : 0x94a3b8,
-        roughness: 0.5,
-        metalness: 0.1,
-        side: THREE.DoubleSide
-      });
-      currentObject = new THREE.Mesh(geom, mat);
-    }
-
-    // Center horizontally and rest floor on Y = 0
-    currentObject.position.set(-center.x, -bbox.min.y, -center.z);
-    scene.add(currentObject);
-
+    applyLoadedPlayGeometry(geom, m);
     spinner.classList.remove("show");
   } catch (err) {
     console.error(err);
-    spinnerText.textContent = `Load Error: ${err.message}`;
-    setTimeout(() => spinner.classList.remove("show"), 2000);
+    spinnerText.innerHTML = `⚠️ Cloud Demo: Model file is offline (&gt;100MB).<br><span style="font-size:11px;font-weight:400;color:#94a3b8;">Drag &amp; drop any local .ply file here to roam inside it!</span>`;
+    setTimeout(() => spinner.classList.remove("show"), 4000);
   }
+}
+
+function applyLoadedPlayGeometry(geom, meta) {
+  geom.computeVertexNormals();
+
+  if (currentObject) {
+    scene.remove(currentObject);
+    if (currentObject.geometry) currentObject.geometry.dispose();
+    if (currentObject.material) currentObject.material.dispose();
+  }
+
+  currentGeometry = geom;
+
+  // Shift geometry so floor rests right on Y = 0
+  geom.computeBoundingBox();
+  const bbox = geom.boundingBox;
+  const center = new THREE.Vector3();
+  bbox.getCenter(center);
+  const size = new THREE.Vector3();
+  bbox.getSize(size);
+
+  const hasColors = !!geom.getAttribute("color");
+
+  if (meta.isPoints) {
+    const mat = new THREE.PointsMaterial({
+      size: 0.026,
+      vertexColors: hasColors,
+      color: hasColors ? 0xffffff : 0x38bdf8
+    });
+    currentObject = new THREE.Points(geom, mat);
+  } else {
+    const mat = new THREE.MeshStandardMaterial({
+      vertexColors: hasColors,
+      color: hasColors ? 0xffffff : 0x94a3b8,
+      roughness: 0.5,
+      metalness: 0.1,
+      side: THREE.DoubleSide
+    });
+    currentObject = new THREE.Mesh(geom, mat);
+  }
+
+  // Center horizontally and rest floor on Y = 0
+  currentObject.position.set(-center.x, -bbox.min.y, -center.z);
+  scene.add(currentObject);
+}
+
+function loadLocalPlyPlay(buffer, filename) {
+  spinner.classList.add("show");
+  spinnerText.textContent = `Parsing local ${filename}…`;
+  try {
+    const geom = plyLoader.parse(buffer);
+    const isPts = !geom.index;
+    const customMeta = {
+      name: filename,
+      isPoints: isPts
+    };
+    applyLoadedPlayGeometry(geom, customMeta);
+    document.getElementById("hudModelName").textContent = filename;
+    spinner.classList.remove("show");
+  } catch (err) {
+    console.error(err);
+    alert(`Could not parse .PLY file: ${err.message}`);
+    spinner.classList.remove("show");
+  }
+}
+
+window.addEventListener("dragover", (e) => { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; });
+window.addEventListener("drop", (e) => {
+  e.preventDefault();
+  const file = e.dataTransfer.files[0];
+  if (file && file.name.toLowerCase().endsWith(".ply")) {
+    const reader = new FileReader();
+    reader.onload = (evt) => loadLocalPlyPlay(evt.target.result, file.name);
+    reader.readAsArrayBuffer(file);
+  }
+});
 }
 
 // Telemetry & Minimap Update

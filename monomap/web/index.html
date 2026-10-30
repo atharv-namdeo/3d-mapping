@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NAMMA SPACE · Intelligent Spatial Engine & Photorealistic 3D Digital Twin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #06090f;
+      --bg-card: rgba(15, 23, 42, 0.75);
+      --bg-card-hover: rgba(30, 41, 59, 0.85);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(56, 189, 248, 0.3);
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --emerald: #10b981;
+      --emerald-glow: rgba(16, 185, 129, 0.2);
+      --amber: #f59e0b;
+      --indigo: #6366f1;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at 50% 0%, #0f172a 0%, var(--bg) 70%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+    .container {
+      max-width: 1100px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+    }
+    .header {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid var(--border-accent);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 8px var(--emerald);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+    h1 {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.15;
+      background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      max-width: 800px;
+    }
+    p.lead {
+      color: var(--text-muted);
+      font-size: clamp(15px, 2vw, 17px);
+      max-width: 680px;
+      line-height: 1.6;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-accent);
+      background: var(--bg-card-hover);
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.6), 0 0 30px var(--accent-glow);
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--card-accent, var(--accent)), transparent);
+      opacity: 0.7;
+    }
+    .card-top {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .card-icon-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+    .card-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .card h2 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .card p {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    .card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: var(--accent);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 13px 20px;
+      border-radius: 12px;
+      font-size: 14.5px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      color: #06090f;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #0369a1, #0284c7);
+      color: #ffffff;
+      box-shadow: 0 6px 25px var(--accent-glow);
+    }
+    .btn-emerald {
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: #06090f;
+      box-shadow: 0 4px 20px var(--emerald-glow);
+    }
+    .btn-emerald:hover {
+      background: linear-gradient(135deg, #047857, #059669);
+      color: #ffffff;
+      box-shadow: 0 6px 25px var(--emerald-glow);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--border-accent);
+    }
+    .stats-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+    }
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .stat-num {
+      font-size: 24px;
+      font-weight: 800;
+      color: #ffffff;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .stat-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+    .footer {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text-dim);
+      padding-top: 10px;
+    }
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="badge-pill">
+        <span class="badge-dot"></span>
+        IIT Bombay Techfest 2026–27 · Intelligent Spatial Engine
+      </div>
+      <h1>NAMMA SPACE</h1>
+      <p class="lead">
+        Millimeter-accurate 3D digital twins, 10-model CAD/mesh suites, and autonomous robotics navigation costmaps reconstructed from sensor-fused smartphone captures.
+      </p>
+    </header>
+
+    <!-- Key Metrics Stats Card -->
+    <div class="stats-card">
+      <div class="stat-item">
+        <span class="stat-num" style="color: var(--emerald);">0% Drift</span>
+        <span class="stat-label">Gravity-Locked Ground</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" style="color: var(--accent);">10 Models</span>
+        <span class="stat-label">Multi-Representation Suite</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">200 Hz IMU</span>
+        <span class="stat-label">Hardware Sensor Fusion</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">SI Metres</span>
+        <span class="stat-label">Absolute Scale Consistent</span>
+      </div>
+    </div>
+
+    <!-- Main 4 Interactive Portals -->
+    <div class="grid">
+      <!-- 1. Playable FPS Roam -->
+      <div class="card" style="--card-accent: #10b981;">
+        <div class="card-top">
+          <div class="card-icon-row">
+            <div class="card-icon">🎮</div>
+            <span class="card-badge" style="color: #34d399; border-color: rgba(52, 211, 153, 0.3);">Interactive WebGL</span>
+          </div>
+          <h2>First-Person Digital Twin</h2>
+          <p>
+            Free-roam inside reconstructed spaces with desktop WASD controls, sprint, jump, crouch, mobile touch joysticks, procedural footstep audio, and live 2D floor radar.
+          </p>
+          <div class="card-meta">
+            <span class="tag">FPS Controls</span>
+            <span class="tag">Live 2D Radar</span>
+            <span class="tag">Audio Synth</span>
+          </div>
+        </div>
+        <a href="/web/play.html?scene=scan_posecam_1" class="btn btn-emerald">
+          Launch FPS Roaming
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <!-- 2. 10-Model Studio -->
+      <div class="card" style="--card-accent: #38bdf8;">
+        <div class="card-top">
+          <div class="card-icon-row">
+            <div class="card-icon">🔬</div>
+            <span class="card-badge" style="color: #38bdf8; border-color: rgba(56, 189, 248, 0.3);">10 Formats</span>
+          </div>
+          <h2>10-Model 3D Studio</h2>
+          <p>
+            Switch in real time between Dense Metric Cloud, Trimmed Poisson, Ball-Pivoting, Alpha-Shapes, TSDF Marching Cubes, Planar BIM, 3D Voxels, and LingBot-Map GCT.
+          </p>
+          <div class="card-meta">
+            <span class="tag">Keys 1–0</span>
+            <span class="tag">HUD Telemetry</span>
+            <span class="tag">Normal Shaders</span>
+          </div>
+        </div>
+        <a href="/web/compare.html?scene=scan_posecam_1" class="btn btn-primary">
+          Open 3D Comparison Studio
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <!-- 3. PoseCam Android App -->
+      <div class="card" style="--card-accent: #f59e0b;">
+        <div class="card-top">
+          <div class="card-icon-row">
+            <div class="card-icon">📲</div>
+            <span class="card-badge" style="color: #fbbf24; border-color: rgba(251, 191, 36, 0.3);">Kotlin Native</span>
+          </div>
+          <h2>PoseCam 3D Scanner APK</h2>
+          <p>
+            Download our custom native Android scanner with 3-second gravity stabilizer, 200 Hz STMicro accelerometer/gyro logging, and dual-tab public Downloads exporter.
+          </p>
+          <div class="card-meta">
+            <span class="tag">ARCore 6-DoF VIO</span>
+            <span class="tag">STMicro IMU</span>
+            <span class="tag">QR Install</span>
+          </div>
+        </div>
+        <a href="/web/download.html" class="btn btn-secondary">
+          Download PoseCam APK
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        </a>
+      </div>
+
+      <!-- 4. Master Context & GitHub -->
+      <div class="card" style="--card-accent: #6366f1;">
+        <div class="card-top">
+          <div class="card-icon-row">
+            <div class="card-icon">🐙</div>
+            <span class="card-badge" style="color: #818cf8; border-color: rgba(129, 140, 248, 0.3);">Open Source</span>
+          </div>
+          <h2>GitHub &amp; AI Handover Spec</h2>
+          <p>
+            Explore the open-source code repository, complete mathematical derivations, coordinate frames, robot costmaps, and comprehensive AI/teammate context documentation.
+          </p>
+          <div class="card-meta">
+            <span class="tag">Math &amp; Odometry</span>
+            <span class="tag">ROS 2 Costmaps</span>
+            <span class="tag">MIT License</span>
+          </div>
+        </div>
+        <a href="https://github.com/atharv-namdeo/3d-mapping" target="_blank" rel="noopener" class="btn btn-secondary">
+          View on GitHub
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div>
+        Built with <strong>Depth-Anything-V2</strong>, <strong>Open3D</strong>, <strong>Google ARCore</strong>, and <strong>Three.js</strong>.
+      </div>
+      <div>
+        Atharv Namdeo &amp; Namma Space Core Team &bull;
+        <a href="https://github.com/atharv-namdeo/3d-mapping/blob/main/AI_AND_TEAM_CONTEXT.md" target="_blank" rel="noopener">Technical Handover Spec</a> &bull;
+        <a href="https://github.com/atharv-namdeo/3d-mapping" target="_blank" rel="noopener">GitHub Repo</a>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

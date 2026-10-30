@@ -199,6 +199,10 @@
   <button class="tool-btn" id="btnSizeUp">Points +</button>
   <button class="tool-btn" id="btnSizeDown">Points −</button>
   <button class="tool-btn" id="btnReset">Reset View (R)</button>
+  <label class="tool-btn" style="cursor:pointer; display:inline-flex; align-items:center; gap:4px;">
+    📂 Load Local .PLY
+    <input type="file" id="localPlyInput" accept=".ply" style="display:none;">
+  </label>
 </div>
 
 <div id="spinner">
@@ -451,64 +455,117 @@ async function selectModel(idx) {
 
   try {
     const geom = await plyLoader.loadAsync(m.file);
-    geom.computeVertexNormals();
-
-    if (currentObject) {
-      scene.remove(currentObject);
-      if (currentObject.geometry) currentObject.geometry.dispose();
-      if (currentObject.material) currentObject.material.dispose();
-    }
-
-    currentGeometry = geom;
-
-    // Center geometry bounding box
-    geom.computeBoundingBox();
-    const bbox = geom.boundingBox;
-    const center = new THREE.Vector3();
-    bbox.getCenter(center);
-    const size = new THREE.Vector3();
-    bbox.getSize(size);
-    const maxDim = Math.max(size.x, size.y, size.z);
-
-    const hasColors = !!geom.getAttribute("color");
-
-    if (m.isPoints) {
-      const mat = new THREE.PointsMaterial({
-        size: 0.025 * pointSizeScale,
-        vertexColors: hasColors && showColors,
-        color: (hasColors && showColors) ? 0xffffff : 0x38bdf8
-      });
-      currentObject = new THREE.Points(geom, mat);
-    } else {
-      const mat = new THREE.MeshStandardMaterial({
-        vertexColors: hasColors && showColors,
-        color: (hasColors && showColors) ? 0xffffff : 0x94a3b8,
-        roughness: 0.5,
-        metalness: 0.1,
-        wireframe: showWire,
-        flatShading: flatShade,
-        side: THREE.DoubleSide
-      });
-      currentObject = new THREE.Mesh(geom, mat);
-    }
-
-    // Offset so center rests on origin
-    currentObject.position.sub(center);
-    currentObject.position.y += size.y / 2;
-    scene.add(currentObject);
-
-    // Position camera
-    camera.position.set(0, maxDim * 0.7, maxDim * 1.3);
-    controls.target.set(0, size.y / 2, 0);
-    controls.update();
-
-    updateHUD(m, geom);
+    applyLoadedGeometry(geom, m);
     spinner.classList.remove("show");
   } catch (err) {
     console.error(err);
-    spinnerText.textContent = `Failed to load: ${err.message}`;
-    setTimeout(() => spinner.classList.remove("show"), 2000);
+    spinnerText.innerHTML = `⚠️ Cloud Demo: Model file is offline (&gt;100MB).<br><span style="font-size:11px;font-weight:400;color:#94a3b8;">Drag &amp; drop any local .ply file here, or click '📂 Load Local .PLY'</span>`;
+    setTimeout(() => spinner.classList.remove("show"), 4000);
   }
+}
+
+function applyLoadedGeometry(geom, meta) {
+  geom.computeVertexNormals();
+
+  if (currentObject) {
+    scene.remove(currentObject);
+    if (currentObject.geometry) currentObject.geometry.dispose();
+    if (currentObject.material) currentObject.material.dispose();
+  }
+
+  currentGeometry = geom;
+
+  // Center geometry bounding box
+  geom.computeBoundingBox();
+  const bbox = geom.boundingBox;
+  const center = new THREE.Vector3();
+  bbox.getCenter(center);
+  const size = new THREE.Vector3();
+  bbox.getSize(size);
+  const maxDim = Math.max(size.x, size.y, size.z);
+
+  const hasColors = !!geom.getAttribute("color");
+
+  if (meta.isPoints) {
+    const mat = new THREE.PointsMaterial({
+      size: 0.025 * pointSizeScale,
+      vertexColors: hasColors && showColors,
+      color: (hasColors && showColors) ? 0xffffff : 0x38bdf8
+    });
+    currentObject = new THREE.Points(geom, mat);
+  } else {
+    const mat = new THREE.MeshStandardMaterial({
+      vertexColors: hasColors && showColors,
+      color: (hasColors && showColors) ? 0xffffff : 0x94a3b8,
+      roughness: 0.5,
+      metalness: 0.1,
+      wireframe: showWire,
+      flatShading: flatShade,
+      side: THREE.DoubleSide
+    });
+    currentObject = new THREE.Mesh(geom, mat);
+  }
+
+  // Offset so center rests on origin
+  currentObject.position.sub(center);
+  currentObject.position.y += size.y / 2;
+  scene.add(currentObject);
+
+  // Position camera
+  camera.position.set(0, maxDim * 0.7, maxDim * 1.3);
+  controls.target.set(0, size.y / 2, 0);
+  controls.update();
+
+  updateHUD(meta, geom);
+}
+
+function loadLocalPlyBuffer(buffer, filename) {
+  spinner.classList.add("show");
+  spinnerText.textContent = `Parsing local ${filename}…`;
+  try {
+    const geom = plyLoader.parse(buffer);
+    const vertCount = geom.attributes.position ? geom.attributes.position.count : 0;
+    const isPts = !geom.index;
+    const customMeta = {
+      id: "custom",
+      name: filename,
+      tag: isPts ? "LOCAL POINT CLOUD" : "LOCAL 3D MESH",
+      isPoints: isPts,
+      desc: `Locally loaded 3D file (${(buffer.byteLength / (1024 * 1024)).toFixed(1)} MB).`,
+      verts: vertCount.toLocaleString(),
+      tris: geom.index ? (geom.index.count / 3).toLocaleString() : "N/A (Points)",
+      size: `${(buffer.byteLength / (1024 * 1024)).toFixed(1)} MB`,
+      stage: "Local File Import",
+      pro: "✔ Direct browser WebGL parsing without server round-trip.",
+      con: "— Rendered directly from local device memory."
+    };
+    applyLoadedGeometry(geom, customMeta);
+    spinner.classList.remove("show");
+  } catch (err) {
+    console.error(err);
+    alert(`Could not parse .PLY file: ${err.message}`);
+    spinner.classList.remove("show");
+  }
+}
+
+document.getElementById("localPlyInput").addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (evt) => loadLocalPlyBuffer(evt.target.result, file.name);
+  reader.readAsArrayBuffer(file);
+});
+
+window.addEventListener("dragover", (e) => { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; });
+window.addEventListener("drop", (e) => {
+  e.preventDefault();
+  const file = e.dataTransfer.files[0];
+  if (file && file.name.toLowerCase().endsWith(".ply")) {
+    const reader = new FileReader();
+    reader.onload = (evt) => loadLocalPlyBuffer(evt.target.result, file.name);
+    reader.readAsArrayBuffer(file);
+  }
+});
 }
 
 // Controls

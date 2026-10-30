@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS" }
+      ]
+    }
+  ],
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/play", "destination": "/monomap/web/play.html" },
+    { "source": "/compare", "destination": "/monomap/web/compare.html" },
+    { "source": "/download", "destination": "/monomap/web/download.html" },
+    { "source": "/web/(.*)", "destination": "/monomap/web/$1" },
+    { "source": "/output/(.*)", "destination": "/monomap/output/$1" }
+  ]
+}
