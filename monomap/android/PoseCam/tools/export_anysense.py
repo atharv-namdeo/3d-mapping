@@ -1,0 +1,361 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["numpy"]
+# ///
+"""Export a PoseCam session as an AnySense-style recording folder.
+
+Usage:
+    uv run tools/export_anysense.py data/capture-XXXX [--out exports] [--all] [--size 720x960]
+
+Produces what NYU's AnySense iPhone app writes (NYU-robot-learning/AnySense,
+ARViewContainer.swift), minus depth/tactile:
+
+    <out>/<yyyy-MM-dd-HH_mm_ss>/
+        RGB_<yyyy-MM-dd-HH_mm_ss>.mp4     H.264, portrait (camera frame rotated), ~30 fps
+        AR_Pose_<yyyy-MM-dd-HH_mm_ss>.txt one line per video frame:
+                                          "<epoch_ms>" ,qx,qy,qz,qw,tx,ty,tz
+        posecam_export.json               provenance (not part of AnySense's format)
+
+Pose line N corresponds to video frame N, as in AnySense, and the consumer
+(cap_tools/convert.py) aligns strictly by index. Never delete interior frames: that
+turns a gap into one huge apparent motion, which the consumer treats as a jump and
+truncates the take. Rules agreed with the consumer (2026-09-18):
+
+  * Tracking gaps of at most --hold-max-frames (default 5, under its 8-frame action
+    stride) get poses interpolated between the surrounding tracked frames; the rows
+    are listed in posecam_export.json. Interpolated motion cannot be masked
+    downstream, so the cap keeps the fabricated span short and bounded by real poses.
+  * Longer gaps and ARCore pose jumps end the segment. EVERY clean segment of at least
+    --min-seconds (default 3 s) is exported as its own <stem>/ recording; the consumer
+    treats each folder as one demo, so only the gap itself is lost.
+  * Leading and trailing untracked frames are dropped.
+
+The consumer's gripper detector assumes the jaws point UP in the image. --rotate sets
+the rotation applied to the sensor image (default 90 = upright portrait for a phone held
+upright); check one exported frame and adjust if the mount differs.
+
+The pose is Camera.getPose() unchanged: ARKit and ARCore both give the camera-sensor
+pose in a gravity-aligned, Y-up world with the camera looking down -Z, and AnySense's
+pose is likewise the sensor transform even though its video is portrait.
+
+Needs ffmpeg and ffprobe on PATH.
+"""
+
+import argparse
+import json
+import shutil
+import subprocess
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+import numpy as np
+
+sys.path.insert(0, str(Path(__file__).parent))
+from posecam_io import frame_path, load_json, load_poses  # noqa: E402
+
+# Same thresholds as the app's PoseJumpDetector and check_sync.py.
+JUMP_SPEED_M_S = 3.0
+JUMP_RATE_RAD_S = 10.0
+OFF_PROTOCOL: list[str] = []   # set in main(); recorded in each export's provenance
+
+
+def jump_rows(poses) -> list[int]:
+    """Row indices where a jump from the previous tracked row was detected."""
+    rows = []
+    for i in range(1, len(poses.rows)):
+        if not (poses.tracked[i] and poses.tracked[i - 1]):
+            continue
+        dt = (poses.timestamp_ns[i] - poses.timestamp_ns[i - 1]) / 1e9
+        step = float(np.linalg.norm(poses.position[i] - poses.position[i - 1]))
+        dot = abs(float(np.dot(poses.quat_xyzw[i], poses.quat_xyzw[i - 1])))
+        angle = 2 * np.arccos(min(1.0, dot))
+        if step / dt > JUMP_SPEED_M_S or angle / dt > JUMP_RATE_RAD_S:
+            rows.append(i)
+    return rows
+
+
+def fill_short_gaps(poses, hold_max: int) -> tuple[np.ndarray, np.ndarray, list[int]]:
+    """Returns (position, quat, filled_rows): copies where untracked runs of at most
+    [hold_max] rows between two tracked rows are linearly interpolated (translation lerp,
+    quaternion nlerp with sign alignment). Longer runs stay NaN.
+
+    A gap whose end points are further apart than any real motion is a relocalization that
+    happened while tracking was lost: interpolating it would invent smooth motion that no
+    check can see afterwards, so it is left as a gap and splits the take instead."""
+    pos, quat = poses.position.copy(), poses.quat_xyzw.copy()
+    filled = []
+    tracked = np.flatnonzero(poses.tracked)
+    for a, b in zip(tracked, tracked[1:]):
+        gap = b - a - 1
+        if gap == 0 or gap > hold_max:
+            continue
+        dt = (poses.timestamp_ns[b] - poses.timestamp_ns[a]) / 1e9
+        step = float(np.linalg.norm(poses.position[b] - poses.position[a]))
+        angle = 2 * np.arccos(min(1.0, abs(float(np.dot(poses.quat_xyzw[a], poses.quat_xyzw[b])))))
+        if dt <= 0 or step / dt > JUMP_SPEED_M_S or angle / dt > JUMP_RATE_RAD_S:
+            continue
+        qa, qb = quat[a], quat[b]
+        if np.dot(qa, qb) < 0:
+            qb = -qb
+        for j in range(a + 1, b):
+            w = (j - a) / (b - a)
+            pos[j] = (1 - w) * pos[a] + w * pos[b]
+            q = (1 - w) * qa + w * qb
+            quat[j] = q / np.linalg.norm(q)
+            filled.append(j)
+    return pos, quat, filled
+
+
+def image_rows(poses, hold_max: int) -> tuple[list[int | None], list[int]]:
+    """For each row, the row whose JPEG to use: itself when saved, else the nearest earlier
+    saved row if within [hold_max] frames (a dropped image is replaced by the previous one,
+    33 ms stale, rather than breaking the take). None when there is nothing to reuse."""
+    source: list[int | None] = []
+    held = []
+    last_saved = None
+    for i, r in enumerate(poses.rows):
+        if r.get("image", "saved") == "saved":
+            last_saved = i
+            source.append(i)
+        elif last_saved is not None and i - last_saved <= hold_max:
+            source.append(last_saved)
+            held.append(i)
+        else:
+            source.append(None)
+    return source, held
+
+
+def segments(poses, has_pose: np.ndarray, image_source: list[int | None], breaks: set[int]) -> list[list[int]]:
+    """Runs of consecutive rows with a pose and an image, split at [breaks]."""
+    out, current = [], []
+    for i in range(len(poses.rows)):
+        usable = has_pose[i] and image_source[i] is not None
+        if not usable or i in breaks:
+            if current:
+                out.append(current)
+            current = []
+        if usable:
+            current.append(i)
+    if current:
+        out.append(current)
+    return out
+
+
+def stem(epoch_ms_value: int, session: Path, segment_index: int) -> str:
+    """Folder name for one exported demo. UTC so two machines agree, plus the source
+    session's random suffix and the segment number so re-exports are recognisable and two
+    demos can never collide."""
+    when = datetime.fromtimestamp(epoch_ms_value / 1000, tz=timezone.utc).strftime("%Y-%m-%d-%H_%M_%S")
+    suffix = session.name.rsplit("-", 1)[-1]
+    return f"{when}-{suffix}-s{segment_index + 1}"
+
+
+def check_protocol(manifest: dict, force: bool) -> list[str]:
+    """The team records one way; a session recorded any other way is not comparable."""
+    camera = manifest.get("camera_config", {})
+    problems = []
+    if list(camera.get("cpu_image_size", [])) != [640, 480]:
+        problems.append(f"image size {camera.get('cpu_image_size')} is not the locked 640x480")
+    if list(camera.get("fps_range", [])) != [30, 30]:
+        problems.append(f"camera fps range {camera.get('fps_range')} is not 30")
+    if manifest.get("focus_mode") not in (None, "AUTO"):
+        problems.append(f"focus mode {manifest.get('focus_mode')} is not AUTO")
+    measured = manifest.get("measured_fps")
+    if measured is not None and abs(measured - 30.0) > 0.6:
+        problems.append(f"measured {measured} fps, not 30 (the consumer's action stride is 8 frames at 30 fps)")
+    return problems
+
+
+def epoch_ms(manifest: dict, timestamp_ns: np.ndarray) -> np.ndarray:
+    """Frame timestamps (elapsedRealtimeNanos) -> wall-clock epoch milliseconds, via the
+    Record tap, which the manifest stamps on both clocks."""
+    start = datetime.strptime(manifest["start_wall_time_utc"], "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=timezone.utc)
+    press_ns = manifest.get("record_pressed_elapsed_realtime_ns")
+    if press_ns is None:  # posecam-3 and earlier: first frame ~100 ms before the tap
+        press_ns = manifest["first_timestamp_ns"] + 100_000_000
+    # Round the offset from the tap, then add the (integer) wall-clock millisecond, exactly as
+    # the on-device exporter does: floor(x + 0.5) is Java's Math.round, and rounding the sum
+    # instead would inherit the float error in start.timestamp() * 1000.
+    start_ms = int(round(start.timestamp() * 1000))
+    return start_ms + np.floor((timestamp_ns - press_ns) / 1e6 + 0.5).astype(np.int64)
+
+
+def swift_float(v: float) -> str:
+    """Swift's String(Float) prints the shortest form that round-trips as float32."""
+    return np.format_float_positional(np.float32(v), unique=True, trim="0")
+
+
+ROTATE_FILTERS = {0: [], 90: ["transpose=1"], 180: ["transpose=1,transpose=1"], 270: ["transpose=2"]}
+
+
+def encode_video(files: list[Path], out: Path, fps: float, size: tuple[int, int] | None,
+                 vfr_durations: list[float] | None, rotate: int):
+    listing = out.with_suffix(".txt")
+    with open(listing, "w") as f:
+        for n, p in enumerate(files):
+            f.write(f"file '{p.resolve()}'\n")
+            if vfr_durations is not None:
+                f.write(f"duration {vfr_durations[n]:.6f}\n")
+    # 90 = transpose=1 = clockwise: sensor landscape -> upright portrait for a back camera
+    # with SENSOR_ORIENTATION 90 (verified visually on the S20 FE).
+    filters = list(ROTATE_FILTERS[rotate])
+    if size:
+        filters.append(f"scale={size[0]}:{size[1]}:flags=lanczos")
+    # JPEG sources are full-range; convert to the limited-range yuv420p every decoder expects.
+    filters.append("scale=in_range=pc:out_range=tv,format=yuv420p")
+    cmd = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-f", "concat", "-safe", "0"]
+    if vfr_durations is None:
+        cmd += ["-r", str(fps)]
+    cmd += ["-i", str(listing), "-vf", ",".join(filters),
+            "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-movflags", "+faststart"]
+    if vfr_durations is not None:
+        # passthrough keeps every listed frame at its listed time; "vfr" mode drops frames
+        # whose real interval is shorter than the demuxer's default 1/25 s image duration.
+        cmd += ["-fps_mode", "passthrough"]
+    else:
+        cmd += ["-r", str(fps)]
+    cmd.append(str(out))
+    subprocess.run(cmd, check=True)
+    listing.unlink()
+
+
+def count_frames(video: Path) -> int:
+    r = subprocess.run(["ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
+                        "-show_entries", "stream=nb_read_frames", "-of", "csv=p=0", str(video)],
+                       capture_output=True, text=True, check=True)
+    return int(r.stdout.strip())
+
+
+def export_segment(args, poses, manifest, chosen, pos, quat, filled, held, image_source, jumps,
+                   label, segments_total, used_stems: set[str], segment_index: int) -> Path:
+    """Writes one <stem>/ folder for the rows in [chosen]; returns the folder."""
+    seconds = (poses.timestamp_ns[chosen[-1]] - poses.timestamp_ns[chosen[0]]) / 1e9
+    filled_in = [j for j in filled if chosen[0] <= j <= chosen[-1]]
+    held_in = [j for j in held if chosen[0] <= j <= chosen[-1]]
+    ms = epoch_ms(manifest, poses.timestamp_ns[chosen])
+    stamp = stem(int(ms[0]), args.session, segment_index)
+    used_stems.add(stamp)
+    out_dir = args.out / stamp
+    out_dir.mkdir(parents=True, exist_ok=True)
+    video = out_dir / f"RGB_{stamp}.mp4"
+    pose_txt = out_dir / f"AR_Pose_{stamp}.txt"
+
+    size = tuple(int(v) for v in args.size.lower().split("x")) if args.size else None
+    files = [frame_path(args.session, int(poses.frame_index[image_source[i]]), int(poses.timestamp_ns[image_source[i]]))
+             for i in chosen]
+    durations = None
+    if args.vfr:
+        t = poses.timestamp_ns[chosen] / 1e9
+        durations = list(np.append(np.diff(t), np.median(np.diff(t))))
+    encode_video(files, video, args.fps, size, durations, args.rotate)
+
+    n_frames = count_frames(video)
+    if n_frames != len(chosen):
+        sys.exit(f"MP4 has {n_frames} frames but {len(chosen)} poses were selected; not writing pose file")
+
+    with open(pose_txt, "w") as f:
+        for i, t_ms in zip(chosen, ms):
+            q = quat[i]
+            p = pos[i]
+            values = [q[0], q[1], q[2], q[3], p[0], p[1], p[2]]
+            f.write(f'"<{t_ms}>" ,' + ",".join(swift_float(v) for v in values) + "\n")
+
+    provenance = {
+        "source_session": args.session.name,
+        "source_format": manifest.get("format_version"),
+        "rows_exported": [int(chosen[0]), int(chosen[-1])],
+        "frames": len(chosen),
+        "seconds": round(float(seconds), 3),
+        "selection": label,
+        "segments_in_source": segments_total,
+        "pose_jumps_in_source": jumps,
+        "interpolated_pose_rows": filled_in,
+        "reused_previous_image_rows": held_in,
+        "measured_fps": manifest.get("measured_fps"),
+        "off_protocol": OFF_PROTOCOL,
+        "video": {"rotation_deg_clockwise": args.rotate, "size": size or "native rotated",
+                  "fps": "variable (real timing)" if args.vfr else args.fps},
+        "intrinsics_landscape": {k: manifest.get("camera_config", {}).get(k) for k in ("cpu_image_size",)},
+        "note": "AnySense writes no intrinsics; see the source session's intrinsics.json (landscape orientation)",
+    }
+    (out_dir / "posecam_export.json").write_text(json.dumps(provenance, indent=2) + "\n")
+    print(f"  {label}: rows {chosen[0]}-{chosen[-1]}, {len(chosen)} frames, {seconds:.1f} s, "
+          f"{len(filled_in)} interpolated pose(s), {len(held_in)} reused image(s) -> {out_dir}")
+    return out_dir
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("session", type=Path)
+    parser.add_argument("--out", type=Path, default=Path("exports"), help="parent folder for exports")
+    parser.add_argument("--all", action="store_true",
+                        help="debug: export every frame with a pose as ONE recording, jumps and long gaps included")
+    parser.add_argument("--hold-max-frames", type=int, default=5,
+                        help="interpolate tracking gaps up to this many frames (must stay under the consumer's "
+                             "8-frame action stride); longer gaps end the segment")
+    parser.add_argument("--rotate", type=int, default=90, choices=(0, 90, 180, 270),
+                        help="clockwise rotation applied to the sensor image; jaws must point up in the result")
+    parser.add_argument("--segment", type=int, help="export only this segment index (0-based, in time order)")
+    parser.add_argument("--size", default=None, help="output WxH after rotation, e.g. 720x960 to match AnySense; default keeps native")
+    parser.add_argument("--fps", type=float, default=30.0, help="nominal frame rate written to the MP4")
+    parser.add_argument("--vfr", action="store_true", help="keep each frame's real timing instead of a constant rate")
+    parser.add_argument("--min-seconds", type=float, default=3.0, help="skip segments shorter than this")
+    parser.add_argument("--force", action="store_true",
+                        help="export even when the session was not recorded with the team's settings")
+    args = parser.parse_args()
+
+    for tool in ("ffmpeg", "ffprobe"):
+        if not shutil.which(tool):
+            sys.exit(f"{tool} not found on PATH")
+
+    poses = load_poses(args.session)
+    manifest = load_json(args.session, "manifest.json")
+    if not manifest.get("complete", True):
+        sys.exit("manifest says the recording did not stop cleanly")
+    off_protocol = check_protocol(manifest, args.force)
+    if off_protocol:
+        message = "not recorded with the team's settings:\n  " + "\n  ".join(off_protocol)
+        if not args.force:
+            sys.exit(f"{args.session.name} {message}\nUse --force to export it anyway (it will not be comparable).")
+        print(f"WARNING: {args.session.name} {message}")
+    globals()["OFF_PROTOCOL"] = off_protocol
+
+    jumps = jump_rows(poses)
+    pos, quat, filled = fill_short_gaps(poses, args.hold_max_frames)
+    has_pose = ~np.isnan(pos[:, 0])
+    image_source, held = image_rows(poses, args.hold_max_frames)
+    segs = segments(poses, has_pose, image_source, set() if args.all else set(jumps))
+    if not segs:
+        sys.exit("no tracked frames with images")
+
+    def seconds_of(seg):
+        return (poses.timestamp_ns[seg[-1]] - poses.timestamp_ns[seg[0]]) / 1e9
+
+    print(f"{args.session.name}: {len(poses.rows)} rows, {len(jumps)} jump(s), {len(filled)} gap frame(s) "
+          f"interpolated, {len(segs)} segment(s)")
+    used: set[str] = set()
+    if args.all:
+        chosen = [i for s in segs for i in s]
+        export_segment(args, poses, manifest, chosen, pos, quat, filled, held, image_source, jumps,
+                       "all frames (debug)", len(segs), used, 0)
+        return
+    if args.segment is not None:
+        segs = [(args.segment, segs[args.segment])]
+    else:
+        segs = list(enumerate(segs))
+    written = 0
+    for n, seg in segs:
+        if seconds_of(seg) < args.min_seconds:
+            print(f"  segment {n}: rows {seg[0]}-{seg[-1]}, {seconds_of(seg):.1f} s, skipped (< {args.min_seconds} s)")
+            continue
+        export_segment(args, poses, manifest, seg, pos, quat, filled, held, image_source, jumps,
+                       f"segment {n}", len(segs), used, n)
+        written += 1
+    if written == 0:
+        sys.exit("no segment long enough to export")
+    print(f"wrote {written} recording(s) to {args.out}/")
+
+
+if __name__ == "__main__":
+    main()

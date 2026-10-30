@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Namma Space · Playable 3D Workshop Navigator</title>
+<style>
+  :root {
+    --bg: #090c10;
+    --panel: #13171f;
+    --panel-2: #1b212c;
+    --border: #283241;
+    --fg: #e6edf3;
+    --muted: #8b98a7;
+    --accent: #38bdf8;
+    --accent-glow: rgba(56, 189, 248, 0.4);
+    --gold: #fbbf24;
+    --green: #34d399;
+    --rose: #fb7185;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; width: 100%; overflow: hidden; background: var(--bg); color: var(--fg); user-select: none; }
+
+  #stage { position: absolute; inset: 0; z-index: 1; }
+  canvas { display: block; width: 100%; height: 100%; }
+
+  /* Top Navigation Bar */
+  .top-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 30;
+    background: rgba(15, 20, 27, 0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    padding: 8px 16px;
+    gap: 8px;
+  }
+  .brand-row {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .brand-title {
+    display: flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 700;
+  }
+  .badge-live {
+    background: #0284c7; color: #fff; font-size: 10px; font-weight: 700;
+    padding: 2px 7px; border-radius: 999px; text-transform: uppercase;
+  }
+  .mode-switch-group {
+    display: flex; gap: 6px; align-items: center;
+  }
+  .mode-btn {
+    background: var(--panel-2); border: 1px solid var(--border);
+    color: var(--fg); border-radius: 8px; padding: 5px 12px; font-size: 12px;
+    font-weight: 600; cursor: pointer; transition: all 0.15s ease;
+  }
+  .mode-btn:hover { border-color: var(--accent); }
+  .mode-btn.active {
+    background: #0284c7; border-color: var(--accent); color: #fff;
+    box-shadow: 0 0 12px var(--accent-glow);
+  }
+
+  .models-row {
+    display: flex; gap: 5px; overflow-x: auto; padding-bottom: 3px; scrollbar-width: thin;
+  }
+  .model-tab {
+    padding: 4px 10px; font-size: 11px; font-weight: 600;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--fg); cursor: pointer;
+    white-space: nowrap; transition: all 0.12s;
+  }
+  .model-tab:hover { background: #262e3d; border-color: var(--accent); }
+  .model-tab.active { background: #38bdf8; color: #090c10; font-weight: 700; }
+
+  /* First-Person Reticle (Crosshair) */
+  #reticle {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 14px; height: 14px; pointer-events: none; z-index: 25; display: none;
+  }
+  #reticle::before, #reticle::after {
+    content: ''; position: absolute; background: rgba(255, 255, 255, 0.75);
+    box-shadow: 0 0 4px rgba(0,0,0,0.8);
+  }
+  #reticle::before { top: 6px; left: 0; width: 14px; height: 2px; border-radius: 1px; }
+  #reticle::after  { top: 0; left: 6px; width: 2px; height: 14px; border-radius: 1px; }
+  body.mode-walk #reticle, body.mode-fly #reticle { display: block; }
+
+  /* Click-to-Play Overlay */
+  #blocker {
+    position: fixed; inset: 0; z-index: 28;
+    background: rgba(9, 12, 16, 0.65); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  #instructions {
+    text-align: center; background: rgba(19, 23, 31, 0.95);
+    border: 1px solid var(--accent); border-radius: 16px;
+    padding: 28px 36px; max-width: 440px; box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+  }
+  #instructions h2 { font-size: 20px; color: var(--accent); margin-bottom: 8px; }
+  #instructions p { font-size: 13px; color: var(--muted); line-height: 1.5; margin-bottom: 14px; }
+  .start-badge {
+    display: inline-block; background: #0284c7; color: #fff; font-weight: 700;
+    padding: 10px 22px; border-radius: 10px; font-size: 13px;
+  }
+
+  /* Telemetry HUD (Bottom Left) */
+  .hud-telemetry {
+    position: fixed; bottom: 20px; left: 20px; z-index: 20;
+    background: rgba(19, 23, 31, 0.88); backdrop-filter: blur(8px);
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 14px; font-family: monospace; font-size: 11px;
+    display: flex; flex-direction: column; gap: 4px; pointer-events: none;
+  }
+  .hud-telemetry span { color: var(--muted); }
+  .hud-telemetry b { color: var(--accent); }
+
+  /* 2D Minimap Radar HUD (Bottom Right) */
+  .minimap-card {
+    position: fixed; bottom: 20px; right: 20px; z-index: 20;
+    width: 170px; height: 150px;
+    background: rgba(19, 23, 31, 0.92); backdrop-filter: blur(8px);
+    border: 1px solid var(--border); border-radius: 12px;
+    overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  }
+  .minimap-header {
+    background: rgba(15, 20, 27, 0.9); padding: 4px 8px;
+    font-size: 10px; font-weight: 700; color: var(--accent);
+    display: flex; justify-content: space-between; border-bottom: 1px solid var(--border);
+  }
+  .minimap-view {
+    position: relative; width: 100%; height: calc(100% - 22px);
+    background: #0f141c; display: flex; align-items: center; justify-content: center;
+  }
+  #minimapImg {
+    width: 100%; height: 100%; object-fit: contain; opacity: 0.65;
+  }
+  #playerBlip {
+    position: absolute; width: 12px; height: 12px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  #playerBlip svg { width: 100%; height: 100%; filter: drop-shadow(0 0 4px #38bdf8); }
+
+  /* Bottom Controls Cheat Sheet */
+  .bottom-controls {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 20;
+    background: rgba(19, 23, 31, 0.88); backdrop-filter: blur(8px);
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 7px 16px; font-size: 11px; color: var(--muted);
+    display: flex; gap: 12px; align-items: center; white-space: nowrap;
+  }
+  .bottom-controls kbd {
+    background: var(--panel-2); border: 1px solid var(--border);
+    padding: 2px 5px; border-radius: 4px; color: var(--fg); font-family: monospace; font-size: 10px;
+  }
+
+  /* Dual Virtual Joysticks (Touch & Mobile) */
+  .joystick-zone {
+    position: fixed; bottom: 70px; width: 110px; height: 110px; z-index: 25;
+    border-radius: 50%; background: rgba(255, 255, 255, 0.04);
+    border: 2px dashed rgba(255, 255, 255, 0.15);
+    display: flex; align-items: center; justify-content: center;
+    touch-action: none;
+  }
+  #joyMove { left: 24px; }
+  #joyLook { right: 24px; }
+  .joy-knob {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(56, 189, 248, 0.5); border: 2px solid var(--accent);
+    box-shadow: 0 0 10px var(--accent-glow);
+    transform: translate(0, 0); pointer-events: none;
+  }
+  .joy-label {
+    position: absolute; bottom: -20px; font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase;
+  }
+
+  /* Loading Spinner */
+  #spinner {
+    position: fixed; inset: 0; z-index: 40;
+    background: rgba(9, 12, 16, 0.7); backdrop-filter: blur(4px);
+    display: none; align-items: center; justify-content: center;
+    flex-direction: column; gap: 12px; font-size: 13px; font-weight: 600;
+  }
+  #spinner.show { display: flex; }
+  .loader {
+    width: 36px; height: 36px; border: 3px solid rgba(56,189,248,0.2);
+    border-top-color: var(--accent); border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body class="mode-walk">
+
+<div id="stage"></div>
+<div id="reticle"></div>
+
+<div class="top-bar">
+  <div class="brand-row">
+    <div class="brand-title">
+      🎮 <span id="sceneTitle">Classroom 3D</span>
+      <select id="sceneSelect" style="background:var(--panel-2); color:var(--accent); border:1px solid var(--border); border-radius:6px; padding:3px 8px; font-size:12px; font-weight:700; cursor:pointer;">
+        <option value="scan_posecam_1" selected>📱 PoseCam Android Room Scan</option>
+        <option value="classroom_full">🏫 Classroom (Full Walkthrough 57s)</option>
+        <option value="classroom">🏫 Classroom (Quick Scan 12s)</option>
+        <option value="workshop_shed">🏭 Workshop Shed</option>
+      </select>
+      <span class="badge-live">Playable</span>
+    </div>
+    <div class="mode-switch-group">
+      <button class="mode-btn active" id="btnModeWalk">🚶 Walk (FPS)</button>
+      <button class="mode-btn" id="btnModeFly">🛸 Fly (Drone)</button>
+      <button class="mode-btn" id="btnModeOrbit">🔍 Orbit (Inspect)</button>
+      <button class="mode-btn" id="btnSound">🔊 Sound</button>
+      <button class="mode-btn" id="btnResetPos">↺ Reset Pos</button>
+      <a href="/web/download.html" class="mode-btn" style="text-decoration:none; background:linear-gradient(135deg, #0284c7, #38bdf8); color:#0b0f19; font-weight:700;">📲 Shoot APK</a>
+    </div>
+  </div>
+  <div class="models-row" id="modelsBar">
+    <!-- Populated by JavaScript -->
+  </div>
+</div>
+
+<div id="blocker">
+  <div id="instructions">
+    <h2 id="instTitle">Click to Enter Classroom</h2>
+    <p>Move mouse to look around.<br>Use <b>W, A, S, D</b> to walk inside the 3D space.<br>Hold <b>Shift</b> to sprint · <b>Space</b> to jump.</p>
+    <div class="start-badge">START PLAYING</div>
+  </div>
+</div>
+
+<div class="hud-telemetry">
+  <div><span>POSITION:</span> <b id="hudPos">X: 0.00 Y: 1.60 Z: 0.00</b></div>
+  <div><span>HEADING:</span> <b id="hudHeading">0°</b> | <span>SPEED:</span> <b id="hudSpeed">0.0 m/s</b></div>
+  <div><span>MODEL:</span> <b id="hudModelName">1. Dense Metric Cloud</b></div>
+</div>
+
+<div class="minimap-card">
+  <div class="minimap-header">
+    <span>FLOOR RADAR</span>
+    <span style="color:#34d399;">● LIVE</span>
+  </div>
+  <div class="minimap-view" id="minimapBox">
+    <img id="minimapImg" src="/output/workshop_shed/floormap.png" alt="Floormap">
+    <div id="playerBlip">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2 L22 22 L12 17 L2 22 Z" fill="#38bdf8" stroke="#ffffff" stroke-width="1.5"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-controls">
+  <div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> Move</div>
+  <div><kbd>Shift</kbd> Sprint</div>
+  <div><kbd>Space</kbd> Jump</div>
+  <div><kbd>C</kbd> Crouch</div>
+  <div><kbd>1</kbd>–<kbd>0</kbd> Switch Model</div>
+  <div><kbd>ESC</kbd> Unlock Mouse</div>
+</div>
+
+<!-- Touch Joysticks -->
+<div class="joystick-zone" id="joyMove">
+  <div class="joy-knob" id="knobMove"></div>
+  <div class="joy-label">MOVE</div>
+</div>
+<div class="joystick-zone" id="joyLook">
+  <div class="joy-knob" id="knobLook"></div>
+  <div class="joy-label">LOOK</div>
+</div>
+
+<div id="spinner">
+  <div class="loader"></div>
+  <div id="spinnerText">Loading 3D model…</div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
+import { PLYLoader } from "three/addons/loaders/PLYLoader.js";
+
+const urlParams = new URLSearchParams(window.location.search);
+let currentScene = urlParams.get("scene") || "scan_posecam_1";
+const sceneSelect = document.getElementById("sceneSelect");
+if (sceneSelect) {
+  sceneSelect.value = currentScene;
+  sceneSelect.onchange = () => {
+    window.location.search = `?scene=${sceneSelect.value}`;
+  };
+}
+
+const MODEL_TEMPLATES = [
+  { id: 1, name: "🌟 1. Dense Metric Cloud", file: "model_01_dense_pointcloud.ply", isPoints: true },
+  { id: 2, name: "✂️ 2. Trimmed Poisson", file: "model_02_trimmed_poisson.ply", isPoints: false },
+  { id: 3, name: "⚽ 3. Ball-Pivoting (BPA)", file: "model_03_ball_pivoting.ply", isPoints: false },
+  { id: 4, name: "📐 4. Alpha Shapes", file: "model_04_alpha_shapes.ply", isPoints: false },
+  { id: 5, name: "🧱 5. TSDF Surface", file: "model_05_tsdf_marching_cubes.ply", isPoints: false },
+  { id: 6, name: "🏛️ 6. Planar CAD BIM", file: "model_06_planar_cad_bim.ply", isPoints: false },
+  { id: 7, name: "🧊 7. 3D Voxel Grid", file: "model_07_voxel_occupancy_grid.ply", isPoints: false },
+  { id: 8, name: "🧠 8. LingBot-Map GCT", file: "model_08_lingbot_gct.ply", isPoints: true },
+  { id: 9, name: "📦 9. CAD Boxes", file: "model_09_digital_twin_boxes.ply", isPoints: false },
+  { id: 10, name: "🔘 10. Oriented Surfels", file: "model_10_oriented_surfels.ply", isPoints: false }
+];
+
+const MODELS = MODEL_TEMPLATES.map(m => ({
+  ...m,
+  file: `/output/${currentScene}/models/${m.file}`
+}));
+
+document.getElementById("minimapImg").src = `/output/${currentScene}/floormap.png`;
+if (currentScene === "scan_posecam_1") {
+  document.getElementById("sceneTitle").textContent = "PoseCam 3D";
+  document.getElementById("instTitle").textContent = "Click to Enter PoseCam Room Scan";
+} else if (currentScene.startsWith("classroom")) {
+  document.getElementById("sceneTitle").textContent = "Classroom 3D";
+  document.getElementById("instTitle").textContent = "Click to Enter Classroom";
+} else {
+  document.getElementById("sceneTitle").textContent = "Workshop Shed 3D";
+  document.getElementById("instTitle").textContent = "Click to Enter Workshop";
+}
+
+let activeIdx = 0;
+let currentObject = null;
+let currentGeometry = null;
+let currentMode = "walk"; // "walk" | "fly" | "orbit"
+let soundEnabled = false;
+
+// Audio context for procedural footsteps
+let audioCtx = null;
+function playFootstep() {
+  if (!soundEnabled) return;
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(90, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(30, audioCtx.currentTime + 0.08);
+    gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.08);
+  } catch (e) {}
+}
+
+// Scene Setup
+const stage = document.getElementById("stage");
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x090c10);
+scene.fog = new THREE.FogExp2(0x090c10, 0.035);
+
+const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.05, 500);
+camera.position.set(0, 1.6, 2.5);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.15;
+stage.appendChild(renderer.domElement);
+
+// Controls
+const orbit = new OrbitControls(camera, renderer.domElement);
+orbit.enableDamping = true;
+orbit.dampingFactor = 0.08;
+orbit.enabled = false;
+
+const fpControls = new PointerLockControls(camera, document.body);
+
+// Floor Grid
+const gridHelper = new THREE.GridHelper(30, 60, 0x0284c7, 0x1e293b);
+gridHelper.position.y = 0.0;
+scene.add(gridHelper);
+
+// Lighting
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0x1e293b, 1.1);
+scene.add(hemiLight);
+const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.2);
+dirLight1.position.set(5, 10, 5);
+scene.add(dirLight1);
+const dirLight2 = new THREE.DirectionalLight(0x38bdf8, 0.6);
+dirLight2.position.set(-6, -2, -4);
+scene.add(dirLight2);
+
+// PointerLock Blocker
+const blocker = document.getElementById("blocker");
+blocker.addEventListener("click", () => {
+  if (currentMode !== "orbit") fpControls.lock();
+});
+fpControls.addEventListener("lock", () => { blocker.style.display = "none"; });
+fpControls.addEventListener("unlock", () => {
+  if (currentMode !== "orbit") blocker.style.display = "flex";
+});
+
+// Movement Physics State
+const moveState = {
+  forward: false, backward: false, left: false, right: false,
+  sprint: false, jump: false, crouch: false
+};
+const velocity = new THREE.Vector3();
+const direction = new THREE.Vector3();
+let canJump = true;
+const EYE_HEIGHT = 1.6;
+const CROUCH_HEIGHT = 0.9;
+let targetEyeY = EYE_HEIGHT;
+let footstepTimer = 0;
+
+// Keyboard Listeners
+window.addEventListener("keydown", (e) => {
+  switch (e.code) {
+    case "KeyW": case "ArrowUp": moveState.forward = true; break;
+    case "KeyS": case "ArrowDown": moveState.backward = true; break;
+    case "KeyA": case "ArrowLeft": moveState.left = true; break;
+    case "KeyD": case "ArrowRight": moveState.right = true; break;
+    case "ShiftLeft": case "ShiftRight": moveState.sprint = true; break;
+    case "Space":
+      if (currentMode === "walk" && canJump) {
+        velocity.y += 4.8;
+        canJump = false;
+      } else if (currentMode === "fly") {
+        moveState.jump = true;
+      }
+      break;
+    case "KeyC":
+      moveState.crouch = true;
+      targetEyeY = CROUCH_HEIGHT;
+      break;
+  }
+
+  // Model switching hotkeys 1-0
+  if (e.key >= '1' && e.key <= '9') {
+    selectModel(parseInt(e.key) - 1);
+  } else if (e.key === '0') {
+    selectModel(9);
+  }
+});
+
+window.addEventListener("keyup", (e) => {
+  switch (e.code) {
+    case "KeyW": case "ArrowUp": moveState.forward = false; break;
+    case "KeyS": case "ArrowDown": moveState.backward = false; break;
+    case "KeyA": case "ArrowLeft": moveState.left = false; break;
+    case "KeyD": case "ArrowRight": moveState.right = false; break;
+    case "ShiftLeft": case "ShiftRight": moveState.sprint = false; break;
+    case "Space": moveState.jump = false; break;
+    case "KeyC":
+      moveState.crouch = false;
+      targetEyeY = EYE_HEIGHT;
+      break;
+  }
+});
+
+// Mode Switching
+function setMode(mode) {
+  currentMode = mode;
+  document.body.className = `mode-${mode}`;
+  document.getElementById("btnModeWalk").classList.toggle("active", mode === "walk");
+  document.getElementById("btnModeFly").classList.toggle("active", mode === "fly");
+  document.getElementById("btnModeOrbit").classList.toggle("active", mode === "orbit");
+
+  if (mode === "orbit") {
+    fpControls.unlock();
+    blocker.style.display = "none";
+    orbit.enabled = true;
+    orbit.target.set(0, 1.2, 0);
+  } else {
+    orbit.enabled = false;
+    blocker.style.display = "flex";
+  }
+}
+document.getElementById("btnModeWalk").onclick = () => setMode("walk");
+document.getElementById("btnModeFly").onclick = () => setMode("fly");
+document.getElementById("btnModeOrbit").onclick = () => setMode("orbit");
+
+document.getElementById("btnResetPos").onclick = () => {
+  camera.position.set(0, EYE_HEIGHT, 2.5);
+  velocity.set(0, 0, 0);
+  if (orbit.enabled) {
+    orbit.target.set(0, 1.2, 0);
+    orbit.update();
+  }
+};
+
+document.getElementById("btnSound").onclick = function() {
+  soundEnabled = !soundEnabled;
+  this.classList.toggle("active", soundEnabled);
+  this.textContent = soundEnabled ? "🔊 Sound ON" : "🔇 Sound OFF";
+};
+
+// Virtual Joysticks for Touch & Mouse
+const joyMove = { x: 0, y: 0, active: false };
+const joyLook = { x: 0, y: 0, active: false };
+
+function setupJoystick(zoneId, knobId, stateObj) {
+  const zone = document.getElementById(zoneId);
+  const knob = document.getElementById(knobId);
+  const maxR = 38;
+
+  function handleTouch(e) {
+    e.preventDefault();
+    const touch = e.touches ? e.touches[0] : e;
+    const rect = zone.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    let dx = touch.clientX - cx;
+    let dy = touch.clientY - cy;
+    const dist = Math.hypot(dx, dy);
+    if (dist > maxR) {
+      dx = (dx / dist) * maxR;
+      dy = (dy / dist) * maxR;
+    }
+    knob.style.transform = `translate(${dx}px, ${dy}px)`;
+    stateObj.x = dx / maxR;
+    stateObj.y = dy / maxR;
+    stateObj.active = true;
+  }
+
+  function reset() {
+    knob.style.transform = `translate(0px, 0px)`;
+    stateObj.x = 0; stateObj.y = 0; stateObj.active = false;
+  }
+
+  zone.addEventListener("touchstart", handleTouch, { passive: false });
+  zone.addEventListener("touchmove", handleTouch, { passive: false });
+  zone.addEventListener("touchend", reset);
+  zone.addEventListener("touchcancel", reset);
+
+  // Mouse emulation for desktop
+  let isDown = false;
+  zone.addEventListener("mousedown", (e) => { isDown = true; handleTouch(e); });
+  window.addEventListener("mousemove", (e) => { if (isDown) handleTouch(e); });
+  window.addEventListener("mouseup", () => { if (isDown) { isDown = false; reset(); } });
+}
+setupJoystick("joyMove", "knobMove", joyMove);
+setupJoystick("joyLook", "knobLook", joyLook);
+
+// Model Loader
+const plyLoader = new PLYLoader();
+const spinner = document.getElementById("spinner");
+const spinnerText = document.getElementById("spinnerText");
+
+const modelsBar = document.getElementById("modelsBar");
+MODELS.forEach((m, i) => {
+  const btn = document.createElement("button");
+  btn.className = "model-tab" + (i === 0 ? " active" : "");
+  btn.textContent = m.name;
+  btn.onclick = () => selectModel(i);
+  modelsBar.appendChild(btn);
+});
+
+async function selectModel(idx) {
+  if (idx < 0 || idx >= MODELS.length) return;
+  activeIdx = idx;
+  const m = MODELS[idx];
+
+  document.querySelectorAll(".model-tab").forEach((t, i) => {
+    t.classList.toggle("active", i === idx);
+  });
+  document.getElementById("hudModelName").textContent = m.name;
+
+  spinner.classList.add("show");
+  spinnerText.textContent = `Loading ${m.name}…`;
+
+  try {
+    const geom = await plyLoader.loadAsync(m.file);
+    geom.computeVertexNormals();
+
+    if (currentObject) {
+      scene.remove(currentObject);
+      if (currentObject.geometry) currentObject.geometry.dispose();
+      if (currentObject.material) currentObject.material.dispose();
+    }
+
+    currentGeometry = geom;
+
+    // Shift geometry so floor rests right on Y = 0
+    geom.computeBoundingBox();
+    const bbox = geom.boundingBox;
+    const center = new THREE.Vector3();
+    bbox.getCenter(center);
+    const size = new THREE.Vector3();
+    bbox.getSize(size);
+
+    const hasColors = !!geom.getAttribute("color");
+
+    if (m.isPoints) {
+      const mat = new THREE.PointsMaterial({
+        size: 0.026,
+        vertexColors: hasColors,
+        color: hasColors ? 0xffffff : 0x38bdf8
+      });
+      currentObject = new THREE.Points(geom, mat);
+    } else {
+      const mat = new THREE.MeshStandardMaterial({
+        vertexColors: hasColors,
+        color: hasColors ? 0xffffff : 0x94a3b8,
+        roughness: 0.5,
+        metalness: 0.1,
+        side: THREE.DoubleSide
+      });
+      currentObject = new THREE.Mesh(geom, mat);
+    }
+
+    // Center horizontally and rest floor on Y = 0
+    currentObject.position.set(-center.x, -bbox.min.y, -center.z);
+    scene.add(currentObject);
+
+    spinner.classList.remove("show");
+  } catch (err) {
+    console.error(err);
+    spinnerText.textContent = `Load Error: ${err.message}`;
+    setTimeout(() => spinner.classList.remove("show"), 2000);
+  }
+}
+
+// Telemetry & Minimap Update
+const hudPos = document.getElementById("hudPos");
+const hudHeading = document.getElementById("hudHeading");
+const hudSpeed = document.getElementById("hudSpeed");
+const playerBlip = document.getElementById("playerBlip");
+
+function updateMinimap() {
+  const p = camera.position;
+  hudPos.textContent = `X: ${p.x.toFixed(2)} Y: ${p.y.toFixed(2)} Z: ${p.z.toFixed(2)}`;
+  
+  // Calculate heading degrees
+  const dir = new THREE.Vector3();
+  camera.getWorldDirection(dir);
+  let deg = Math.round(Math.atan2(dir.x, -dir.z) * (180 / Math.PI));
+  if (deg < 0) deg += 360;
+  hudHeading.textContent = `${deg}°`;
+
+  // Speed
+  const horizSpeed = Math.hypot(velocity.x, velocity.z);
+  hudSpeed.textContent = `${horizSpeed.toFixed(1)} m/s`;
+
+  // Map coordinate range: X ~ [-5, 5], Z ~ [-6, 6]
+  const pctX = ((p.x + 5.0) / 10.0) * 100;
+  const pctZ = ((p.z + 6.0) / 12.0) * 100;
+  const clampedX = Math.max(5, Math.min(95, pctX));
+  const clampedZ = Math.max(5, Math.min(95, pctZ));
+
+  playerBlip.style.left = `${clampedX}%`;
+  playerBlip.style.top = `${clampedZ}%`;
+  playerBlip.style.transform = `translate(-50%, -50%) rotate(${deg}deg)`;
+}
+
+// Main Animation Loop
+let prevTime = performance.now();
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  const time = performance.now();
+  const delta = Math.min((time - prevTime) / 1000, 0.1);
+  prevTime = time;
+
+  if (currentMode === "orbit") {
+    orbit.update();
+  } else {
+    // Look Joystick support
+    if (joyLook.active) {
+      const euler = new THREE.Euler(0, 0, 0, 'YXZ');
+      euler.setFromQuaternion(camera.quaternion);
+      euler.y -= joyLook.x * delta * 2.5;
+      euler.x = Math.max(-Math.PI / 2.2, Math.min(Math.PI / 2.2, euler.x - joyLook.y * delta * 2.0));
+      camera.quaternion.setFromEuler(euler);
+    }
+
+    // Movement damping
+    velocity.x -= velocity.x * 10.0 * delta;
+    velocity.z -= velocity.z * 10.0 * delta;
+
+    direction.z = Number(moveState.forward) - Number(moveState.backward);
+    direction.x = Number(moveState.right) - Number(moveState.left);
+
+    // Joystick movement
+    if (joyMove.active) {
+      direction.x += joyMove.x;
+      direction.z -= joyMove.y;
+    }
+    direction.normalize();
+
+    const speed = moveState.sprint ? 5.0 : 2.5;
+
+    if (moveState.forward || moveState.backward || joyMove.active) {
+      velocity.z -= direction.z * speed * 35.0 * delta;
+    }
+    if (moveState.left || moveState.right || joyMove.active) {
+      velocity.x += direction.x * speed * 35.0 * delta;
+    }
+
+    // Footstep audio
+    const moving = Math.hypot(velocity.x, velocity.z) > 0.8;
+    if (moving && currentMode === "walk" && canJump) {
+      footstepTimer += delta;
+      if (footstepTimer > (moveState.sprint ? 0.32 : 0.48)) {
+        playFootstep();
+        footstepTimer = 0;
+      }
+    }
+
+    if (currentMode === "walk") {
+      // Gravity
+      velocity.y -= 14.0 * delta;
+
+      fpControls.moveRight(velocity.x * delta);
+      fpControls.moveForward(-velocity.z * delta);
+
+      camera.position.y += velocity.y * delta;
+
+      // Floor snap
+      if (camera.position.y < targetEyeY) {
+        velocity.y = 0;
+        camera.position.y = targetEyeY;
+        canJump = true;
+      }
+    } else if (currentMode === "fly") {
+      // Free 6-DOF fly
+      if (moveState.jump) velocity.y += 6.0 * delta;
+      if (moveState.crouch) velocity.y -= 6.0 * delta;
+      velocity.y -= velocity.y * 6.0 * delta;
+
+      fpControls.moveRight(velocity.x * delta);
+      fpControls.moveForward(-velocity.z * delta);
+      camera.position.y += velocity.y * delta;
+    }
+  }
+
+  updateMinimap();
+  renderer.render(scene, camera);
+}
+
+window.addEventListener("resize", () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// Start with Model 1
+selectModel(0);
+animate();
+</script>
+</body>
+</html>

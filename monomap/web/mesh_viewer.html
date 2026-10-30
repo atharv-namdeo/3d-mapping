@@ -1,3 +1,8 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>monomap 3D Viewer</title>
 <style>
   :root {
@@ -72,6 +77,8 @@
   #spinner.show { display: flex; }
   #spinner small { color: var(--muted); }
 </style>
+</head>
+<body>
 
 <div id="stage"></div>
 
@@ -83,6 +90,7 @@
 
 <div class="panel" id="controls" hidden>
   <button id="btnColor" class="on">Colors</button>
+  <button id="btnFlip">Flip Vertical (F)</button>
   <button id="btnBigger">Points +</button>
   <button id="btnSmaller">Points −</button>
   <button id="btnShade" hidden>Flat shade</button>
@@ -95,15 +103,30 @@
 <div id="spinner"><div>Parsing geometry…</div><small id="spinnerSub"></small></div>
 
 <div id="drop">
-  <div class="card">
-    <h2>Load your 3D reconstruction</h2>
-    <p>Drag a file here, or pick it. From <code>output/clip1_v2/</code>:</p>
-    <div class="files">
-      ⭐ <b>map_metric.ply</b> — dense colored point cloud (the full room, best look)<br>
-      ◻ <b>mesh.ply</b> — solid Poisson surface mesh<br>
-      ➕ <b>poses.tum</b> — drop too for the orange camera path
+  <div class="card" style="max-width: 580px;">
+    <h2>Workshop Shed 3D Reconstruction</h2>
+    <div style="margin: 12px 0 16px 0; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+      <a href="/web/play.html" style="display:inline-flex; align-items:center; gap:8px; background:linear-gradient(135deg, #10b981, #0284c7); color:#fff; font-weight:700; text-decoration:none; padding:11px 22px; border-radius:10px; font-size:13.5px; box-shadow:0 4px 18px rgba(16,185,129,0.45); transition:transform 0.15s ease;">
+        🎮 Play / Walkthrough Mode
+      </a>
+      <a href="/web/compare.html" style="display:inline-flex; align-items:center; gap:8px; background:linear-gradient(135deg, #0284c7, #6366f1); color:#fff; font-weight:700; text-decoration:none; padding:11px 22px; border-radius:10px; font-size:13.5px; box-shadow:0 4px 18px rgba(2,132,199,0.45); transition:transform 0.15s ease;">
+        🚀 10-Model Comparison Studio
+      </a>
     </div>
-    <label class="pick">Choose file(s)
+    <div style="font-size:12px; font-weight:700; color:var(--accent); margin-bottom:6px;">🏫 NEW CLASSROOM RECONSTRUCTION:</div>
+    <div style="margin-bottom:14px; display:flex; gap:6px; justify-content:center; flex-wrap:wrap;">
+      <button type="button" class="quick-btn" onclick="fetchLoad('/output/classroom/models/model_01_dense_pointcloud.ply')" style="background:#059669;color:#fff;border:none;font-weight:600;padding:7px 11px;font-size:11.5px;">🌟 Classroom Cloud (2.8M)</button>
+      <button type="button" class="quick-btn" onclick="fetchLoad('/output/classroom/models/model_08_lingbot_gct.ply')" style="background:#7c3aed;color:#fff;border:none;font-weight:600;padding:7px 11px;font-size:11.5px;">🧠 Classroom LingBot GCT</button>
+      <button type="button" class="quick-btn" onclick="fetchLoad('/output/classroom/models/model_03_ball_pivoting.ply')" style="background:#0284c7;color:#fff;border:none;font-weight:600;padding:7px 11px;font-size:11.5px;">⚽ Classroom BPA Mesh</button>
+      <button type="button" class="quick-btn" onclick="fetchLoad('/output/classroom/models/model_06_planar_cad_bim.ply')" style="background:#d97706;color:#fff;border:none;font-weight:600;padding:7px 11px;font-size:11.5px;">🏛️ Classroom CAD BIM</button>
+    </div>
+    <div style="font-size:12px; font-weight:700; color:var(--muted); margin-bottom:6px;">🏭 WORKSHOP SHED:</div>
+    <div style="margin-bottom:14px; display:flex; gap:6px; justify-content:center; flex-wrap:wrap;">
+      <button type="button" class="quick-btn" onclick="fetchLoad('/output/workshop_shed/models/model_01_dense_pointcloud.ply')" style="background:#334155;color:#fff;border:none;font-weight:600;padding:7px 11px;font-size:11.5px;">🌟 Workshop Cloud</button>
+      <button type="button" class="quick-btn" onclick="fetchLoad('/output/workshop_shed/models/model_08_lingbot_gct.ply')" style="background:#334155;color:#fff;border:none;font-weight:600;padding:7px 11px;font-size:11.5px;">🧠 Workshop LingBot</button>
+      <button type="button" class="quick-btn" onclick="fetchLoad('/output/workshop_shed/models/model_06_planar_cad_bim.ply')" style="background:#334155;color:#fff;border:none;font-weight:600;padding:7px 11px;font-size:11.5px;">🏛️ Workshop CAD</button>
+    </div>
+    <label class="pick">Choose custom file(s)
       <input id="file" type="file" accept=".ply,.obj,.stl,.tum,.txt" multiple hidden>
     </label>
     <div id="err"></div>
@@ -147,9 +170,13 @@ camera.position.set(2, 2, 3);
 const orbit = new OrbitControls(camera, renderer.domElement);
 orbit.enableDamping = true; orbit.dampingFactor = 0.08;
 
-scene.add(new THREE.HemisphereLight(0xffffff, 0x404654, 0.95));
-const key = new THREE.DirectionalLight(0xffffff, 1.0); key.position.set(3, 5, 2); scene.add(key);
+scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+scene.add(new THREE.HemisphereLight(0xffffff, 0x444d5c, 0.75));
+const key = new THREE.DirectionalLight(0xffffff, 0.85); key.position.set(3, 5, 2); scene.add(key);
 const fill = new THREE.DirectionalLight(0xbcd0ff, 0.45); fill.position.set(-4, 2, -3); scene.add(fill);
+const headlight = new THREE.DirectionalLight(0xffffff, 0.55);
+camera.add(headlight);
+scene.add(camera);
 
 let obj = null, isPoints = false, pathLine = null, home = null, sceneRadius = 1, pointSize = 1;
 const state = { color: true, shade: false, wire: false, path: true };
@@ -219,7 +246,7 @@ function meshMaterial(geom) {
   return new THREE.MeshStandardMaterial({
     vertexColors: hasColor && state.color,
     color: (hasColor && state.color) ? 0xffffff : 0xc2ccd8,
-    metalness: 0.0, roughness: 0.9, flatShading: state.shade,
+    metalness: 0.05, roughness: 0.6, flatShading: state.shade,
     side: THREE.DoubleSide, wireframe: state.wire,
   });
 }
@@ -309,6 +336,27 @@ window.addEventListener("drop", e => {
   if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
 });
 
+window.fetchLoad = async function(url) {
+  try {
+    spinner.classList.add("show");
+    spinnerSub.textContent = "Loading " + url.split("/").pop();
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const blob = await res.blob();
+    const file = new File([blob], url.split("/").pop());
+    await handleFiles([file]);
+  } catch (err) {
+    spinner.classList.remove("show");
+    errEl.textContent = "Failed to load " + url + ": " + err.message;
+  }
+};
+
+const params = new URLSearchParams(location.search);
+const autoLoad = params.get("load");
+if (autoLoad) {
+  window.fetchLoad(autoLoad);
+}
+
 function refreshMat() {
   if (!obj) return;
   if (isPoints) {
@@ -321,6 +369,16 @@ function refreshMat() {
     obj.material.dispose(); obj.material = meshMaterial(obj.geometry);
   }
 }
+
+let isFlipped = false;
+$("btnFlip").onclick = () => {
+  isFlipped = !isFlipped;
+  $("btnFlip").classList.toggle("on", isFlipped);
+  if (obj) obj.rotation.x = isFlipped ? Math.PI : 0;
+};
+window.addEventListener("keydown", e => {
+  if (e.key.toLowerCase() === 'f') $("btnFlip").click();
+});
 
 btnColor.onclick = () => { state.color = !state.color; btnColor.classList.toggle("on", state.color); refreshMat(); };
 btnShade.onclick = () => { state.shade = !state.shade; btnShade.classList.toggle("on", state.shade); refreshMat(); };
@@ -337,3 +395,5 @@ addEventListener("resize", () => {
 
 (function animate() { requestAnimationFrame(animate); orbit.update(); renderer.render(scene, camera); })();
 </script>
+</body>
+</html>

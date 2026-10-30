@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PoseCam APK — High-Precision 3D Mapping Recorder</title>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: rgba(22, 30, 49, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --green: #22c55e;
+      --green-glow: rgba(34, 197, 94, 0.2);
+      --amber: #f59e0b;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: radial-gradient(circle at 50% 0%, #1e293b 0%, var(--bg) 70%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px;
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 760px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .header {
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #ffffff 40%, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p.sub {
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+    .download-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 20px;
+    }
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      color: #0b0f19;
+      font-weight: 700;
+      font-size: 17px;
+      padding: 16px 32px;
+      border-radius: 12px;
+      text-decoration: none;
+      box-shadow: 0 0 25px var(--accent-glow);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .btn-download:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 35px var(--accent-glow);
+    }
+    .qr-box {
+      background: #ffffff;
+      padding: 12px;
+      border-radius: 12px;
+      display: inline-block;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .qr-box img {
+      display: block;
+      width: 170px;
+      height: 170px;
+    }
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+    .spec-item {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .spec-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .spec-val {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin-top: 3px;
+    }
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .step-num {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 50%;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .step-content h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .step-content p {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    pre {
+      background: #060911;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+      color: #38bdf8;
+      overflow-x: auto;
+      margin-top: 8px;
+    }
+    .footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      padding-top: 10px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    .nav-links a {
+      color: var(--accent);
+      font-size: 13px;
+      text-decoration: none;
+    }
+    .nav-links a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="badge">SENSORS-FUSED 3D SCANNER</div>
+      <h1>PoseCam Android APK</h1>
+      <p class="sub">ARCore 6-DoF VIO + Hardware IMU + Calibrated Intrinsics</p>
+    </div>
+
+    <!-- Download Card -->
+    <div class="card download-hero">
+      <a href="/web/PoseCam.apk" class="btn-download" download="PoseCam_3D_Scanner.apk">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Download Upgraded PoseCam APK (3.8 MB)
+      </a>
+
+      <div style="font-size: 13px; color: var(--text-muted);">
+        Or scan with your phone camera on same Wi-Fi:
+      </div>
+
+      <div class="qr-box">
+        <img src="/web/qr_apk.png" alt="Scan QR Code to download PoseCam APK">
+      </div>
+
+      <div class="specs-grid" style="width: 100%;">
+        <div class="spec-item">
+          <div class="spec-label">Ground Alignment</div>
+          <div class="spec-val" style="color: var(--green);">100% Gravity Locked</div>
+        </div>
+        <div class="spec-item">
+          <div class="spec-label">Measurement Scale</div>
+          <div class="spec-val">Real Physical Metres</div>
+        </div>
+        <div class="spec-item">
+          <div class="spec-label">Corner Drift</div>
+          <div class="spec-val" style="color: var(--green);">0% (No Banana Tilt)</div>
+        </div>
+        <div class="spec-item">
+          <div class="spec-label">Output Format</div>
+          <div class="spec-val">JPEGs + poses.csv + IMU</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instructions Card -->
+    <div class="card">
+      <h2 style="font-size: 18px; margin-bottom: 16px;">How to Shoot the Perfect Room Scan</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3>Install &amp; Allow ARCore</h3>
+            <p>Open the downloaded APK on your Android device. If prompted, allow "Install from Unknown Sources". PoseCam requires <em>Google Play Services for AR</em> (standard on modern Androids).</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3>Arm the Tracking Gate (Stand Still 3s)</h3>
+            <p>Open PoseCam. Hold the camera up and stay still for 3 seconds until the top indicator turns green. This locks the phone's hardware accelerometer to true Earth gravity.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3>Walk the Perimeter (Steady Pace)</h3>
+            <p>Tap <strong>Record</strong>. Walk smoothly around the room perimeter at a calm walking pace. Avoid quick wrist jerks. Loop back so your ending spot overlaps the start by 1&ndash;2 metres.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h3>Export Session (One Tap)</h3>
+            <p>Tap <strong>Stop</strong> &rarr; tap <strong>Sessions</strong> &rarr; tap your recording &rarr; tap <strong>Save to Downloads</strong> (or plug your phone into PC via USB to copy the <code>captures/</code> folder).</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <h3>Run Reconstruction on Laptop</h3>
+            <p>Transfer the session folder to your laptop and execute:</p>
+            <pre>python src/run_pipeline.py --posecam path/to/capture-XXXX --name room_scan</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="nav-links">
+        <a href="/web/compare.html?scene=classroom_full">10-Model Studio</a> &bull;
+        <a href="/web/play.html?scene=classroom_full">FPS Walkthrough Game</a> &bull;
+        <a href="/web/mesh_viewer.html">CAD Mesh Viewer</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

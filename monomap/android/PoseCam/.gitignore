@@ -1,0 +1,38 @@
+# Gradle / Android Studio
+.gradle/
+build/
+local.properties
+.idea/
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.keystore
+*.jks
+
+# Python tooling
+__pycache__/
+.venv/
+*.pyc
+
+# Recorded sessions pulled from the device
+data/
+
+# OS
+.DS_Store
+
+# AnySense exports built from data/
+exports/
+
+# Shareable APK builds
+dist/
+
+# Signing: the keystore lives outside the repo; this file holds its passwords
+keystore.properties
+keys/
+
+# Local notes and private data, never published
+CLAUDE.md
+recorded-videos-colleague/

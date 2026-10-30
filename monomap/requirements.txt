@@ -1,0 +1,21 @@
+# Core Neural Depth & Deep Learning
+torch>=2.1.0
+torchvision>=0.16.0
+transformers>=4.36.0
+huggingface_hub>=0.20.0
+
+# 3D Geometry, Point Clouds & Mesh Processing
+open3d>=0.18.0
+numpy>=1.24.0,<2.0.0
+scipy>=1.11.0
+
+# Computer Vision & Image Processing
+opencv-python>=4.8.0
+pillow>=10.0.0
+
+# PDF & Visual Reporting
+reportlab>=4.0.0
+qrcode>=7.4.2
+
+# Spatial Visualization & Robotics (Optional)
+rerun-sdk>=0.14.0

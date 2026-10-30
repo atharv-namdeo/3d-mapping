@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Zips are built in the cache dir and shared from there. -->
+    <cache-path name="shared" path="shared/" />
+    <!-- Direct raw captures folder -->
+    <external-files-path name="captures" path="captures/" />
+    <!-- Public downloads and external storage -->
+    <external-path name="external_files" path="." />
+</paths>

@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">PoseCam 3D Scanner</string>
+    <string name="record">Record Scan</string>
+    <string name="stop">Stop &amp; Save</string>
+    <string name="recordings">Recordings &amp; Exports</string>
+    <string name="tab_raw">📼 Raw Captures</string>
+    <string name="tab_exports">📦 Exported Files</string>
+    <string name="export_pipeline">Export for pipeline (MP4)</string>
+    <string name="share">Share raw recording (zip)</string>
+    <string name="save_to_downloads">Save to Downloads (PoseCam/*.zip)</string>
+    <string name="share_export">Share export (zip)</string>
+    <string name="save_export_to_downloads">Save export to Downloads</string>
+    <string name="close">Close</string>
+    <string name="delete">Delete</string>
+    <string name="no_recordings">No raw recordings found in:\n%1$s\n\nTap "Record Scan" on the camera screen to make your first 3D scan.</string>
+    <string name="no_exports">No exported files yet in:\n%1$s\n\nGo to the "Raw Captures" tab, tap any recording, and choose "Save to Downloads" to create a transferable zip package.</string>
+    <string name="guide_title">How to Shoot the Perfect 3D Scan</string>
+    <string name="guide_body">1. Hold Still for 3 Seconds:\n   Wait until the top indicator turns GREEN. This locks ARCore to true Earth gravity.\n\n2. Walk the Perimeter Slowly:\n   Walk steadily around the room. Avoid quick wrist snaps or running.\n\n3. Overlap to Close the Loop:\n   Finish by returning to where you started, overlapping by 1–2 metres.\n\n4. Where Files Go:\n   Raw: Android/data/com.posecam/files/captures/\n   Exports: Public Downloads/PoseCam/\n\n5. On Your PC:\n   Run: python src/run_pipeline.py --posecam path/to/capture --name my_room</string>
+    <string name="pc_guide_title">Transfer &amp; 3D Reconstruction on PC</string>
+    <string name="pc_guide_body">How to turn your phone scan into 3D Model 1 &amp; Model 8:\n\nStep 1: Connect Phone to PC with USB cable (set USB mode to "File Transfer / MTP").\n\nStep 2: Copy your exported ZIP or session folder from:\nPhone > Internal Storage > Download > PoseCam > capture-XXXX.zip\n(or from Android/data/com.posecam/files/captures/)\n\nStep 3: On PC, open terminal and run:\npython src/run_pipeline.py --posecam data/capture-XXXX --name room_scan\n\nThis automatically builds the metric TSDF mesh, 100% flat ground plane, and Model 1 &amp; 8 views!</string>
+</resources>
