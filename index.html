@@ -518,6 +518,54 @@
     }
 
     /* ==========================================================================
+       SECTION: EMBEDDED 3D ROAMER CASING & FULLSCREEN OVERLAY
+       ========================================================================== */
+    .roamer-viewport-casing {
+      position: relative;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-deep);
+      height: 700px;
+      transition: all 0.25s ease;
+      margin-top: 14px;
+    }
+    .roamer-viewport-casing iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      background: #f6f7fa;
+    }
+    .roamer-viewport-casing.fullscreen {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 99999;
+      border-radius: 0;
+      border: none;
+      box-shadow: none;
+      margin: 0;
+    }
+    .roamer-fs-header {
+      position: absolute;
+      top: 14px; left: 16px; right: 16px;
+      z-index: 100000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      pointer-events: auto;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border-medium);
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.1);
+    }
+
+    /* ==========================================================================
        SECTION 2: 3D POSECAM SENSOR SIMULATOR (TACTILE WORKBENCH)
        ========================================================================== */
     .simulator-casing {
@@ -1551,6 +1599,7 @@
       <ul class="nav-links">
         <li><a href="#cinematic">Film</a></li>
         <li><a href="#verification">Walkthrough</a></li>
+        <li><a href="#roamer">3D Roamer</a></li>
         <li><a href="#simulator">Sensor VIO</a></li>
         <li><a href="#pipeline">Architecture</a></li>
         <li><a href="#champion">Model 1</a></li>
@@ -1564,8 +1613,8 @@
           <span class="status-dot"></span>
           <span>VIO_STABLE</span>
         </div>
-        <a href="monomap/web/play.html?scene=scan_posecam_1" class="btn-tactile btn-tactile-primary">
-          Play 3D Roamer &rarr;
+        <a href="#roamer" class="btn-tactile btn-tactile-primary" onclick="document.getElementById('roamer').scrollIntoView({behavior:'smooth'}); return false;">
+          Enter 3D Roamer &rarr;
         </a>
       </div>
     </nav>
@@ -1593,9 +1642,9 @@
             An end-to-end deep spatial computing pipeline converting ordinary consumer smartphone video into photorealistic, millimeter-accurate 3D digital twins and autonomous robotics costmaps.
           </p>
           <div class="hero-cta-cluster">
-            <a href="monomap/web/play.html?scene=scan_posecam_1" class="btn-tactile btn-tactile-primary">
+            <a href="#roamer" class="btn-tactile btn-tactile-primary" onclick="document.getElementById('roamer').scrollIntoView({behavior:'smooth'}); return false;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              Play 3D Roaming Twin
+              Roam Actual Room Twin
             </a>
             <a href="NAMMA_SPACE_ROUND1_TECHNICAL_ABSTRACT.pdf" class="btn-tactile" download>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
@@ -1686,6 +1735,40 @@
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         SECTION: INTERACTIVE 3D DIGITAL TWIN ROAMER (EMBEDDED IN PORTAL)
+         ========================================================================== -->
+    <section id="roamer" class="editorial-section">
+      <div class="section-eyebrow">Interactive Spatial Digital Twin</div>
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px; margin-bottom:14px;">
+        <div>
+          <h2 class="section-headline" style="margin-bottom:6px;">Free-Roam Inside Actual Room Model</h2>
+          <p class="section-description" style="margin-bottom:0;">
+            Roam directly inside the actual smartphone room reconstruction (Session: <code>capture-20261029T145411-2f5398</code>). Move with <b>W, A, S, D</b>, look around with mouse drag, sprint with <b>Shift</b>, jump with <b>Space</b>, and monitor live coordinates and Nav2 radar.
+          </p>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button id="toggleFullscreenRoamer" class="btn-tactile btn-tactile-primary" style="padding:8px 18px; font-size:12px; cursor:pointer;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+            Expand Fullscreen
+          </button>
+        </div>
+      </div>
+
+      <div class="roamer-viewport-casing" id="roamerContainer">
+        <!-- Persistent Exit Fullscreen Header (visible when expanded) -->
+        <div id="roamerFullscreenHeader" class="roamer-fs-header" style="display:none;">
+          <button id="exitFullscreenRoamer" class="btn-tactile" style="background:#0b0f17; color:#ffffff; border-color:#0b0f17; font-weight:700;">
+            &larr; Return to Main Portal
+          </button>
+          <span style="font-family:'JetBrains Mono', monospace; font-size:11.5px; color:#475569;">
+            📱 Nothing Phone A059 · Actual Room Scan (2,888 Frames)
+          </span>
+        </div>
+        <iframe id="roamerIframe" src="monomap/web/play.html" allow="fullscreen; pointer-lock" loading="lazy"></iframe>
       </div>
     </section>
 
@@ -1888,8 +1971,8 @@ imu.csv                    # timestamp, ax, ay, az, gx, gy, gz @ 200 Hz</pre>
             </li>
           </ul>
           <div>
-            <a href="monomap/web/compare.html?scene=scan_posecam_1" class="btn-tactile btn-tactile-primary">
-              Inspect in 10-Model Studio
+            <a href="#roamer" class="btn-tactile btn-tactile-primary" onclick="document.getElementById('roamer').scrollIntoView({behavior:'smooth'}); return false;">
+              Inspect in 10-Model Studio &rarr;
             </a>
           </div>
         </div>
@@ -3043,6 +3126,45 @@ export_ros_costmap("floormap.pgm", "floormap.yaml", costmap_2d)`
       }
       render();
     }
+
+    // Fullscreen 3D Roamer Controls (In-Page Navigation)
+    const roamerContainer = document.getElementById("roamerContainer");
+    const toggleRoamerBtn = document.getElementById("toggleFullscreenRoamer");
+    const exitRoamerBtn = document.getElementById("exitFullscreenRoamer");
+    const fsHeader = document.getElementById("roamerFullscreenHeader");
+
+    function openFullscreenRoamer() {
+      if (!roamerContainer) return;
+      roamerContainer.classList.add("fullscreen");
+      if (fsHeader) fsHeader.style.display = "flex";
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeFullscreenRoamer() {
+      if (!roamerContainer) return;
+      roamerContainer.classList.remove("fullscreen");
+      if (fsHeader) fsHeader.style.display = "none";
+      document.body.style.overflow = "";
+    }
+
+    if (toggleRoamerBtn) toggleRoamerBtn.onclick = openFullscreenRoamer;
+    if (exitRoamerBtn) exitRoamerBtn.onclick = closeFullscreenRoamer;
+
+    // Listen to messages from inside the roamer iframe
+    window.addEventListener("message", (e) => {
+      if (e.data && e.data.action === "closeRoamer") {
+        closeFullscreenRoamer();
+        const rSec = document.getElementById("roamer");
+        if (rSec) rSec.scrollIntoView({ behavior: "smooth" });
+      }
+    });
+
+    // Escape key closes fullscreen roamer
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && roamerContainer && roamerContainer.classList.contains("fullscreen")) {
+        closeFullscreenRoamer();
+      }
+    });
   </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Namma Space · Playable 3D Digital Twin Navigator</title>
+<title>Namma Space · Actual Room 3D Digital Twin</title>
 <style>
   :root {
     --bg-void: #f6f7fa;
@@ -44,15 +44,22 @@
     display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
   }
   .brand-title {
-    display: flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 700; color: var(--text-pure);
+    display: flex; align-items: center; gap: 10px; font-size: 13.5px; font-weight: 700; color: var(--text-pure);
   }
-  .brand-back-btn {
-    display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;
-    background: #f1f5f9; border: 1px solid var(--border); border-radius: 999px;
-    color: var(--text-secondary); text-decoration: none; font-size: 11px; font-weight: 600;
-    transition: all 0.15s;
+  .return-portal-btn {
+    display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px;
+    background: #0b0f17; border: 1px solid #0b0f17; border-radius: 999px;
+    color: #ffffff; text-decoration: none; font-size: 11.5px; font-weight: 700;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
+    transition: all 0.15s ease;
+    cursor: pointer;
   }
-  .brand-back-btn:hover { background: #e2e8f0; color: var(--text-pure); }
+  .return-portal-btn:hover { background: #1e293b; transform: translateY(-1px); }
+  .room-provenance-pill {
+    background: #f1f5f9; color: var(--text-primary); border: 1px solid var(--border);
+    font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
   .badge-live {
     background: rgba(22, 163, 74, 0.1); color: var(--green); border: 1px solid rgba(22, 163, 74, 0.3);
     font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 999px; text-transform: uppercase;
@@ -69,8 +76,8 @@
   }
   .mode-btn:hover { border-color: var(--accent); color: var(--accent); background: #f8fafc; }
   .mode-btn.active {
-    background: #0b0f17; border-color: #0b0f17; color: #ffffff;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
+    background: #0284c7; border-color: #0284c7; color: #ffffff;
+    box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
   }
 
   .models-row {
@@ -86,8 +93,8 @@
   }
   .model-tab:hover { background: #f8fafc; border-color: var(--border); color: var(--text-pure); }
   .model-tab.active {
-    background: #0284c7; color: #ffffff; font-weight: 700; border-color: #0284c7;
-    box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+    background: #0b0f17; color: #ffffff; font-weight: 700; border-color: #0b0f17;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
   }
 
   /* First-Person Reticle */
@@ -232,35 +239,30 @@
 <div class="top-bar">
   <div class="brand-row">
     <div class="brand-title">
-      <a href="/" class="brand-back-btn">&larr; Portal</a>
-      <span>NAMMA SPACE</span>
-      <select id="sceneSelect" style="background:#ffffff; color:#0b0f17; border:1px solid var(--border); border-radius:999px; padding:4px 10px; font-size:11.5px; font-weight:700; cursor:pointer;">
-        <option value="scan_posecam_1" selected>📱 PoseCam Android Room Scan</option>
-        <option value="classroom_full">🏫 Classroom (Full Walkthrough 57s)</option>
-        <option value="classroom">🏫 Classroom (Quick Scan 12s)</option>
-        <option value="workshop_shed">🏭 Workshop Shed</option>
-      </select>
+      <a href="/" class="return-portal-btn" id="returnPortalBtn">&larr; Return to Main Portal</a>
+      <div class="room-provenance-pill">
+        <span>📱 Actual Room Walkthrough (Nothing Phone A059 · Session 2f5398)</span>
+      </div>
       <span class="badge-live">● VIO 60 FPS</span>
     </div>
     <div class="mode-switch-group">
-      <button class="mode-btn active" id="btnModeWalk">🚶 Walk (FPS)</button>
-      <button class="mode-btn" id="btnModeFly">🛸 Fly (Drone)</button>
+      <button class="mode-btn active" id="btnModeWalk">🚶 Walk (WASD)</button>
       <button class="mode-btn" id="btnModeOrbit">🔍 Orbit (Inspect)</button>
+      <button class="mode-btn" id="btnModeFly">🛸 Fly (Drone)</button>
       <button class="mode-btn" id="btnSound">🔇 Sound OFF</button>
       <button class="mode-btn" id="btnResetPos">↺ Reset Pos</button>
-      <a href="compare.html" class="mode-btn" style="text-decoration:none; background:#0284c7; color:#ffffff; border-color:#0284c7;">📊 10-Model Arena</a>
     </div>
   </div>
   <div class="models-row" id="modelsBar">
-    <!-- Populated by JavaScript -->
+    <!-- Populated by JavaScript with all 10 models of the actual room -->
   </div>
 </div>
 
 <div id="blocker">
   <div id="instructions">
-    <h2 id="instTitle">Click to Enter 3D Digital Twin</h2>
-    <p>Move mouse to look around (or drag to steer).<br>Use <b>W, A, S, D</b> to walk inside the reconstructed space.<br>Hold <b>Shift</b> to sprint · <b>Space</b> to jump · <b>C</b> to crouch.</p>
-    <div class="start-badge">START PLAYING &rarr;</div>
+    <h2 id="instTitle">Click to Roam Inside Your Room</h2>
+    <p>Move mouse to look around (or drag to steer).<br>Use <b>W, A, S, D</b> to walk inside your reconstructed room.<br>Hold <b>Shift</b> to sprint · <b>Space</b> to jump · <b>C</b> to crouch.</p>
+    <div class="start-badge">ENTER 3D ROOM &rarr;</div>
   </div>
 </div>
 
@@ -276,7 +278,7 @@
     <span style="color:var(--green);">● 5cm GRID</span>
   </div>
   <div class="minimap-view" id="minimapBox">
-    <img id="minimapImg" src="../output/scan_posecam_1/floormap.png" alt="Floormap" onerror="this.style.opacity='0.2'">
+    <img id="minimapImg" src="../output/scan_posecam_1/floormap.png" alt="Floormap" onerror="this.src='../../assets/costmap/floormap_posecam.png'">
     <div id="playerBlip">
       <svg viewBox="0 0 24 24">
         <path d="M12 2 L22 22 L12 17 L2 22 Z" fill="#0284c7" stroke="#ffffff" stroke-width="2"/>
@@ -300,7 +302,7 @@
 
 <div id="spinner">
   <div class="loader"></div>
-  <div id="spinnerText">Loading 3D Digital Twin…</div>
+  <div id="spinnerText">Loading Actual Room Point Cloud…</div>
 </div>
 
 <script type="importmap">
@@ -318,17 +320,22 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
 import { PLYLoader } from "three/addons/loaders/PLYLoader.js";
 
-const urlParams = new URLSearchParams(window.location.search);
-let currentScene = urlParams.get("scene") || "scan_posecam_1";
-const sceneSelect = document.getElementById("sceneSelect");
-if (sceneSelect) {
-  sceneSelect.value = currentScene;
-  sceneSelect.onchange = () => {
-    window.location.search = `?scene=${sceneSelect.value}`;
+// Handle return button cleanly whether embedded in iframe or standalone
+const returnBtn = document.getElementById("returnPortalBtn");
+if (returnBtn) {
+  returnBtn.onclick = (e) => {
+    e.preventDefault();
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({ action: "closeRoamer" }, "*");
+    } else {
+      const isGhPages = window.location.pathname.includes('/3d-mapping/');
+      window.location.href = isGhPages ? '/3d-mapping/index.html#roamer' : '/#roamer';
+    }
   };
 }
 
-const MODEL_TEMPLATES = [
+// 10 Reconstruction Models of the user's actual room
+const MODELS = [
   { id: 1, name: "🌟 1. Dense Metric Cloud", file: "model_01_dense_pointcloud.ply", isPoints: true },
   { id: 2, name: "✂️ 2. Trimmed Poisson", file: "model_02_trimmed_poisson.ply", isPoints: false },
   { id: 3, name: "⚽ 3. Ball-Pivoting (BPA)", file: "model_03_ball_pivoting.ply", isPoints: false },
@@ -338,22 +345,8 @@ const MODEL_TEMPLATES = [
   { id: 7, name: "🧊 7. 3D Voxel Grid", file: "model_07_voxel_occupancy_grid.ply", isPoints: false },
   { id: 8, name: "🧠 8. LingBot-Map GCT", file: "model_08_lingbot_gct.ply", isPoints: true },
   { id: 9, name: "📦 9. CAD Boxes", file: "model_09_digital_twin_boxes.ply", isPoints: false },
-  { id: 10, name: "🔘 10. Oriented Surfels", file: "model_10_oriented_surfels.ply", isPoints: false }
+  { id: 10, name: "🔘 10. Oriented Surfels", file: "model_10_oriented_surfels.ply", isPoints: true }
 ];
-
-const MODELS = MODEL_TEMPLATES.map(m => ({
-  ...m,
-  file: `../output/${currentScene}/models/${m.file}`
-}));
-
-document.getElementById("minimapImg").src = `../output/${currentScene}/floormap.png`;
-if (currentScene === "scan_posecam_1") {
-  document.getElementById("instTitle").textContent = "Click to Enter PoseCam Room Scan";
-} else if (currentScene.startsWith("classroom")) {
-  document.getElementById("instTitle").textContent = "Click to Enter Classroom";
-} else {
-  document.getElementById("instTitle").textContent = "Click to Enter Workshop";
-}
 
 let activeIdx = 0;
 let currentObject = null;
@@ -405,7 +398,12 @@ orbit.enabled = false;
 
 const fpControls = new PointerLockControls(camera, document.body);
 
-// Architectural Lighting
+// Clean Architectural Ground Grid (Y = 0)
+const groundGrid = new THREE.GridHelper(16, 32, 0x0284c7, 0xcbd5e1);
+groundGrid.position.y = 0.0;
+scene.add(groundGrid);
+
+// Studio Lighting
 const hemiLight = new THREE.HemisphereLight(0xffffff, 0xe2e8f0, 1.2);
 scene.add(hemiLight);
 
@@ -416,95 +414,6 @@ scene.add(dirLight1);
 const fillLight = new THREE.DirectionalLight(0xb45309, 0.35);
 fillLight.position.set(-6, 4, -4);
 scene.add(fillLight);
-
-// ============================================================================
-// INSTANT PROCEDURAL 3D ARCHITECTURAL ROOM (NEVER EMPTY / NEVER BLACK)
-// ============================================================================
-function buildProceduralRoom() {
-  const room = new THREE.Group();
-  room.name = "proceduralRoom";
-
-  // Ceramic Floor (16m x 12m)
-  const floorGeom = new THREE.PlaneGeometry(16, 12);
-  const floorMat = new THREE.MeshStandardMaterial({
-    color: 0xf1f5f9,
-    roughness: 0.25,
-    metalness: 0.05
-  });
-  const floor = new THREE.Mesh(floorGeom, floorMat);
-  floor.rotation.x = -Math.PI / 2;
-  floor.position.y = 0.0;
-  room.add(floor);
-
-  // 5cm Nav2 Occupancy Grid overlay
-  const floorGrid = new THREE.GridHelper(16, 32, 0x0284c7, 0xcbd5e1);
-  floorGrid.position.y = 0.002;
-  room.add(floorGrid);
-
-  // Ceiling
-  const ceilGeom = new THREE.PlaneGeometry(16, 12);
-  const ceilMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9 });
-  const ceiling = new THREE.Mesh(ceilGeom, ceilMat);
-  ceiling.rotation.x = Math.PI / 2;
-  ceiling.position.y = 3.2;
-  room.add(ceiling);
-
-  // Matte Walls
-  const wallMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.7 });
-
-  // Back Wall (Z = -6)
-  const backWall = new THREE.Mesh(new THREE.PlaneGeometry(16, 3.2), wallMat);
-  backWall.position.set(0, 1.6, -6);
-  room.add(backWall);
-
-  // Front Wall (Z = 6)
-  const frontWall = new THREE.Mesh(new THREE.PlaneGeometry(16, 3.2), wallMat);
-  frontWall.rotation.y = Math.PI;
-  frontWall.position.set(0, 1.6, 6);
-  room.add(frontWall);
-
-  // Left Wall (X = -8)
-  const leftWall = new THREE.Mesh(new THREE.PlaneGeometry(12, 3.2), wallMat);
-  leftWall.rotation.y = Math.PI / 2;
-  leftWall.position.set(-8, 1.6, 0);
-  room.add(leftWall);
-
-  // Right Wall (X = 8)
-  const rightWall = new THREE.Mesh(new THREE.PlaneGeometry(12, 3.2), wallMat);
-  rightWall.rotation.y = -Math.PI / 2;
-  rightWall.position.set(8, 1.6, 0);
-  room.add(rightWall);
-
-  // Whiteboard on Back Wall
-  const boardGeom = new THREE.BoxGeometry(6.4, 1.5, 0.03);
-  const boardMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.1 });
-  const board = new THREE.Mesh(boardGeom, boardMat);
-  board.position.set(0, 1.7, -5.97);
-  room.add(board);
-
-  // Desks & Chairs
-  const deskGeom = new THREE.BoxGeometry(1.3, 0.72, 0.55);
-  const deskMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.4 });
-  const chairGeom = new THREE.BoxGeometry(0.42, 0.8, 0.42);
-  const chairMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.6 });
-
-  for (let x = -5.0; x <= 5.0; x += 2.0) {
-    for (let z of [-2.5, 0.4, 3.2]) {
-      const desk = new THREE.Mesh(deskGeom, deskMat);
-      desk.position.set(x, 0.36, z);
-      room.add(desk);
-
-      const chair = new THREE.Mesh(chairGeom, chairMat);
-      chair.position.set(x, 0.4, z + 0.5);
-      room.add(chair);
-    }
-  }
-
-  scene.add(room);
-  return room;
-}
-
-const proceduralRoom = buildProceduralRoom();
 
 // PointerLock Blocker with Bulletproof Dismissal
 const blocker = document.getElementById("blocker");
@@ -520,8 +429,7 @@ blocker.addEventListener("click", () => {
 });
 fpControls.addEventListener("lock", () => { blocker.style.display = "none"; });
 fpControls.addEventListener("unlock", () => {
-  // Only show blocker if user explicitly leaves and is in walk mode
-  // Avoid re-blocking the whole screen abruptly
+  // Keep roamer view active
 });
 
 // Fallback Desktop Mouse Drag Look (when pointer lock is not active)
@@ -686,7 +594,7 @@ setupJoystick("joyMove", "knobMove", joyMove);
 setupJoystick("joyLook", "knobLook", joyLook);
 
 // ============================================================================
-// 10-MODEL LOADER (WITH INSTANT PROCEDURAL BACKDROP)
+// ACTUAL ROOM MODEL LOADER
 // ============================================================================
 const plyLoader = new PLYLoader();
 const spinner = document.getElementById("spinner");
@@ -714,14 +622,32 @@ async function selectModel(idx) {
   spinner.classList.add("show");
   spinnerText.textContent = `Loading ${m.name}…`;
 
-  try {
-    const geom = await plyLoader.loadAsync(m.file);
-    applyLoadedPlayGeometry(geom, m);
+  // Candidate paths for robust loading on root, subfolder, and CDN
+  const isGhPages = window.location.pathname.includes('/3d-mapping/');
+  const ghPrefix = isGhPages ? '/3d-mapping' : '';
+  const candidatePaths = [
+    `../../assets/models/${m.file}`,
+    `${ghPrefix}/assets/models/${m.file}`,
+    `assets/models/${m.file}`,
+    `/assets/models/${m.file}`,
+    `../output/scan_posecam_1/models/${m.file}`,
+    `../../monomap/output/scan_posecam_1/models/${m.file}`
+  ];
+
+  let loadedGeom = null;
+  for (const path of candidatePaths) {
+    try {
+      loadedGeom = await plyLoader.loadAsync(path);
+      if (loadedGeom) break;
+    } catch (e) {}
+  }
+
+  if (loadedGeom) {
+    applyLoadedPlayGeometry(loadedGeom, m);
     spinner.classList.remove("show");
-  } catch (err) {
-    console.warn("Model fetch failed, running inside procedural digital twin:", err);
-    spinnerText.innerHTML = `⚠️ Roaming inside Procedural Twin.<br><span style="font-size:11px;font-weight:400;color:#64748b;">You can drag & drop any .ply file directly onto the screen.</span>`;
-    setTimeout(() => spinner.classList.remove("show"), 2000);
+  } else {
+    spinnerText.innerHTML = `⚠️ Model loading in progress.<br><span style="font-size:11px;font-weight:400;color:#64748b;">You can also drag & drop any .ply directly onto the screen.</span>`;
+    setTimeout(() => spinner.classList.remove("show"), 2500);
   }
 }
 
@@ -810,9 +736,9 @@ function updateMinimap() {
   const horizSpeed = Math.hypot(velocity.x, velocity.z);
   hudSpeed.textContent = `${horizSpeed.toFixed(1)} m/s`;
 
-  // Map coordinate range: X ~ [-6, 6], Z ~ [-6, 6]
-  const pctX = ((p.x + 6.0) / 12.0) * 100;
-  const pctZ = ((p.z + 6.0) / 12.0) * 100;
+  // Map coordinate range: X ~ [-5, 5], Z ~ [-5, 5]
+  const pctX = ((p.x + 5.0) / 10.0) * 100;
+  const pctZ = ((p.z + 5.0) / 10.0) * 100;
   const clampedX = Math.max(5, Math.min(95, pctX));
   const clampedZ = Math.max(5, Math.min(95, pctZ));
 

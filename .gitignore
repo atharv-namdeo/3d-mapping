@@ -59,4 +59,5 @@ monomap/capture/**/_frames/
 !monomap/output/**/occupancy_3d.json
 !monomap/output/scan_posecam_1/models/*.ply
 !monomap/output/**/models/model_01_dense_pointcloud.ply
+!assets/models/*.ply
 !monomap/web/*.png

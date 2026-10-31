@@ -31,21 +31,37 @@
   /* Top Navigation Bar with 10 Model Buttons */
   .top-bar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 30;
-    background: rgba(15, 20, 27, 0.88);
-    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
     display: flex; flex-direction: column;
     padding: 8px 16px;
     gap: 8px;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
   }
   .brand-row {
-    display: flex; justify-content: space-between; align-items: center;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
   }
   .brand-title {
-    display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; letter-spacing: 0.3px;
+    display: flex; align-items: center; gap: 10px; font-size: 13.5px; font-weight: 700; color: var(--fg);
+  }
+  .return-portal-btn {
+    display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px;
+    background: #0b0f17; border: 1px solid #0b0f17; border-radius: 999px;
+    color: #ffffff; text-decoration: none; font-size: 11.5px; font-weight: 700;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
+    transition: all 0.15s ease;
+    cursor: pointer;
+  }
+  .return-portal-btn:hover { background: #1e293b; transform: translateY(-1px); }
+  .room-provenance-pill {
+    background: #f1f5f9; color: var(--fg); border: 1px solid var(--border);
+    font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 6px;
   }
   .brand-title span.badge {
-    background: linear-gradient(135deg, #0284c7, #6366f1);
+    background: #0284c7;
     color: #fff; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 999px; text-transform: uppercase;
   }
   .subhead { font-size: 12px; color: var(--muted); }
@@ -137,22 +153,19 @@
 <div class="top-bar">
   <div class="brand-row">
     <div class="brand-title">
-      🏢 <span id="sceneTitle">Classroom 3D Studio</span>
-      <select id="sceneSelect" style="background:var(--panel-2); color:var(--accent); border:1px solid var(--border); border-radius:6px; padding:3px 8px; font-size:12px; font-weight:700; cursor:pointer;">
-        <option value="scan_posecam_1" selected>📱 PoseCam Android Room Scan (ARCore + IMU)</option>
-        <option value="classroom_full">🏫 Classroom (Full Walkthrough 57s)</option>
-        <option value="classroom">🏫 Classroom (Quick Scan 12s)</option>
-        <option value="workshop_shed">🏭 Workshop Shed</option>
-      </select>
+      <a href="/" class="return-portal-btn" id="returnPortalBtn">&larr; Return to Main Portal</a>
+      <div class="room-provenance-pill">
+        <span>📱 Actual Room 10-Model Studio (Nothing Phone A059 · Session 2f5398)</span>
+      </div>
       <span class="badge">10 Models</span>
     </div>
     <div style="display:flex; align-items:center; gap:10px;">
       <div class="subhead">Keys 1–0 to switch</div>
-      <a href="download.html" style="background:linear-gradient(135deg, #0284c7, #38bdf8); color:#0b0f19; font-weight:700; text-decoration:none; padding:5px 12px; border-radius:8px; font-size:11.5px; display:inline-flex; align-items:center; gap:5px; box-shadow:0 0 12px rgba(56,189,248,0.35);">
-        📲 Get PoseCam APK
+      <a href="download.html" class="return-portal-btn" style="background:#ffffff; color:#0b0f17; border-color:var(--border);">
+        📱 PoseCam APK
       </a>
-      <a id="playLink" href="play.html?scene=classroom" style="background:linear-gradient(135deg, #10b981, #0284c7); color:#fff; font-weight:700; text-decoration:none; padding:5px 12px; border-radius:8px; font-size:11.5px; display:inline-flex; align-items:center; gap:5px; box-shadow:0 0 12px rgba(16,185,129,0.35);">
-        🎮 Play / Walkthrough Mode
+      <a id="playLink" href="play.html" class="return-portal-btn" style="background:#0284c7; border-color:#0284c7;">
+        🎮 3D Walkthrough
       </a>
     </div>
   </div>
@@ -224,24 +237,18 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { PLYLoader } from "three/addons/loaders/PLYLoader.js";
 
-const urlParams = new URLSearchParams(window.location.search);
-let currentScene = urlParams.get("scene") || "scan_posecam_1";
-const sceneSelect = document.getElementById("sceneSelect");
-if (sceneSelect) {
-  sceneSelect.value = currentScene;
-  sceneSelect.onchange = () => {
-    window.location.search = `?scene=${sceneSelect.value}`;
+const returnBtn = document.getElementById("returnPortalBtn");
+if (returnBtn) {
+  returnBtn.onclick = (e) => {
+    e.preventDefault();
+    const isGhPages = window.location.pathname.includes('/3d-mapping/');
+    window.location.href = isGhPages ? '/3d-mapping/index.html#roamer' : '/#roamer';
   };
 }
 const playLink = document.getElementById("playLink");
-if (playLink) playLink.href = `play.html?scene=${currentScene}`;
-
-if (currentScene === "scan_posecam_1") {
-  document.getElementById("sceneTitle").textContent = "PoseCam 3D Studio (ARCore + IMU)";
-} else if (currentScene.startsWith("classroom")) {
-  document.getElementById("sceneTitle").textContent = "Classroom 3D Studio";
-} else {
-  document.getElementById("sceneTitle").textContent = "Workshop Shed 3D Studio";
+if (playLink) {
+  const isGhPages = window.location.pathname.includes('/3d-mapping/');
+  playLink.href = isGhPages ? '/3d-mapping/monomap/web/play.html' : 'play.html';
 }
 
 const MODEL_TEMPLATES = [
@@ -284,7 +291,7 @@ const MODEL_TEMPLATES = [
     type: "CONCAVE HULL",
     file: "model_04_alpha_shapes.ply",
     desc: "Concave geometric hull capturing boundary surfaces and tables at fine alpha scale (0.18m).",
-    pro: "✔ Clean geometric perimeter, tightly conforms to classroom contours.",
+    pro: "✔ Clean geometric perimeter, tightly conforms to room perimeter contours.",
     con: "✘ Non-manifold boundary edges in sparse areas.",
     isPoints: false,
     stage: "Alpha Complex"
@@ -352,14 +359,14 @@ const MODEL_TEMPLATES = [
     desc: "Oriented surface tangent disks (surfels). Gives solid face appearance without triangle topology distortion.",
     pro: "✔ No melted edges, no fake triangles; renders solid surfaces with natural boundaries.",
     con: "✘ Higher polygon draw call count than raw point clouds.",
-    isPoints: false,
+    isPoints: true,
     stage: "Tangent Surfels"
   }
 ];
 
 const MODELS = MODEL_TEMPLATES.map(m => ({
   ...m,
-  file: `../output/${currentScene}/models/${m.file}`
+  file: m.file
 }));
 
 let activeIdx = 0;
