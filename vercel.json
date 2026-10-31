@@ -12,6 +12,7 @@
   ],
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
+    { "source": "/assets/(.*)", "destination": "/assets/$1" },
     { "source": "/play", "destination": "/monomap/web/play.html" },
     { "source": "/compare", "destination": "/monomap/web/compare.html" },
     { "source": "/download", "destination": "/monomap/web/download.html" },

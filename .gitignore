@@ -12,6 +12,9 @@ local.properties
 .idea/
 *.iml
 *.apk
+!assets/apk/*.apk
+!monomap/web/PoseCam.apk
+!monomap/PoseCam.apk
 *.aab
 *.keystore
 *.jks
@@ -26,6 +29,7 @@ local.properties
 *.7z
 *.rrd
 *.log
+!assets/videos/*.mp4
 
 # Experimental Test Folders
 /lingbot-map/
