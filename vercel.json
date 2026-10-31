@@ -13,9 +13,9 @@
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
     { "source": "/assets/(.*)", "destination": "/assets/$1" },
-    { "source": "/play", "destination": "/monomap/web/play.html" },
-    { "source": "/compare", "destination": "/monomap/web/compare.html" },
-    { "source": "/download", "destination": "/monomap/web/download.html" },
+    { "source": "/play(.*)", "destination": "/monomap/web/play.html$1" },
+    { "source": "/compare(.*)", "destination": "/monomap/web/compare.html$1" },
+    { "source": "/download(.*)", "destination": "/monomap/web/download.html$1" },
     { "source": "/web/(.*)", "destination": "/monomap/web/$1" },
     { "source": "/output/(.*)", "destination": "/monomap/output/$1" }
   ]
