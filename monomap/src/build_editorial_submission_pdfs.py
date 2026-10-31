@@ -687,7 +687,7 @@ def build_additional_links_pdf():
         </tr>
         <tr>
           <td><b>Raw Input Smartphone Walkthrough</b></td>
-          <td>478&times;850 Portrait, 30 FPS, 57.4s</td>
+          <td>480&times;640 Portrait, 30.07 FPS, 96.0s (2,888 Frames)</td>
           <td>Hosted on Web Portal (#verification) / <code>assets/videos/input_smartphone_walkthrough.mp4</code></td>
         </tr>
         <tr>
