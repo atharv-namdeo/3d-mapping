@@ -3,1051 +3,1180 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NAMMA SPACE · Intelligent Spatial Engine & Photorealistic 3D Digital Twin</title>
+  <title>NAMMA SPACE — Intelligent Spatial Engine &amp; 3D Digital Twin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
+    /* ==========================================================================
+       DESIGN SYSTEM: PREMIUM FUTURISTIC MINIMALISM & NEO-SKEUOMORPHIC EDITORIAL
+       ========================================================================== */
     :root {
-      --bg: #050811;
-      --bg-card: rgba(13, 20, 36, 0.78);
-      --bg-card-hover: rgba(22, 33, 58, 0.9);
-      --border: rgba(255, 255, 255, 0.08);
-      --border-accent: rgba(56, 189, 248, 0.35);
-      --accent: #38bdf8;
-      --accent-glow: rgba(56, 189, 248, 0.25);
-      --emerald: #10b981;
-      --emerald-glow: rgba(16, 185, 129, 0.2);
-      --amber: #f59e0b;
-      --amber-glow: rgba(245, 158, 11, 0.2);
-      --purple: #a855f7;
-      --indigo: #6366f1;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --text-dim: #64748b;
+      --bg-void: #08090b;
+      --bg-base: #0d0f12;
+      --bg-surface: #13161b;
+      --bg-surface-elevated: #1a1e24;
+      --bg-surface-active: #222730;
+      
+      --border-subtle: rgba(255, 255, 255, 0.05);
+      --border-medium: rgba(255, 255, 255, 0.09);
+      --border-highlight: rgba(255, 255, 255, 0.16);
+
+      --text-pure: #ffffff;
+      --text-primary: #f0f1f4;
+      --text-secondary: #9aa0ac;
+      --text-muted: #5e6472;
+      --text-dim: #40444f;
+
+      --accent-gold: #d4a373;
+      --accent-gold-glow: rgba(212, 163, 115, 0.18);
+      --accent-silver: #a0b2c6;
+      --accent-cyan: #38bdf8;
+      --status-live: #4ade80;
+
+      --shadow-soft: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+      --shadow-deep: 0 35px 70px -25px rgba(0, 0, 0, 0.85);
+      --shadow-inset-subtle: inset 0 1px 1px rgba(255, 255, 255, 0.05), inset 0 -1px 1px rgba(0, 0, 0, 0.4);
+
+      --radius-xl: 32px;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 10px;
+      --radius-pill: 9999px;
+
+      --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-void);
+    }
 
     body {
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: radial-gradient(circle at 50% 0%, #0f1c3f 0%, #070d1e 35%, var(--bg) 80%);
-      color: var(--text);
+      background: radial-gradient(circle at 50% -20%, #171b23 0%, var(--bg-void) 70%);
+      color: var(--text-primary);
       line-height: 1.6;
       overflow-x: hidden;
       min-height: 100vh;
+      selection-background-color: var(--accent-gold);
+      selection-color: var(--bg-void);
     }
 
-    /* Ambient background grid */
+    /* Subtle Technical Surface Texture */
     body::before {
       content: "";
       position: fixed; inset: 0;
       background-image: 
-        linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 32px 32px;
       pointer-events: none;
       z-index: 0;
     }
 
-    /* Navigation Bar */
-    .navbar {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(5, 8, 17, 0.85);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-      padding: 14px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      color: var(--text);
-    }
-    .brand-icon {
-      width: 38px; height: 38px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #0284c7, #38bdf8);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 19px; color: #050811;
-      box-shadow: 0 0 16px var(--accent-glow);
-    }
-    .brand-text {
-      display: flex; flex-direction: column;
-    }
-    .brand-title {
-      font-weight: 800; font-size: 16px; letter-spacing: -0.3px;
-      background: linear-gradient(135deg, #ffffff 40%, var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .brand-tag {
-      font-size: 10px; font-weight: 600; color: var(--emerald); letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
-
-    .nav-menu {
-      display: flex; align-items: center; gap: 20px;
-      list-style: none;
-    }
-    .nav-menu a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 13.5px;
-      font-weight: 500;
-      transition: color 0.15s ease;
-    }
-    .nav-menu a:hover { color: var(--accent); }
-
-    .nav-actions {
-      display: flex; align-items: center; gap: 10px;
-    }
-    .btn-nav-primary {
-      background: linear-gradient(135deg, #0284c7, #38bdf8);
-      color: #050811;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 700;
-      text-decoration: none;
-      display: inline-flex; align-items: center; gap: 6px;
-      box-shadow: 0 0 14px var(--accent-glow);
-      transition: transform 0.15s, box-shadow 0.15s;
-    }
-    .btn-nav-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 0 20px var(--accent-glow);
-    }
-
-    /* Container */
+    /* Container System */
     .container {
-      max-width: 1200px;
+      max-width: 1280px;
       margin: 0 auto;
-      padding: 0 24px;
+      padding: 0 32px;
       position: relative;
       z-index: 1;
     }
 
-    /* Hero Section */
-    .hero {
-      padding: 70px 0 50px 0;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
-    .competition-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 6px 16px;
-      border-radius: 9999px;
-      background: rgba(56, 189, 248, 0.1);
-      border: 1px solid rgba(56, 189, 248, 0.28);
-      font-size: 12.5px;
-      font-weight: 600;
-      color: var(--accent);
-    }
-    .competition-pill .pulse-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--emerald);
-      box-shadow: 0 0 8px var(--emerald);
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(1.2); }
-    }
-
-    .hero h1 {
-      font-size: 48px;
-      font-weight: 800;
-      letter-spacing: -1.2px;
-      line-height: 1.15;
-      max-width: 950px;
-    }
-    .hero h1 span.gradient {
-      background: linear-gradient(135deg, #ffffff 30%, #38bdf8 70%, #818cf8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .hero p.lead {
-      font-size: 17.5px;
-      color: var(--text-muted);
-      max-width: 800px;
-      line-height: 1.6;
-    }
-
-    .hero-cta {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 14px;
-      margin-top: 10px;
-    }
-    .btn-hero {
-      padding: 13px 26px;
-      border-radius: 11px;
-      font-size: 14.5px;
-      font-weight: 700;
-      text-decoration: none;
-      display: inline-flex; align-items: center; gap: 8px;
-      transition: transform 0.15s, box-shadow 0.15s;
-    }
-    .btn-emerald {
-      background: linear-gradient(135deg, #059669, #10b981);
-      color: #ffffff;
-      box-shadow: 0 0 20px var(--emerald-glow);
-    }
-    .btn-emerald:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 30px var(--emerald-glow);
-    }
-    .btn-accent {
-      background: linear-gradient(135deg, #0284c7, #38bdf8);
-      color: #050811;
-      box-shadow: 0 0 20px var(--accent-glow);
-    }
-    .btn-accent:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 30px var(--accent-glow);
-    }
-    .btn-outline {
-      background: rgba(15, 23, 42, 0.7);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-    .btn-outline:hover {
-      background: rgba(30, 41, 59, 0.8);
-      border-color: var(--accent);
-      transform: translateY(-2px);
-    }
-
-    /* Key Specs Metric Bar */
-    .metrics-bar {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 14px;
-      margin: 40px 0 70px 0;
-    }
-    .metric-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 18px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      backdrop-filter: blur(12px);
-      transition: border-color 0.2s, transform 0.2s;
-    }
-    .metric-card:hover {
-      border-color: var(--border-accent);
-      transform: translateY(-2px);
-    }
-    .metric-value {
-      font-size: 26px;
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.5px;
-    }
-    .metric-value span.highlight {
-      color: var(--accent);
-    }
-    .metric-label {
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      letter-spacing: 0.5px;
-    }
-    .metric-sub {
-      font-size: 11.5px;
-      color: var(--text-dim);
-    }
-
-    /* Section Headers */
-    .section-header {
-      text-align: center;
-      margin-bottom: 36px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
-    .section-tag {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      padding: 4px 12px;
-      border-radius: 9999px;
-      background: rgba(56, 189, 248, 0.1);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      color: var(--accent);
-      display: inline-block;
-    }
-    .section-title {
-      font-size: 32px;
-      font-weight: 800;
-      letter-spacing: -0.8px;
-    }
-    .section-desc {
-      font-size: 15px;
-      color: var(--text-muted);
-      max-width: 680px;
-      line-height: 1.55;
-    }
-
-    /* Section 1: Video Showcase */
-    .video-showcase-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin-bottom: 70px;
-    }
-    .video-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
-      backdrop-filter: blur(12px);
-      display: flex;
-      flex-direction: column;
-      transition: border-color 0.2s, transform 0.2s;
-    }
-    .video-card:hover {
-      border-color: var(--border-accent);
-      transform: translateY(-2px);
-    }
-    .video-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
+    /* ==========================================================================
+       NAVIGATION: TACTILE EDITORIAL HEADER
+       ========================================================================== */
+    .nav-bar {
+      position: sticky; top: 20px; z-index: 1000;
+      margin: 20px auto 0 auto;
+      max-width: 1216px;
+      padding: 10px 14px;
+      background: rgba(19, 22, 27, 0.72);
+      backdrop-filter: blur(24px) saturate(140%);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-pill);
+      box-shadow: var(--shadow-soft), var(--shadow-inset-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(15, 23, 42, 0.6);
+      gap: 16px;
     }
-    .video-title {
-      font-size: 15px;
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      padding-left: 8px;
+    }
+    .brand-mark {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #242932, #14161a);
+      border: 1px solid var(--border-highlight);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.1), 0 2px 4px rgba(0,0,0,0.5);
+    }
+    .brand-mark svg {
+      width: 15px; height: 15px;
+      fill: var(--text-pure);
+    }
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+    .brand-name {
+      font-size: 13.5px;
       font-weight: 700;
+      letter-spacing: 0.8px;
+      color: var(--text-pure);
+      text-transform: uppercase;
+    }
+    .brand-context {
+      font-size: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+      letter-spacing: 0.4px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      transition: all 0.2s var(--transition-smooth);
+    }
+    .nav-links a:hover {
+      color: var(--text-pure);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .nav-actions {
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .video-badge {
-      font-size: 10.5px;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 6px;
-      text-transform: uppercase;
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      background: rgba(74, 222, 128, 0.08);
+      border: 1px solid rgba(74, 222, 128, 0.2);
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--status-live);
     }
-    .badge-amber {
-      background: rgba(245, 158, 11, 0.15);
-      color: #fbbf24;
-      border: 1px solid rgba(245, 158, 11, 0.3);
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--status-live);
+      box-shadow: 0 0 6px var(--status-live);
     }
-    .badge-emerald {
-      background: rgba(16, 185, 129, 0.15);
-      color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.3);
+
+    .btn-tactile {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(180deg, #2a2e38 0%, #1e2229 100%);
+      border: 1px solid var(--border-highlight);
+      color: var(--text-pure);
+      font-size: 12.5px;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.12);
+      transition: all 0.2s var(--transition-smooth);
     }
-    .video-wrapper {
+    .btn-tactile:hover {
+      transform: translateY(-1px);
+      background: linear-gradient(180deg, #323742 0%, #242832 100%);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.18);
+    }
+    .btn-tactile-primary {
+      background: linear-gradient(180deg, #f0f1f4 0%, #d8dade 100%);
+      color: #0d0f12;
+      border-color: #ffffff;
+      box-shadow: 0 4px 14px rgba(255,255,255,0.15), inset 0 1px 1px rgba(255,255,255,0.8);
+    }
+    .btn-tactile-primary:hover {
+      background: linear-gradient(180deg, #ffffff 0%, #e2e4e8 100%);
+      box-shadow: 0 6px 22px rgba(255,255,255,0.22);
+    }
+
+    /* ==========================================================================
+       HERO: OVERSIZED ASYMMETRIC EDITORIAL PRESENTATION
+       ========================================================================== */
+    .hero-section {
+      padding: 60px 0 50px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .hero-meta-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+    .hero-meta-strip .tag {
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .hero-headline-block {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 40px;
+      align-items: flex-end;
+    }
+
+    .hero-title {
+      font-size: 54px;
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -1.6px;
+      color: var(--text-pure);
+    }
+    .hero-title span.subtle {
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .hero-synopsis {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .hero-synopsis p {
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    .hero-cta-cluster {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    /* ==========================================================================
+       CENTERPIECE VIDEO CASING: LUXURY TACTILE BEZEL
+       ========================================================================== */
+    .cinematic-stage {
       position: relative;
+      margin: 10px 0 60px 0;
+      border-radius: var(--radius-xl);
+      background: linear-gradient(180deg, #181b22 0%, #111317 100%);
+      border: 1px solid var(--border-medium);
+      padding: 12px;
+      box-shadow: var(--shadow-deep), var(--shadow-inset-subtle);
+    }
+    .cinematic-inner {
+      position: relative;
+      border-radius: calc(var(--radius-xl) - 8px);
+      overflow: hidden;
       background: #000000;
+      aspect-ratio: 16 / 9;
+      max-height: 640px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(0,0,0,0.8);
+    }
+    .cinematic-inner video {
       width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cinematic-overlay-bar {
+      position: absolute;
+      bottom: 20px; left: 24px; right: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      border-radius: var(--radius-pill);
+      background: rgba(13, 15, 18, 0.75);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-highlight);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      color: var(--text-secondary);
+    }
+    .cinematic-controls-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-pure);
+      font-family: inherit;
+      font-size: 11px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(255,255,255,0.06);
+      transition: background 0.15s;
+    }
+    .cinematic-controls-btn:hover {
+      background: rgba(255,255,255,0.12);
+    }
+
+    /* ==========================================================================
+       SECTION ARCHITECTURE
+       ========================================================================== */
+    .editorial-section {
+      padding: 50px 0;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .section-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-gold);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-eyebrow::before {
+      content: "";
+      width: 18px; height: 1px;
+      background: var(--accent-gold);
+    }
+
+    .section-headline {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.15;
+      color: var(--text-pure);
+      margin-bottom: 14px;
+    }
+    .section-description {
+      font-size: 16px;
+      color: var(--text-secondary);
+      max-width: 640px;
+      line-height: 1.6;
+      margin-bottom: 36px;
+    }
+
+    /* ==========================================================================
+       SECTION 1: MONOCULAR INPUT VS 3D OUTPUT VERIFICATION
+       ========================================================================== */
+    .split-verification-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .split-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-soft);
+      transition: border-color 0.25s var(--transition-smooth);
+    }
+    .split-card:hover {
+      border-color: var(--border-highlight);
+    }
+    .split-card-header {
+      padding: 16px 20px;
+      background: var(--bg-surface-elevated);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .split-card-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .spec-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .split-video-casing {
+      background: #000;
       height: 380px;
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
     }
-    .video-wrapper video {
+    .split-video-casing video {
       width: 100%;
       height: 100%;
       object-fit: contain;
     }
-    .video-meta {
-      padding: 16px 20px;
+
+    .split-card-footer {
+      padding: 18px 22px;
       display: flex;
       flex-direction: column;
       gap: 8px;
-      font-size: 13px;
-      color: var(--text-muted);
+      background: var(--bg-surface);
     }
-    .video-chips {
+    .split-footer-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .split-footer-desc {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .split-chips {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-    }
-    .chip {
-      font-size: 11px;
-      font-family: 'JetBrains Mono', monospace;
-      padding: 3px 8px;
-      border-radius: 4px;
-      background: rgba(255, 255, 255, 0.05);
-      color: #e2e8f0;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin-top: 4px;
     }
 
-    /* Section 2: 3D Simulation Canvas */
-    .sim-wrapper {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 20px;
+    /* ==========================================================================
+       SECTION 2: 3D POSECAM SENSOR SIMULATOR (TACTILE WORKBENCH)
+       ========================================================================== */
+    .simulator-casing {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-xl);
       overflow: hidden;
-      margin-bottom: 70px;
       display: grid;
       grid-template-columns: 1.35fr 1fr;
-      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow-deep), var(--shadow-inset-subtle);
     }
-    .sim-viewport {
+    .sim-viewport-frame {
       position: relative;
-      background: radial-gradient(circle at 50% 50%, #0d1a38 0%, #060a16 100%);
-      height: 480px;
+      background: radial-gradient(circle at 50% 50%, #151820 0%, #0a0b0e 100%);
+      height: 520px;
     }
     #simCanvas {
       width: 100%;
       height: 100%;
       display: block;
     }
-    .sim-overlay-badge {
+
+    .sim-hud-overlay {
       position: absolute;
-      top: 16px; left: 16px;
-      background: rgba(9, 12, 22, 0.75);
-      backdrop-filter: blur(8px);
-      border: 1px solid var(--border-accent);
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 11.5px;
-      font-weight: 600;
-      color: var(--accent);
-      display: flex; align-items: center; gap: 6px;
+      top: 18px; left: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      background: rgba(13, 15, 18, 0.85);
+      border: 1px solid var(--border-medium);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-primary);
       pointer-events: none;
     }
-    .sim-controls-hint {
+    .sim-drag-hint {
       position: absolute;
-      bottom: 14px; left: 16px;
-      background: rgba(9, 12, 22, 0.65);
+      bottom: 18px; left: 18px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      color: var(--text-dim);
+      background: rgba(13, 15, 18, 0.7);
       padding: 4px 10px;
       border-radius: 6px;
-      font-size: 11px;
-      color: var(--text-dim);
       pointer-events: none;
     }
-    .sim-details {
-      padding: 32px 28px;
+
+    .sim-control-panel {
+      padding: 36px 32px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 20px;
-      border-left: 1px solid var(--border);
+      gap: 24px;
+      border-left: 1px solid var(--border-subtle);
+      background: var(--bg-surface);
     }
-    .sim-header h3 {
-      font-size: 22px;
+    .sim-panel-header h3 {
+      font-size: 24px;
       font-weight: 800;
+      color: var(--text-pure);
+      letter-spacing: -0.5px;
       margin-bottom: 8px;
     }
-    .sim-header p {
+    .sim-panel-header p {
       font-size: 13.5px;
-      color: var(--text-muted);
-      line-height: 1.5;
+      color: var(--text-secondary);
+      line-height: 1.55;
     }
 
-    .telemetry-grid {
+    .telemetry-rack {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
-      margin: 12px 0;
     }
-    .telem-box {
-      background: rgba(15, 23, 42, 0.65);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 14px;
+    .telemetry-gauge {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
-    .telem-box .telem-name {
-      font-size: 10.5px;
-      text-transform: uppercase;
-      font-weight: 600;
-      color: var(--text-dim);
-    }
-    .telem-box .telem-val {
+    .gauge-label {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--accent);
-      margin-top: 2px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
     }
+    .gauge-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-pure);
+    }
+    .gauge-value.gold { color: var(--accent-gold); }
+    .gauge-value.live { color: var(--status-live); }
 
-    .sim-features-list {
+    .tactile-bullet-list {
       list-style: none;
       display: flex;
       flex-direction: column;
       gap: 10px;
       font-size: 13px;
+      color: var(--text-secondary);
     }
-    .sim-features-list li {
+    .tactile-bullet-list li {
       display: flex;
       align-items: flex-start;
-      gap: 8px;
+      gap: 10px;
+      line-height: 1.5;
     }
-    .sim-features-list li svg {
-      width: 16px; height: 16px;
-      min-width: 16px;
+    .bullet-icon {
+      width: 14px; height: 14px;
+      min-width: 14px;
       margin-top: 3px;
-      color: var(--emerald);
+      border-radius: 50%;
+      border: 1px solid var(--border-highlight);
+      background: rgba(255, 255, 255, 0.05);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .bullet-icon::after {
+      content: "";
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--accent-gold);
     }
 
-    /* Section 3: Interactive Pipeline Flow */
-    .flow-container {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 36px 30px;
-      margin-bottom: 70px;
-      backdrop-filter: blur(12px);
-    }
-    .pipeline-nodes {
+    /* ==========================================================================
+       SECTION 3: PIPELINE ARCHITECTURE (MODULAR TACTILE STRIP)
+       ========================================================================== */
+    .pipeline-module-strip {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      position: relative;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
     }
-    .pipe-node {
-      background: rgba(15, 23, 42, 0.7);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px 16px;
+    .pipe-step-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 18px 16px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      transition: all 0.2s ease;
+      gap: 10px;
       cursor: pointer;
+      transition: all 0.2s var(--transition-smooth);
       position: relative;
     }
-    .pipe-node:hover, .pipe-node.active {
-      border-color: var(--accent);
-      background: rgba(24, 38, 68, 0.85);
+    .pipe-step-card:hover, .pipe-step-card.active {
+      background: var(--bg-surface-elevated);
+      border-color: var(--border-highlight);
       transform: translateY(-2px);
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
     }
-    .node-num {
-      width: 26px; height: 26px;
-      border-radius: 50%;
-      background: rgba(56, 189, 248, 0.15);
-      color: var(--accent);
-      font-weight: 800; font-size: 12px;
-      display: flex; align-items: center; justify-content: center;
-      border: 1px solid var(--border-accent);
+    .pipe-step-card.active::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 16px; right: 16px; height: 2px;
+      background: var(--accent-gold);
+      border-radius: var(--radius-pill);
     }
-    .node-title {
-      font-size: 15px; font-weight: 700; color: #ffffff;
+    .pipe-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      color: var(--text-muted);
     }
-    .node-desc {
-      font-size: 12px; color: var(--text-muted); line-height: 1.45;
+    .pipe-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.3;
     }
-    .node-tech {
-      font-size: 11px; font-family: 'JetBrains Mono', monospace;
-      color: var(--emerald);
+    .pipe-summary {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      line-height: 1.45;
+    }
+    .pipe-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--accent-gold);
       margin-top: auto;
     }
 
-    .pipeline-detail-box {
-      margin-top: 24px;
-      padding: 20px 24px;
-      background: rgba(10, 16, 30, 0.9);
-      border: 1px solid var(--border-accent);
-      border-radius: 12px;
+    .pipeline-inspect-terminal {
+      background: #090a0d;
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
+    }
+    .inspect-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .inspect-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-pure);
+    }
+    .inspect-desc {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .inspect-codeblock {
+      background: #050608;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--accent-silver);
+      line-height: 1.6;
+      overflow-x: auto;
+    }
+
+    /* ==========================================================================
+       SECTION 4: MODEL 1 CHAMPION & 9 REJECTED MODELS
+       ========================================================================== */
+    .champion-editorial-box {
+      background: linear-gradient(180deg, #181d26 0%, #11141a 100%);
+      border: 1px solid rgba(212, 163, 115, 0.4);
+      border-radius: var(--radius-xl);
+      padding: 36px;
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 36px;
+      margin-bottom: 28px;
+      box-shadow: 0 25px 50px -20px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    }
+    .champ-content {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .champ-award-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .champ-title {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      color: var(--text-pure);
+    }
+    .champ-p {
+      font-size: 14.5px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .champ-points-list {
+      list-style: none;
       display: flex;
       flex-direction: column;
       gap: 10px;
+      font-size: 13.5px;
     }
-    .pipeline-detail-box h4 {
-      font-size: 16px; font-weight: 700; color: var(--accent);
-      display: flex; align-items: center; gap: 8px;
+    .champ-points-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--text-primary);
     }
-    .pipeline-detail-box p {
-      font-size: 13.5px; color: var(--text-muted);
+    .champ-bullet-tick {
+      color: var(--status-live);
+      font-weight: 700;
     }
-    .pipeline-detail-box pre {
-      background: #050811;
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-family: 'JetBrains Mono', monospace;
+
+    .champ-telemetry-monolith {
+      background: #0b0d10;
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      gap: 12px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    }
+    .monolith-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .monolith-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .monolith-label {
       font-size: 12px;
-      color: #38bdf8;
-      overflow-x: auto;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+    }
+    .monolith-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14.5px;
+      font-weight: 600;
+      color: var(--text-pure);
     }
 
-    /* Section 4: 10 Models Comparison Matrix */
-    .champion-card {
-      background: linear-gradient(135deg, rgba(2, 132, 199, 0.15), rgba(16, 185, 129, 0.12));
-      border: 2px solid var(--accent);
-      border-radius: 18px;
-      padding: 28px;
-      margin-bottom: 24px;
+    /* Rejected Models Matrix */
+    .reject-models-matrix {
       display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      gap: 24px;
-      box-shadow: 0 0 30px rgba(56, 189, 248, 0.15);
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
     }
-    .champ-left {
-      display: flex; flex-direction: column; gap: 12px;
-    }
-    .champ-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 4px 12px; border-radius: 9999px;
-      background: var(--accent); color: #050811;
-      font-size: 11.5px; font-weight: 800; text-transform: uppercase;
-      align-self: flex-start;
-    }
-    .champ-left h3 {
-      font-size: 24px; font-weight: 800; letter-spacing: -0.4px;
-    }
-    .champ-left p {
-      font-size: 14px; color: var(--text-muted); line-height: 1.5;
-    }
-    .champ-reasons {
-      display: flex; flex-direction: column; gap: 6px;
-      font-size: 13px;
-    }
-    .champ-reasons span {
-      display: flex; align-items: center; gap: 8px; color: #e2e8f0;
-    }
-    .champ-reasons span svg {
-      width: 16px; height: 16px; color: var(--emerald); min-width: 16px;
-    }
-    .champ-right {
-      background: rgba(9, 14, 26, 0.75);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 18px;
-      display: flex; flex-direction: column; justify-content: center; gap: 12px;
-    }
-    .champ-stat {
-      display: flex; justify-content: space-between; align-items: center;
-      padding-bottom: 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    }
-    .champ-stat:last-child { border-bottom: none; padding-bottom: 0; }
-    .champ-stat-label { font-size: 12px; color: var(--text-dim); }
-    .champ-stat-val { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: #ffffff; }
-
-    /* Other 9 Models Grid */
-    .other-models-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 16px;
-      margin-bottom: 70px;
-    }
-    .model-reject-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
+    .reject-model-tile {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
       padding: 18px 20px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      backdrop-filter: blur(10px);
+      gap: 8px;
+      transition: border-color 0.2s;
     }
-    .model-reject-top {
-      display: flex; align-items: center; justify-content: space-between;
+    .reject-model-tile:hover {
+      border-color: var(--border-highlight);
     }
-    .model-num-tag {
-      font-size: 11px; font-weight: 700; font-family: 'JetBrains Mono', monospace;
-      color: var(--text-muted);
-    }
-    .reject-badge {
-      font-size: 10.5px; font-weight: 600;
-      padding: 2px 8px; border-radius: 4px;
-      background: rgba(239, 68, 68, 0.12);
-      border: 1px solid rgba(239, 68, 68, 0.25);
-      color: #f87171;
-    }
-    .model-reject-name {
-      font-size: 16px; font-weight: 700; color: #e2e8f0;
-    }
-    .model-reject-why {
-      font-size: 12.5px; color: var(--text-muted); line-height: 1.45;
-    }
-    .model-reject-why b {
-      color: #fca5a5;
-    }
-
-    /* Section 5: Playable Roaming Twin */
-    .roaming-showcase {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 36px 32px;
-      margin-bottom: 70px;
-      display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      gap: 32px;
+    .tile-meta-header {
+      display: flex;
       align-items: center;
-      backdrop-filter: blur(14px);
-    }
-    .roaming-left h3 {
-      font-size: 26px; font-weight: 800; margin-bottom: 12px;
-    }
-    .roaming-left p {
-      font-size: 14.5px; color: var(--text-muted); line-height: 1.6; margin-bottom: 18px;
-    }
-    .controls-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-      margin-bottom: 24px;
-    }
-    .ctrl-item {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 8px 12px;
-      display: flex; align-items: center; gap: 10px;
-      font-size: 12.5px;
-    }
-    .ctrl-key {
+      justify-content: space-between;
       font-family: 'JetBrains Mono', monospace;
-      background: rgba(56, 189, 248, 0.15);
-      border: 1px solid var(--border-accent);
-      color: var(--accent);
-      padding: 2px 7px;
-      border-radius: 4px;
+      font-size: 10.5px;
+    }
+    .tile-id { color: var(--text-muted); }
+    .tile-flaw { color: #f87171; font-weight: 600; }
+    .tile-name {
+      font-size: 14.5px;
       font-weight: 700;
-      font-size: 11px;
+      color: var(--text-primary);
     }
-
-    .roaming-right {
-      position: relative;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid var(--border-accent);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    }
-    .roaming-preview-img {
-      width: 100%;
-      height: 280px;
-      object-fit: cover;
-      display: block;
-      background: #000;
-    }
-    .roaming-right-badge {
-      position: absolute; bottom: 12px; left: 12px; right: 12px;
-      background: rgba(5, 8, 17, 0.85);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 8px 12px;
+    .tile-reason {
       font-size: 12px;
-      display: flex; align-items: center; justify-content: space-between;
+      color: var(--text-secondary);
+      line-height: 1.5;
     }
 
-    /* Section 6: Robotics & Costmap */
-    .robotics-grid {
+    /* ==========================================================================
+       SECTION 5: ROBOTICS COSTMAP & HEIGHT SLICING
+       ========================================================================== */
+    .robotics-editorial-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 24px;
-      margin-bottom: 70px;
     }
-    .robot-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
+    .costmap-preview-casing {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
       padding: 24px;
-      display: flex; flex-direction: column; gap: 14px;
-      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
-    .costmap-img-box {
-      width: 100%; height: 260px;
-      background: #060911;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
+    .costmap-image-recess {
+      height: 280px;
+      background: #050608;
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       overflow: hidden;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.8);
     }
-    .costmap-img-box img {
-      max-width: 90%; max-height: 90%;
+    .costmap-image-recess img {
+      max-width: 85%;
+      max-height: 85%;
       image-rendering: pixelated;
-      border-radius: 6px;
-      border: 1px solid rgba(56, 189, 248, 0.3);
+      border: 1px solid var(--border-highlight);
+      border-radius: 4px;
     }
 
-    /* Section 7: Abstract & Downloads */
-    .downloads-grid {
+    /* ==========================================================================
+       SECTION 6: SUBMISSION DELIVERABLES & DRIVE MATERIALS
+       ========================================================================== */
+    .submission-materials-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 20px;
-      margin-bottom: 70px;
     }
-    .download-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 24px;
-      display: flex; flex-direction: column; justify-content: space-between;
-      gap: 16px;
-      backdrop-filter: blur(12px);
-      transition: border-color 0.2s, transform 0.2s;
+    .material-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+      box-shadow: var(--shadow-soft);
+      transition: all 0.2s var(--transition-smooth);
     }
-    .download-card:hover {
-      border-color: var(--border-accent);
+    .material-card:hover {
+      border-color: var(--border-highlight);
       transform: translateY(-2px);
     }
-    .dl-icon {
-      width: 44px; height: 44px;
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px;
+    .material-index {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent-gold);
     }
-    .dl-title {
-      font-size: 18px; font-weight: 700; color: #ffffff;
+    .material-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-pure);
+      margin-top: 4px;
     }
-    .dl-desc {
-      font-size: 13px; color: var(--text-muted); line-height: 1.5;
-    }
-
-    /* Footer */
-    footer {
-      border-top: 1px solid var(--border);
-      background: #03050a;
-      padding: 40px 0;
-      text-align: center;
+    .material-desc {
       font-size: 13px;
-      color: var(--text-dim);
-      display: flex; flex-direction: column; gap: 10px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      margin-top: 8px;
     }
-    footer a { color: var(--accent); text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
 
-    @media (max-width: 868px) {
-      .hero h1 { font-size: 34px; }
-      .video-showcase-grid { grid-template-columns: 1fr; }
-      .sim-wrapper { grid-template-columns: 1fr; }
-      .sim-viewport { height: 340px; }
-      .champion-card { grid-template-columns: 1fr; }
-      .roaming-showcase { grid-template-columns: 1fr; }
-      .robotics-grid { grid-template-columns: 1fr; }
-      .nav-menu { display: none; }
+    /* ==========================================================================
+       FOOTER
+       ========================================================================== */
+    .master-footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 60px 0 40px 0;
+      margin-top: 60px;
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+    }
+    .master-footer a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .master-footer a:hover {
+      color: var(--text-pure);
+    }
+
+    /* ==========================================================================
+       RESPONSIVE BREAKPOINTS
+       ========================================================================== */
+    @media (max-width: 1024px) {
+      .hero-headline-block { grid-template-columns: 1fr; }
+      .hero-title { font-size: 42px; }
+      .simulator-casing { grid-template-columns: 1fr; }
+      .pipeline-module-strip { grid-template-columns: repeat(2, 1fr); }
+      .champion-editorial-box { grid-template-columns: 1fr; }
+      .reject-models-matrix { grid-template-columns: repeat(2, 1fr); }
+      .robotics-editorial-grid { grid-template-columns: 1fr; }
+      .submission-materials-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 640px) {
+      .hero-title { font-size: 32px; }
+      .reject-models-matrix { grid-template-columns: 1fr; }
+      .split-verification-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Navigation Bar -->
-  <nav class="navbar">
-    <a href="#" class="nav-brand">
-      <div class="brand-icon">NS</div>
-      <div class="brand-text">
-        <span class="brand-title">NAMMA SPACE</span>
-        <span class="brand-tag">IIT Bombay Techfest · CRA003</span>
-      </div>
-    </a>
-    <ul class="nav-menu">
-      <li><a href="#video-showcase">Videos</a></li>
-      <li><a href="#sensor-simulation">PoseCam 3D</a></li>
-      <li><a href="#pipeline-flow">Pipeline</a></li>
-      <li><a href="#models-comparison">Model 1 Champion</a></li>
-      <li><a href="#play-twin">3D Roamer</a></li>
-      <li><a href="#robotics">Robotics Costmap</a></li>
-      <li><a href="#abstract">Abstract PDF</a></li>
-    </ul>
-    <div class="nav-actions">
-      <a href="monomap/web/play.html?scene=scan_posecam_1" class="btn-nav-primary">
-        🎮 Launch 3D Roamer
+  <!-- ==========================================================================
+       TACTILE EDITORIAL NAVIGATION
+       ========================================================================== -->
+  <header class="container">
+    <nav class="nav-bar">
+      <a href="#" class="brand-cluster">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">NAMMA SPACE</span>
+          <span class="brand-context">IIT Bombay Techfest · CRA003</span>
+        </div>
       </a>
-    </div>
-  </nav>
 
-  <div class="container">
+      <ul class="nav-links">
+        <li><a href="#cinematic">Concept Film</a></li>
+        <li><a href="#verification">Input / Output</a></li>
+        <li><a href="#simulator">Sensor VIO</a></li>
+        <li><a href="#pipeline">Architecture</a></li>
+        <li><a href="#champion">Model 1 Suite</a></li>
+        <li><a href="#robotics">Robotics Map</a></li>
+        <li><a href="#materials">Submission Hub</a></li>
+      </ul>
 
-    <!-- HERO SECTION -->
-    <header class="hero">
-      <div class="competition-pill">
-        <span class="pulse-dot"></span>
-        IIT Bombay Techfest 2026–27 · Intelligent Spatial Engine (CRA003)
-      </div>
-      <h1>
-        Ordinary Smartphone Video to<br>
-        <span class="gradient">Photorealistic 3D Digital Twin</span> &amp; Robotics Costmap
-      </h1>
-      <p class="lead">
-        An end-to-end spatial computing engine fusing Depth-Anything-V2 metric neural SLAM with custom ARCore 6-DoF + 200 Hz STMicro IMU gravity locking. Zero expensive LiDAR rigs. 100% playable in browser at locked 60 FPS.
-      </p>
-      <div class="hero-cta">
-        <a href="monomap/web/play.html?scene=scan_posecam_1" class="btn-hero btn-emerald">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          Play 3D Walkthrough Twin
-        </a>
-        <a href="#video-showcase" class="btn-hero btn-accent">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 10l5 5-5 5"/><path d="M4 4v7a4 4 0 0 0 4 4h11"/></svg>
-          Watch Input vs Output Video
-        </a>
-        <a href="NAMMA_SPACE_ROUND1_TECHNICAL_ABSTRACT.pdf" class="btn-hero btn-outline" download>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-          5-Page Technical Abstract PDF
+      <div class="nav-actions">
+        <div class="status-pill">
+          <span class="status-dot"></span>
+          <span>VIO_STABLE</span>
+        </div>
+        <a href="monomap/web/play.html?scene=scan_posecam_1" class="btn-tactile btn-tactile-primary">
+          Enter 3D Roamer
         </a>
       </div>
-    </header>
+    </nav>
+  </header>
 
-    <!-- METRICS BAR -->
-    <div class="metrics-bar">
-      <div class="metric-card">
-        <div class="metric-value">60.0 <span class="highlight">FPS</span></div>
-        <div class="metric-label">WebGL Roaming</div>
-        <div class="metric-sub">Standard Integrated GPUs</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-value">2.81 <span class="highlight">Million</span></div>
-        <div class="metric-label">Model 1 Metric Points</div>
-        <div class="metric-sub">Photorealistic Zero-Warping</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-value">100% <span class="highlight">Gravity</span></div>
-        <div class="metric-label">Hardware Vector Lock</div>
-        <div class="metric-sub">Floor strictly clamped Y = 0.0m</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-value">0.05 <span class="highlight">Metre</span></div>
-        <div class="metric-label">ROS 2 Costmap Grid</div>
-        <div class="metric-sub">Obstacle-Dilated A* Routing</div>
-      </div>
-    </div>
+  <main class="container">
 
-    <!-- SECTION 1: VIDEO SHOWCASE -->
-    <section id="video-showcase">
-      <div class="section-header">
-        <span class="section-tag">Direct Visual Verification</span>
-        <h2 class="section-title">Raw Smartphone Input vs. 3D Digital Twin Output</h2>
-        <p class="section-desc">
-          Compare the unprocessed handheld smartphone video walkthrough against the final real-time navigable 3D digital twin reconstructed by our metric neural pipeline.
-        </p>
+    <!-- ==========================================================================
+         HERO SECTION: EDITORIAL STATEMENT & SYNOPSIS
+         ========================================================================== -->
+    <section class="hero-section">
+      <div class="hero-meta-strip">
+        <span>PROJECT NO. 2026-CRA003</span>
+        <span>INTELLIGENT SPATIAL ENGINE</span>
+        <span class="tag">ROUND 1 COMPLETE SUBMISSION</span>
       </div>
 
-      <div class="video-showcase-grid">
-        <!-- Input Video Card -->
-        <div class="video-card">
-          <div class="video-header">
-            <div class="video-title">
-              <span>📱</span> Raw Smartphone Capture Walkthrough
-            </div>
-            <span class="video-badge badge-amber">Input Stream</span>
+      <div class="hero-headline-block">
+        <h1 class="hero-title">
+          Autonomous 3D Digital Twin Engine. <br>
+          <span class="subtle">Zero LiDAR. 100% Smartphone Sensor-Fused.</span>
+        </h1>
+        <div class="hero-synopsis">
+          <p>
+            An end-to-end deep spatial computing pipeline converting ordinary consumer smartphone video into photorealistic, millimeter-accurate 3D digital twins and autonomous robotics costmaps.
+          </p>
+          <div class="hero-cta-cluster">
+            <a href="monomap/web/play.html?scene=scan_posecam_1" class="btn-tactile btn-tactile-primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Play 3D Roaming Twin
+            </a>
+            <a href="NAMMA_SPACE_ROUND1_TECHNICAL_ABSTRACT.pdf" class="btn-tactile" download>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              5-Page Abstract PDF
+            </a>
+            <a href="https://github.com/atharv-namdeo/3d-mapping" target="_blank" rel="noopener" class="btn-tactile">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+              GitHub Codebase
+            </a>
           </div>
-          <div class="video-wrapper">
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         HERO CENTERPIECE: 10-SECOND CINEMATIC TECHNICAL FILM
+         ========================================================================== -->
+    <section id="cinematic" class="cinematic-stage">
+      <div class="cinematic-inner">
+        <video id="heroFilm" autoplay muted loop playsinline preload="auto">
+          <source src="assets/videos/concept_pipeline_cinematic.mp4" type="video/mp4">
+          Your browser does not support HTML5 video.
+        </video>
+        <div class="cinematic-overlay-bar">
+          <div>
+            <span style="color:var(--accent-gold); font-weight:700;">ACT 1–4 // </span>
+            <span>HARDWARE GRAVITY LOCK → NEURAL UNPROJECTION → SLICING → 60 FPS HUD</span>
+          </div>
+          <button class="cinematic-controls-btn" id="toggleSoundBtn" onclick="toggleFilmSound()">
+            <span id="soundLabel">ENABLE SOUND</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         SECTION 1: INPUT SMARTPHONE VIDEO VS OUTPUT 3D TWIN
+         ========================================================================== -->
+    <section id="verification" class="editorial-section">
+      <div class="section-eyebrow">Direct Visual Proof</div>
+      <h2 class="section-headline">Raw Monocular Capture vs. 3D Digital Twin</h2>
+      <p class="section-description">
+        Direct side-by-side comparison of the raw consumer smartphone walkthrough recording against the final real-time 3D digital twin generated by our neural spatial engine.
+      </p>
+
+      <div class="split-verification-grid">
+        <!-- Input Card -->
+        <div class="split-card">
+          <div class="split-card-header">
+            <span class="split-card-title">📱 Raw Smartphone Input Video</span>
+            <span class="spec-tag">57.4s · 1,722 FRAMES</span>
+          </div>
+          <div class="split-video-casing">
             <video controls playsinline preload="metadata">
               <source src="assets/videos/input_smartphone_walkthrough.mp4" type="video/mp4">
-              Your browser does not support the video tag.
             </video>
           </div>
-          <div class="video-meta">
-            <div style="font-weight: 600; color:#e2e8f0;">Unconstrained Monocular Recording (Classroom Walkthrough)</div>
-            <div>Handheld smartphone camera traversing the classroom interior perimeter and central desks without external tracking markers or LiDAR.</div>
-            <div class="video-chips">
-              <span class="chip">Resolution: 478×850</span>
-              <span class="chip">Duration: 57.4s</span>
-              <span class="chip">Frames: 1,722</span>
-              <span class="chip">FPS: 30.0</span>
+          <div class="split-card-footer">
+            <span class="split-footer-title">Uncalibrated Handheld Monocular Walkthrough</span>
+            <span class="split-footer-desc">Operator traversing the classroom perimeter with a steady walking gait, capturing raw RGB frames without auxiliary surveying rigs or LiDAR.</span>
+            <div class="split-chips">
+              <span class="spec-tag">478 × 850 Portrait</span>
+              <span class="spec-tag">30.0 FPS</span>
+              <span class="spec-tag">12.3 MB</span>
             </div>
           </div>
         </div>
 
-        <!-- Output Video Card -->
-        <div class="video-card">
-          <div class="video-header">
-            <div class="video-title">
-              <span>🪐</span> Navigable 3D Digital Twin (Model 1)
-            </div>
-            <span class="video-badge badge-emerald">Output Reconstruction</span>
+        <!-- Output Card -->
+        <div class="split-card">
+          <div class="split-card-header">
+            <span class="split-card-title">🪐 Navigable 3D Digital Twin (Model 1)</span>
+            <span class="spec-tag" style="color:var(--status-live);">60.0 FPS LOCKED</span>
           </div>
-          <div class="video-wrapper">
+          <div class="split-video-casing">
             <video controls playsinline preload="metadata" autoplay muted loop>
               <source src="assets/videos/output_3d_digital_twin_reconstruction.mp4" type="video/mp4">
-              Your browser does not support the video tag.
             </video>
           </div>
-          <div class="video-meta">
-            <div style="font-weight: 600; color:#e2e8f0;">Photorealistic Dense Metric Cloud in Interactive 3D Studio</div>
-            <div>Full 3D orbit, zoom, and free inspection showing zero triangular face warping, crisp whiteboard text, clean desks, ceiling fan blades, and horizontal floor alignment.</div>
-            <div class="video-chips">
-              <span class="chip">Points: 2,810,480</span>
-              <span class="chip">Resolution: 1918×968</span>
-              <span class="chip">Engine: Three.js WebGL</span>
-              <span class="chip">FPS: 60.0 Locked</span>
+          <div class="split-card-footer">
+            <span class="split-footer-title">Photorealistic Dense Metric Cloud in 3D Studio</span>
+            <span class="split-footer-desc">Free camera orbit, zoom, and inspection showing zero face warping, crisp whiteboard text, clean desk edges, ceiling fan blades, and horizontal floor datum.</span>
+            <div class="split-chips">
+              <span class="spec-tag">2,810,480 Metric Points</span>
+              <span class="spec-tag">1918 × 968 Screen Capture</span>
+              <span class="spec-tag">Three.js WebGL</span>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SECTION 2: 3D ANIMATED POSECAM SENSOR SIMULATION -->
-    <section id="sensor-simulation">
-      <div class="section-header">
-        <span class="section-tag">Hardware-Locked Sensory Fusion</span>
-        <h2 class="section-title">How PoseCam APK Captures Video &amp; Sensory Inputs</h2>
-        <p class="section-desc">
-          Interact with the live 3D simulation below. Drag to orbit the smartphone and observe how Google ARCore 6-DoF VIO fuses with the 200 Hz STMicro IMU to lock Earth's hardware gravity vector and eliminate odometry drift.
-        </p>
-      </div>
+    <!-- ==========================================================================
+         SECTION 2: 3D POSECAM SENSOR SIMULATION (TACTILE NEO-SKEUOMORPHIC)
+         ========================================================================== -->
+    <section id="simulator" class="editorial-section">
+      <div class="section-eyebrow">Hardware Sensory Fusion</div>
+      <h2 class="section-headline">PoseCam VIO: Gravity Vector Lock &amp; IMU Calibration</h2>
+      <p class="section-description">
+        Interact with the live 3D sensor simulation below. Drag to orbit the device and observe how ARCore 6-DoF visual odometry fuses with the 200 Hz STMicro IMU to mathematically anchor the floor at $Y = 0.00\text{ m}$.
+      </p>
 
-      <div class="sim-wrapper">
-        <div class="sim-viewport">
+      <div class="simulator-casing">
+        <div class="sim-viewport-frame">
           <canvas id="simCanvas"></canvas>
-          <div class="sim-overlay-badge">
-            <span style="color:#10b981;">●</span> LIVE SENSOR FUSION SIMULATOR
+          <div class="sim-hud-overlay">
+            <span class="status-dot"></span>
+            <span>SENSOR_STREAM: ACTIVE</span>
           </div>
-          <div class="sim-controls-hint">
-            Left Click + Drag: Orbit Phone · Scroll: Zoom · Auto-Translates Trajectory
+          <div class="sim-drag-hint">
+            CLICK + DRAG TO ORBIT · SCROLL TO ZOOM
           </div>
         </div>
-        <div class="sim-details">
-          <div class="sim-header">
-            <h3>PoseCam Native Android Scanner</h3>
+
+        <div class="sim-control-panel">
+          <div class="sim-panel-header">
+            <h3>Hardware-Locked Gravity Stabilization</h3>
             <p>
-              Traditional monocular video assigns Frame 1 as origin $(0,0,0)$. Holding the phone pitched down 25° permanently skews the 3D room at a diagonal, while corners drift into banana curves. PoseCam locks orientation to Earth's physical core.
+              Monocular SLAM without hardware gravity constraints treats Frame 1 as the world origin. A 25° wrist tilt tilts the entire virtual building diagonally, and turns drift into curved bananas. PoseCam permanently fixes this.
             </p>
           </div>
 
-          <div class="telemetry-grid">
-            <div class="telem-box">
-              <div class="telem-name">Gravity Vector (g)</div>
-              <div class="telem-val" id="telemG">[0.0, -9.81, 0.0]</div>
+          <div class="telemetry-rack">
+            <div class="telemetry-gauge">
+              <span class="gauge-label">Gravity Vector (g)</span>
+              <span class="gauge-value gold" id="simTelemG">[0.0, -9.81, 0.0]</span>
             </div>
-            <div class="telem-box">
-              <div class="telem-name">IMU Sample Rate</div>
-              <div class="telem-val">200 Hz STMicro</div>
+            <div class="telemetry-gauge">
+              <span class="gauge-label">IMU Sampling</span>
+              <span class="gauge-value">200 Hz STMicro</span>
             </div>
-            <div class="telem-box">
-              <div class="telem-name">VIO Tracking State</div>
-              <div class="telem-val" style="color:#10b981;">TRACKING_OK</div>
+            <div class="telemetry-gauge">
+              <span class="gauge-label">VIO State</span>
+              <span class="gauge-value live">TRACKING_OK</span>
             </div>
-            <div class="telem-box">
-              <div class="telem-name">Ground Plane (Y)</div>
-              <div class="telem-val">0.00 m (Locked)</div>
+            <div class="telemetry-gauge">
+              <span class="gauge-label">Floor Datum</span>
+              <span class="gauge-value">Y = 0.00 m</span>
             </div>
           </div>
 
-          <ul class="sim-features-list">
+          <ul class="tactile-bullet-list">
             <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              <span><b>Hardware Accelerometer Gravity Lock:</b> $+Y$ is hardcoded toward the ceiling; the floor is strictly horizontal.</span>
+              <div class="bullet-icon"></div>
+              <span><b>Physical Accelerometer Vector:</b> Vector $\vec{g} = [0, -9.81, 0]^T$ locks the ceiling upwards and clamps the floor plane horizontal.</span>
             </li>
             <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              <span><b>200 Hz Gyroscope Integration:</b> Prevents over-rotating 90° corners, eliminating banana spiral drift.</span>
+              <div class="bullet-icon"></div>
+              <span><b>200 Hz Gyroscope Integration:</b> Continuous angular rate integration prevents corner over-rotation and banana spiral drift.</span>
             </li>
             <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              <span><b>Dual-Tab Public Exporter:</b> Exports <code>frames/</code>, <code>poses.csv</code>, <code>imu.csv</code>, and <code>intrinsics.json</code> directly to phone Downloads.</span>
+              <div class="bullet-icon"></div>
+              <span><b>Dual-Tab Public Exporter:</b> Saves <code>frames/</code>, <code>poses.csv</code>, <code>imu.csv</code>, and <code>intrinsics.json</code> to public Downloads.</span>
             </li>
           </ul>
 
-          <div style="display:flex; gap:10px; margin-top:8px;">
-            <a href="monomap/web/download.html" class="btn-hero btn-accent" style="padding:10px 18px; font-size:13px;">
+          <div>
+            <a href="monomap/web/download.html" class="btn-tactile btn-tactile-primary">
               📲 Download PoseCam APK (3.8 MB)
             </a>
           </div>
@@ -1055,415 +1184,330 @@
       </div>
     </section>
 
-    <!-- SECTION 3: ANIMATED RECONSTRUCTION PIPELINE -->
-    <section id="pipeline-flow">
-      <div class="section-header">
-        <span class="section-tag">End-to-End Deep Spatial SLAM</span>
-        <h2 class="section-title">Automated Reconstruction Pipeline Flow</h2>
-        <p class="section-desc">
-          Click any stage of the pipeline below to inspect mathematical formulations, parameter bounds, and architecture details.
-        </p>
+    <!-- ==========================================================================
+         SECTION 3: 5-STAGE RECONSTRUCTION PIPELINE
+         ========================================================================== -->
+    <section id="pipeline" class="editorial-section">
+      <div class="section-eyebrow">Modular Architecture</div>
+      <h2 class="section-headline">Deep Spatial SLAM Pipeline Flow</h2>
+      <p class="section-description">
+        Click through the 5 sequential architectural modules below to inspect mathematical transformations, parameters, and code implementations.
+      </p>
+
+      <div class="pipeline-module-strip">
+        <div class="pipe-step-card active" onclick="activateStep(0)">
+          <span class="pipe-num">STAGE 01</span>
+          <span class="pipe-name">Sensor Ingestion</span>
+          <span class="pipe-summary">640×480 RGB @ 30fps + 200 Hz STMicro IMU.</span>
+          <span class="pipe-badge">ARCore Kotlin</span>
+        </div>
+        <div class="pipe-step-card" onclick="activateStep(1)">
+          <span class="pipe-num">STAGE 02</span>
+          <span class="pipe-name">Quality Gates</span>
+          <span class="pipe-summary">Laplacian blur filter &amp; trajectory decimation.</span>
+          <span class="pipe-badge">Var(ΔI) &gt; 100</span>
+        </div>
+        <div class="pipe-step-card" onclick="activateStep(2)">
+          <span class="pipe-num">STAGE 03</span>
+          <span class="pipe-name">Neural Metric Depth</span>
+          <span class="pipe-summary">Scale-consistent metric unprojection in SI meters.</span>
+          <span class="pipe-badge">Depth-Anything-V2</span>
+        </div>
+        <div class="pipe-step-card" onclick="activateStep(3)">
+          <span class="pipe-num">STAGE 04</span>
+          <span class="pipe-name">Coordinate Fusion</span>
+          <span class="pipe-summary">OpenGL to OpenCV conversion &amp; TSDF fusion.</span>
+          <span class="pipe-badge">Open3D TSDF</span>
+        </div>
+        <div class="pipe-step-card" onclick="activateStep(4)">
+          <span class="pipe-num">STAGE 05</span>
+          <span class="pipe-name">Spatial Delivery</span>
+          <span class="pipe-summary">60 FPS WebGL FPS Twin &amp; 2D ROS costmap.</span>
+          <span class="pipe-badge">Three.js + ROS 2</span>
+        </div>
       </div>
 
-      <div class="flow-container">
-        <div class="pipeline-nodes">
-          <div class="pipe-node active" onclick="selectPipeNode(0)">
-            <div class="node-num">1</div>
-            <div class="node-title">PoseCam Capture</div>
-            <div class="node-desc">Hardware 6-DoF VIO + 200 Hz IMU + Native RGB streaming.</div>
-            <div class="node-tech">ARCore + Android Kotlin</div>
-          </div>
-          <div class="pipe-node" onclick="selectPipeNode(1)">
-            <div class="node-num">2</div>
-            <div class="node-title">Quality Gates</div>
-            <div class="node-desc">Laplacian variance blur filter &amp; trajectory keyframe stride.</div>
-            <div class="node-tech">Var(ΔI) &gt; 100.0</div>
-          </div>
-          <div class="pipe-node" onclick="selectPipeNode(2)">
-            <div class="node-num">3</div>
-            <div class="node-title">Metric Neural Depth</div>
-            <div class="node-desc">Scale-consistent metric depth without monocular scale drift.</div>
-            <div class="node-tech">Depth-Anything-V2 ViT</div>
-          </div>
-          <div class="pipe-node" onclick="selectPipeNode(3)">
-            <div class="node-num">4</div>
-            <div class="node-title">TSDF &amp; Backprojection</div>
-            <div class="node-desc">GL-to-CV coordinate conversion &amp; Open3D ScalableTSDFVolume.</div>
-            <div class="node-tech">T_GL_TO_CV · diag(1,-1,-1,1)</div>
-          </div>
-          <div class="pipe-node" onclick="selectPipeNode(4)">
-            <div class="node-num">5</div>
-            <div class="node-title">Spatial Delivery</div>
-            <div class="node-desc">60 FPS WebGL FPS Twin &amp; 2D ROS navigation costmaps.</div>
-            <div class="node-tech">Three.js + ROS 2 Nav2</div>
-          </div>
+      <div class="pipeline-inspect-terminal">
+        <div class="inspect-header">
+          <span class="inspect-title" id="stepTitle">Stage 01: Sensor Ingestion &amp; Hardware Gravity Vector</span>
+          <span class="spec-tag" id="stepModule">monomap/android/PoseCam</span>
         </div>
-
-        <div class="pipeline-detail-box" id="pipeDetailBox">
-          <h4 id="pipeDetailTitle">Stage 1: PoseCam Sensor Ingestion &amp; Hardware Gravity Vector</h4>
-          <p id="pipeDetailDesc">
-            The smartphone camera records video frames while simultaneously querying the device's hardware STMicro accelerometer and gyroscope at 200 Hz. ARCore Visual-Inertial Odometry generates continuous 6-DoF camera poses referenced to Earth's gravity vector.
-          </p>
-          <pre id="pipeDetailCode"># Raw Output Tuple from PoseCam Android Logger:
+        <p class="inspect-desc" id="stepDesc">
+          PoseCam logs native camera frames while sampling the phone's hardware accelerometer and gyroscope at 200 Hz. ARCore 6-DoF VIO calculates real-world camera transformations locked directly to Earth's gravity vector.
+        </p>
+        <pre class="inspect-codeblock" id="stepCode"># Raw Session Output Generated by PoseCam Android Logger:
 frames/frame_%05d.jpg      # Native RGB 640x480 @ 30 FPS
 poses.csv                  # timestamp, tx, ty, tz, qx, qy, qz, qw (Hamilton)
 intrinsics.json            # fx=443.78, fy=442.76, cx=321.46, cy=242.94
 imu.csv                    # timestamp, ax, ay, az, gx, gy, gz @ 200 Hz</pre>
-        </div>
       </div>
     </section>
 
-    <!-- SECTION 4: WHY MODEL 1 IS CHAMPION & COMPARISON -->
-    <section id="models-comparison">
-      <div class="section-header">
-        <span class="section-tag">Architectural Selection</span>
-        <h2 class="section-title">Champion Model 1 &amp; Comparative Analysis of 10 Formats</h2>
-        <p class="section-desc">
-          We engineered and benchmarked 10 distinct 3D representations from the same sensor capture. Here is why Model 1 (Dense Metric Cloud) was chosen as the submission champion, and the specific failure modes of the other 9 candidates.
-        </p>
-      </div>
+    <!-- ==========================================================================
+         SECTION 4: MODEL 1 CHAMPION & 9 REJECTED MODELS
+         ========================================================================== */
+    -->
+    <section id="champion" class="editorial-section">
+      <div class="section-eyebrow">Representation Evaluation</div>
+      <h2 class="section-headline">Why Model 1 is Champion &amp; The 9 Rejected Candidates</h2>
+      <p class="section-description">
+        We evaluated 10 surface representation models from the same sensor capture. Here is why Model 1 (Dense Metric Cloud) was chosen as our competition submission champion, and the specific failure modes of the other 9 candidates.
+      </p>
 
-      <!-- Champion Card -->
-      <div class="champion-card">
-        <div class="champ-left">
-          <div class="champ-badge">🏆 SUBMISSION CHAMPION · BEST ARCHITECTURAL CHOICE</div>
-          <h3>Model 1: Dense Metric Point Cloud</h3>
-          <p>
-            Rather than forcing noisy polygonal triangles across untextured walls and empty spaces, Model 1 directly unprojects Depth-Anything-V2 metric depth maps into a fused, denoised 2.81-million-point coordinate cloud.
+      <!-- Champion Box -->
+      <div class="champion-editorial-box">
+        <div class="champ-content">
+          <span class="champ-award-tag">★ SUBMISSION CHAMPION · ARCHITECTURAL CHOICE</span>
+          <h3 class="champ-title">Model 1: Dense Metric Point Cloud</h3>
+          <p class="champ-p">
+            By unprojecting metric depth maps directly into world coordinates without forcing synthetic polygonal stitching, Model 1 achieves pure photographic fidelity with zero triangular face distortion.
           </p>
-          <div class="champ-reasons">
-            <span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              <b>100% Photorealistic RGB:</b> Captures whiteboard text, ceiling fans, power cables, and desk textures without polygon blurring.
-            </span>
-            <span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              <b>Zero Melted-Wax Warping:</b> Eliminates erroneous triangular bridges across doors, open aisles, and chair legs.
-            </span>
-            <span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              <b>Locked 60.0 FPS WebGL Rendering:</b> Uses single-draw-call buffer geometry with GPU point splats, running silky-smooth even on mobile browsers.
-            </span>
-          </div>
-          <div style="display:flex; gap:10px; margin-top:8px;">
-            <a href="monomap/web/compare.html?scene=scan_posecam_1" class="btn-hero btn-accent" style="padding:10px 18px; font-size:13px;">
-              🔬 Inspect in 10-Model Studio
+          <ul class="champ-points-list">
+            <li>
+              <span class="champ-bullet-tick">✔</span>
+              <span><b>100% Photorealistic RGB:</b> Preserves handwritten whiteboard text, ceiling fan blades, desk textures, and fine power cables.</span>
+            </li>
+            <li>
+              <span class="champ-bullet-tick">✔</span>
+              <span><b>Zero Triangular Warping:</b> Eliminates artificial polygon sheets stretched across open doors, aisles, and chair legs.</span>
+            </li>
+            <li>
+              <span class="champ-bullet-tick">✔</span>
+              <span><b>Locked 60.0 FPS WebGL:</b> Single draw call with native GPU point splats, running flawlessly on integrated laptop and mobile GPUs.</span>
+            </li>
+          </ul>
+          <div>
+            <a href="monomap/web/compare.html?scene=scan_posecam_1" class="btn-tactile btn-tactile-primary">
+              Inspect in 10-Model Studio
             </a>
           </div>
         </div>
-        <div class="champ-right">
-          <div class="champ-stat">
-            <span class="champ-stat-label">Total Points</span>
-            <span class="champ-stat-val" style="color:var(--accent);">2,810,480</span>
+
+        <div class="champ-telemetry-monolith">
+          <div class="monolith-row">
+            <span class="monolith-label">Metric Coordinates</span>
+            <span class="monolith-value" style="color:var(--accent-gold);">2,810,480 Points</span>
           </div>
-          <div class="champ-stat">
-            <span class="champ-stat-label">Triangles Generated</span>
-            <span class="champ-stat-val">0 (Zero Distortion)</span>
+          <div class="monolith-row">
+            <span class="monolith-label">Triangular Distortion</span>
+            <span class="monolith-value">0% (Zero Warping)</span>
           </div>
-          <div class="champ-stat">
-            <span class="champ-stat-label">Web Frame Rate</span>
-            <span class="champ-stat-val" style="color:var(--emerald);">60.0 FPS Locked</span>
+          <div class="monolith-row">
+            <span class="monolith-label">Viewer Frame Rate</span>
+            <span class="monolith-value" style="color:var(--status-live);">60.0 FPS Locked</span>
           </div>
-          <div class="champ-stat">
-            <span class="champ-stat-label">Scale Accuracy</span>
-            <span class="champ-stat-val">&lt; 2.1% Metric Error</span>
+          <div class="monolith-row">
+            <span class="monolith-label">Metric Scale Error</span>
+            <span class="monolith-value">&lt; 2.1% across 12m</span>
           </div>
-          <div class="champ-stat">
-            <span class="champ-stat-label">Memory Footprint</span>
-            <span class="champ-stat-val">Low GPU VRAM</span>
+          <div class="monolith-row">
+            <span class="monolith-label">Floor Flatness</span>
+            <span class="monolith-value">Δy &lt; 0.02 m</span>
           </div>
         </div>
       </div>
 
-      <!-- Other 9 Models Grid with Rejection Reasons -->
-      <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 16px; color: #cbd5e1;">
-        The Other 9 Evaluated Models &amp; Technical Limitations
+      <!-- 9 Rejected Candidates Grid -->
+      <h3 style="font-size:18px; font-weight:700; color:var(--text-primary); margin-bottom:16px;">
+        The Other 9 Evaluated Models &amp; Specific Failure Causes
       </h3>
-      <div class="other-models-grid">
-        <div class="model-reject-card">
-          <div class="model-reject-top">
-            <span class="model-num-tag">MODEL 02</span>
-            <span class="reject-badge">REJECTED FOR VISUALS</span>
+      <div class="reject-models-matrix">
+        <div class="reject-model-tile">
+          <div class="tile-meta-header">
+            <span class="tile-id">MODEL 02</span>
+            <span class="tile-flaw">MELTED WAX</span>
           </div>
-          <div class="model-reject-name">Trimmed Poisson Mesh</div>
-          <div class="model-reject-why">
-            <b>Why Rejected:</b> Screened Poisson reconstruction attempts to build closed water-tight isosurfaces. In indoor rooms, it creates "melted wax" triangles across unobserved door openings and rounds off sharp table corners.
+          <span class="tile-name">Trimmed Poisson Mesh</span>
+          <span class="tile-reason">Watertight isosurface assumption rounds sharp desk edges and generates artificial convex bubbles across unobserved door openings.</span>
+        </div>
+
+        <div class="reject-model-tile">
+          <div class="tile-meta-header">
+            <span class="tile-id">MODEL 03</span>
+            <span class="tile-flaw">PINHOLE GAPS</span>
+          </div>
+          <span class="tile-name">Ball-Pivoting Mesh (BPA)</span>
+          <span class="tile-reason">Rolling sphere triangulation respects room hollows, but leaves prominent triangular perforations on low-texture whitewashed walls.</span>
+        </div>
+
+        <div class="reject-model-tile">
+          <div class="tile-meta-header">
+            <span class="tile-id">MODEL 04</span>
+            <span class="tile-flaw">AISLE BRIDGING</span>
+          </div>
+          <span class="tile-name">Alpha-Shapes Hull</span>
+          <span class="tile-reason">Alpha concave radius bridges across empty corridors between adjacent student desks, obstructing navigable pathways.</span>
+        </div>
+
+        <div class="reject-model-tile">
+          <div class="tile-meta-header">
+            <span class="tile-id">MODEL 05</span>
+            <span class="tile-flaw">SOFT BEZELS</span>
+          </div>
+          <span class="tile-name">TSDF Marching Cubes</span>
+          <span class="tile-reason">3cm voxel discretization dampens high-frequency geometry, softening sharp monitor bezels, power outlets, and ceiling fan rods.</span>
+        </div>
+
+        <div class="reject-model-tile">
+          <div class="tile-meta-header">
+            <span class="tile-id">MODEL 06</span>
+            <span class="tile-flaw">OVER-SIMPLIFIED</span>
+          </div>
+          <span class="tile-name">Planar CAD BIM Shell</span>
+          <span class="tile-reason">Multi-model RANSAC isolates perimeter floor, ceiling, and walls, but completely ignores interior desks, chairs, and whiteboard.</span>
+        </div>
+
+        <div class="reject-model-tile">
+          <div class="tile-meta-header">
+            <span class="tile-id">MODEL 07</span>
+            <span class="tile-flaw">BLOCKY CUBES</span>
+          </div>
+          <span class="tile-name">3D Voxel Lattice</span>
+          <span class="tile-reason">Generates 5cm³ cubic occupancy voxels. Excellent for robotic collision checks, but aesthetically unsuitable for a human digital twin.</span>
+        </div>
+
+        <div class="reject-model-tile">
+          <div class="tile-meta-header">
+            <span class="tile-id">MODEL 08</span>
+            <span class="tile-flaw">NON-RGB TENSORS</span>
+          </div>
+          <span class="tile-name">LingBot-Map GCT</span>
+          <span class="tile-reason">Encodes geometric curvature tensors into vertex colors for neural segmentation, replacing natural photographic color.</span>
+        </div>
+
+        <div class="reject-model-tile">
+          <div class="tile-meta-header">
+            <span class="tile-id">MODEL 09</span>
+            <span class="tile-flaw">NO SURFACES</span>
+          </div>
+          <span class="tile-name">CAD Bounding Boxes</span>
+          <span class="tile-reason">Represents detected objects as colored 3D bounding wireframes; valuable for semantic inventory, but lacks visual realism.</span>
+        </div>
+
+        <div class="reject-model-tile">
+          <div class="tile-meta-header">
+            <span class="tile-id">MODEL 10</span>
+            <span class="tile-flaw">HIGH DRAW CALLS</span>
+          </div>
+          <span class="tile-name">Oriented Surfels Disks</span>
+          <span class="tile-reason">Renders tangent circular surfels. While superior to triangles, surfels incur 3× higher draw call overhead in WebGL than continuous point buffers.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         SECTION 5: ROBOTICS COSTMAP & HEIGHT SLICING
+         ========================================================================== -->
+    <section id="robotics" class="editorial-section">
+      <div class="section-eyebrow">Robotics Discretization</div>
+      <h2 class="section-headline">Vertical Height Slicing &amp; 2D ROS Costmaps</h2>
+      <p class="section-description">
+        Transforming continuous 3D reconstructions into 2D occupancy grids for autonomous robotics navigation. Floor cables below 8cm and ceiling fixtures above 1.80m are filtered out.
+      </p>
+
+      <div class="robotics-editorial-grid">
+        <div class="costmap-preview-casing">
+          <div class="costmap-image-recess">
+            <img src="assets/costmap/floormap_posecam.png" alt="2D ROS Costmap Grid">
+          </div>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <span style="font-weight:700; color:var(--text-pure); font-size:14px;">2D ROS Occupancy Grid (floormap.png)</span>
+            <span style="font-size:12.5px; color:var(--text-secondary); line-height:1.5;">White represents collision-free walkable floor ($y=0.00\text{ m}$), black represents occupied desk and wall boundaries, and gray denotes unobserved exterior regions.</span>
+            <div class="split-chips" style="margin-top:4px;">
+              <span class="spec-tag">Resolution: 0.05 m/px</span>
+              <span class="spec-tag">Threshold: 254 (Occupied)</span>
+              <span class="spec-tag">ROS 2 Nav2 Spec</span>
+            </div>
           </div>
         </div>
 
-        <div class="model-reject-card">
-          <div class="model-reject-top">
-            <span class="model-num-tag">MODEL 03</span>
-            <span class="reject-badge">REJECTED FOR GAPS</span>
-          </div>
-          <div class="model-reject-name">Ball-Pivoting Mesh (BPA)</div>
-          <div class="model-reject-why">
-            <b>Why Rejected:</b> While BPA prevents ballooning into empty space, uniform white walls with sparse visual features leave prominent triangular pinholes and perforated meshes where points are sparse.
-          </div>
-        </div>
-
-        <div class="model-reject-card">
-          <div class="model-reject-top">
-            <span class="model-num-tag">MODEL 04</span>
-            <span class="reject-badge">REJECTED FOR BRIDGING</span>
-          </div>
-          <div class="model-reject-name">Alpha-Shapes Concave Hull</div>
-          <div class="model-reject-why">
-            <b>Why Rejected:</b> The alpha radius parameter $\alpha$ produces non-physical convex bridge sheets between distinct student chairs and desks, blocking walkable aisles in navigation tests.
-          </div>
-        </div>
-
-        <div class="model-reject-card">
-          <div class="model-reject-top">
-            <span class="model-num-tag">MODEL 05</span>
-            <span class="reject-badge">REJECTED FOR SOFT EDGES</span>
-          </div>
-          <div class="model-reject-name">TSDF Marching Cubes</div>
-          <div class="model-reject-why">
-            <b>Why Rejected:</b> Volumetric zero-crossing Marching Cubes produces clean outer boundaries, but the 3cm voxel discretization blurs sharp monitor bezels, power sockets, and ceiling fan rods.
-          </div>
-        </div>
-
-        <div class="model-reject-card">
-          <div class="model-reject-top">
-            <span class="model-num-tag">MODEL 06</span>
-            <span class="reject-badge">REJECTED FOR SIMPLICITY</span>
-          </div>
-          <div class="model-reject-name">Planar CAD BIM Shell</div>
-          <div class="model-reject-why">
-            <b>Why Rejected:</b> RANSAC planar fitting isolates floor, ceiling, and primary perimeter walls, but discards interior furniture, computers, and whiteboard annotations entirely.
-          </div>
-        </div>
-
-        <div class="model-reject-card">
-          <div class="model-reject-top">
-            <span class="model-num-tag">MODEL 07</span>
-            <span class="reject-badge">ROBOTICS COLLISION ONLY</span>
-          </div>
-          <div class="model-reject-name">3D Voxel Lattice</div>
-          <div class="model-reject-why">
-            <b>Why Rejected for Visuals:</b> Generates blocky Minecraft-style $5\text{ cm}^3$ cube voxels. Excellent for 3D drone/robot collision checking, but visually inappropriate for human digital twin walkthroughs.
-          </div>
-        </div>
-
-        <div class="model-reject-card">
-          <div class="model-reject-top">
-            <span class="model-num-tag">MODEL 08</span>
-            <span class="reject-badge">AI SEGMENTATION ONLY</span>
-          </div>
-          <div class="model-reject-name">LingBot-Map GCT</div>
-          <div class="model-reject-why">
-            <b>Why Rejected for Visuals:</b> Encodes geometric curvature tensors (Gaussian &amp; Mean curvature) into vertex colors. Highly valuable for autonomous semantic segmentation, but replaces natural RGB photorealism.
-          </div>
-        </div>
-
-        <div class="model-reject-card">
-          <div class="model-reject-top">
-            <span class="model-num-tag">MODEL 09</span>
-            <span class="reject-badge">SEMANTIC ONLY</span>
-          </div>
-          <div class="model-reject-name">Digital Twin CAD Boxes</div>
-          <div class="model-reject-why">
-            <b>Why Rejected for Visuals:</b> Represents recognized objects as colored wireframe 3D bounding boxes. Perfect for IoT asset inventory, but lacks visual surface realism.
-          </div>
-        </div>
-
-        <div class="model-reject-card">
-          <div class="model-reject-top">
-            <span class="model-num-tag">MODEL 10</span>
-            <span class="reject-badge">HIGH DRAW CALLS</span>
-          </div>
-          <div class="model-reject-name">Oriented Surfels Disks</div>
-          <div class="model-reject-why">
-            <b>Why Rejected:</b> Renders tangent surface circular disks. While superior to triangles for preserving room openings, surfels require 3× higher draw call overhead in WebGL than continuous point clouds.
+        <div class="costmap-preview-casing">
+          <pre class="inspect-codeblock" style="margin:0;"># floormap.yaml (ROS 2 Nav2 Map Server Spec)
+image: floormap.pgm
+resolution: 0.050000
+origin: [-4.250000, -3.100000, 0.000000]
+negate: 0
+occupied_thresh: 0.65
+free_thresh: 0.196</pre>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <span style="font-weight:700; color:var(--text-pure); font-size:14px;">Vertical Elevation Window: [0.08m, 1.80m]</span>
+            <span style="font-size:12.5px; color:var(--text-secondary); line-height:1.5;">Low carpets and power cords ($h &lt; 0.08\text{ m}$) are ignored; overhead lighting and ceiling ducting ($h &gt; 1.80\text{ m}$) are excluded, isolating only true robot collision obstacles.</span>
+            <div class="split-chips" style="margin-top:4px;">
+              <span class="spec-tag">h_min: 0.08 m</span>
+              <span class="spec-tag">h_max: 1.80 m</span>
+              <span class="spec-tag">Clearance Dilation: r = 0.30 m</span>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SECTION 5: PLAYABLE ROAMING TWIN -->
-    <section id="play-twin">
-      <div class="section-header">
-        <span class="section-tag">Interactive Roaming</span>
-        <h2 class="section-title">Zero-Install First-Person 3D Digital Twin</h2>
-        <p class="section-desc">
-          Walk inside the reconstructed room in your browser just like a video game. Uses Three.js WebGL with desktop FPS PointerLock controls, mobile dual touch joysticks, synthesized footsteps, and a live 2D floor radar.
-        </p>
-      </div>
+    <!-- ==========================================================================
+         SECTION 6: SUBMISSION MASTER HUB & DRIVE MATERIALS
+         ========================================================================== -->
+    <section id="materials" class="editorial-section">
+      <div class="section-eyebrow">Official Competition Deliverables</div>
+      <h2 class="section-headline">Submission Deliverables &amp; Technical Master Hub</h2>
+      <p class="section-description">
+        Strictly adhering to Techfest presentation guidelines for Google Drive master materials. Download the 5-page PDF, obtain the PoseCam APK, and access live prototypes.
+      </p>
 
-      <div class="roaming-showcase">
-        <div class="roaming-left">
-          <h3>FPS First-Person Roaming Twin</h3>
-          <p>
-            Experience true spatial presence. Jump over desks, sprint down aisles, and inspect whiteboard writing from inches away. The live 2D radar in the corner tracks your real-time position and heading coordinates.
-          </p>
-
-          <div class="controls-grid">
-            <div class="ctrl-item">
-              <span class="ctrl-key">W A S D</span>
-              <span>Walk &amp; Strafe</span>
-            </div>
-            <div class="ctrl-item">
-              <span class="ctrl-key">SHIFT</span>
-              <span>Sprint (3.4 m/s)</span>
-            </div>
-            <div class="ctrl-item">
-              <span class="ctrl-key">SPACE</span>
-              <span>Jump over obstacles</span>
-            </div>
-            <div class="ctrl-item">
-              <span class="ctrl-key">C</span>
-              <span>Crouch under desks</span>
-            </div>
-            <div class="ctrl-item">
-              <span class="ctrl-key">1 – 0</span>
-              <span>Switch 3D Models</span>
-            </div>
-            <div class="ctrl-item">
-              <span class="ctrl-key">TOUCH</span>
-              <span>Mobile Dual Joysticks</span>
-            </div>
-          </div>
-
-          <div style="display:flex; flex-wrap:wrap; gap:12px;">
-            <a href="monomap/web/play.html?scene=scan_posecam_1" class="btn-hero btn-emerald">
-              🎮 Launch 3D Roaming Twin
-            </a>
-            <a href="monomap/web/compare.html?scene=scan_posecam_1" class="btn-hero btn-outline">
-              🔬 Open 10-Model Comparison Studio
-            </a>
-          </div>
-        </div>
-
-        <div class="roaming-right">
-          <video class="roaming-preview-img" autoplay muted loop playsinline>
-            <source src="assets/videos/output_3d_digital_twin_reconstruction.mp4" type="video/mp4">
-          </video>
-          <div class="roaming-right-badge">
-            <span style="color:#34d399; font-weight:700;">● WebGL 60 FPS Engine</span>
-            <span style="color:var(--text-muted); font-size:11px;">Desktop &amp; Mobile Compatible</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 6: ROBOTICS & 2D ROS COSTMAP -->
-    <section id="robotics">
-      <div class="section-header">
-        <span class="section-tag">Autonomous Robotics</span>
-        <h2 class="section-title">Spatial Discretization &amp; 2D ROS Costmaps</h2>
-        <p class="section-desc">
-          Converting continuous 3D digital twins into obstacle-free 2D occupancy grids for autonomous robotics navigation via height bandpass slicing.
-        </p>
-      </div>
-
-      <div class="robotics-grid">
-        <div class="robot-card">
-          <div class="costmap-img-box">
-            <img src="assets/costmap/floormap_posecam.png" alt="2D ROS Costmap Floor Grid">
-          </div>
-          <div>
-            <h4 style="font-size:17px; font-weight:700; margin-bottom:6px;">2D ROS Occupancy Grid (floormap.png)</h4>
-            <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">
-              Standard ROS 2 Nav2 costmap. White represents obstacle-free walkable floor, black represents occupied walls and desk boundaries, and gray represents unobserved exterior areas.
-            </p>
-          </div>
-          <div class="video-chips">
-            <span class="chip">Resolution: 0.05 m/px</span>
-            <span class="chip">Occupancy Threshold: 254</span>
-            <span class="chip">Format: PGM / PNG / YAML</span>
-          </div>
-        </div>
-
-        <div class="robot-card">
-          <div style="background:#090d19; border:1px solid var(--border); border-radius:10px; padding:18px; font-family:'JetBrains Mono', monospace; font-size:11.5px; color:#38bdf8; overflow-x:auto;">
-            <div style="color:var(--text-dim); margin-bottom:8px;"># floormap.yaml (ROS 2 Nav2 Map Server Spec)</div>
-            image: floormap.pgm<br>
-            resolution: 0.050000<br>
-            origin: [-4.250000, -3.100000, 0.000000]<br>
-            negate: 0<br>
-            occupied_thresh: 0.65<br>
-            free_thresh: 0.196
-          </div>
-          <div>
-            <h4 style="font-size:17px; font-weight:700; margin-bottom:6px;">Height Bandpass Slicing: [0.08m, 1.80m]</h4>
-            <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">
-              Points are filtered within a strict vertical elevation band: floor cables, door sills, and carpets below 8 cm are ignored, as are chandeliers and ceiling lights above 1.80 m. Only physical human obstacles (desks, chairs, walls) are marked occupied.
-            </p>
-          </div>
-          <div class="video-chips">
-            <span class="chip">h_min: 0.08 m</span>
-            <span class="chip">h_max: 1.80 m</span>
-            <span class="chip">Clearance Dilation: r = 0.30 m</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 7: ABSTRACT & DOWNLOADS -->
-    <section id="abstract">
-      <div class="section-header">
-        <span class="section-tag">Competition Submission</span>
-        <h2 class="section-title">Official Deliverables &amp; Technical Documents</h2>
-        <p class="section-desc">
-          Download the formal 5-page submission PDF, the PoseCam Android sensor logging APK, and explore the complete open-source codebase.
-        </p>
-      </div>
-
-      <div class="downloads-grid">
+      <div class="submission-materials-grid">
         <!-- 1. Technical Abstract PDF -->
-        <div class="download-card">
+        <div class="material-card">
           <div>
-            <div class="dl-icon" style="background:rgba(56, 189, 248, 0.15); color:var(--accent);">📄</div>
-            <div class="dl-title" style="margin-top:12px;">5-Page Technical Abstract PDF</div>
-            <div class="dl-desc" style="margin-top:6px;">
-              Strict 5-page competition document prepared for IIT Bombay Techfest judges covering Executive Summary, SOP, Architecture, SE(3) Math, Benchmarks, and Roadmap.
-            </div>
+            <span class="material-index">DOC // 01</span>
+            <h3 class="material-title">5-Page Technical Abstract PDF</h3>
+            <p class="material-desc">
+              Formal submission document formatted strictly to the 5-page competition limit, covering Executive Summary, Dual-Stream Architecture, SOP flight-path, SE(3) Math, Benchmarks, and Roadmap.
+            </p>
           </div>
-          <a href="NAMMA_SPACE_ROUND1_TECHNICAL_ABSTRACT.pdf" class="btn-hero btn-accent" download>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          <a href="NAMMA_SPACE_ROUND1_TECHNICAL_ABSTRACT.pdf" class="btn-tactile btn-tactile-primary" download>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
             Download Abstract PDF
           </a>
         </div>
 
         <!-- 2. PoseCam APK -->
-        <div class="download-card">
+        <div class="material-card">
           <div>
-            <div class="dl-icon" style="background:rgba(245, 158, 11, 0.15); color:var(--amber);">📲</div>
-            <div class="dl-title" style="margin-top:12px;">PoseCam Android Scanner APK</div>
-            <div class="dl-desc" style="margin-top:6px;">
-              Custom native Android Kotlin application with 3-second gravity calibration, ARCore 6-DoF VIO, 200 Hz IMU logging, and public Downloads dual-tab exporter.
-            </div>
+            <span class="material-index">APP // 02</span>
+            <h3 class="material-title">PoseCam Android Scanner APK</h3>
+            <p class="material-desc">
+              Custom native Kotlin scanner application with 3-second gravity stabilizer, ARCore 6-DoF VIO, 200 Hz IMU logging, and dual-tab public Downloads exporter.
+            </p>
           </div>
-          <a href="monomap/web/download.html" class="btn-hero btn-emerald">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-            Download APK (3.8 MB)
+          <a href="monomap/web/download.html" class="btn-tactile">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            Get PoseCam APK (3.8 MB)
           </a>
         </div>
 
-        <!-- 3. GitHub & Master Spec -->
-        <div class="download-card">
+        <!-- 3. Prototype Hub -->
+        <div class="material-card">
           <div>
-            <div class="dl-icon" style="background:rgba(168, 85, 247, 0.15); color:var(--purple);">🐙</div>
-            <div class="dl-title" style="margin-top:12px;">GitHub Open Source &amp; Handover</div>
-            <div class="dl-desc" style="margin-top:6px;">
-              Full Python SLAM pipeline, Android Kotlin source code, Three.js web viewer, ROS costmap exporters, and developer AI handover documentation.
-            </div>
+            <span class="material-index">WEB // 03</span>
+            <h3 class="material-title">Interactive Prototypes &amp; Git</h3>
+            <p class="material-desc">
+              Open-source pipeline on GitHub with zero-install WebGL free-roaming viewer, 10-model studio, ROS 2 costmap exporters, and developer handover documentation.
+            </p>
           </div>
-          <a href="https://github.com/atharv-namdeo/3d-mapping" target="_blank" rel="noopener" class="btn-hero btn-outline">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
-            View on GitHub
+          <a href="https://github.com/atharv-namdeo/3d-mapping" target="_blank" rel="noopener" class="btn-tactile">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+            GitHub Repository
           </a>
         </div>
       </div>
     </section>
 
-  </div>
+  </main>
 
-  <!-- FOOTER -->
-  <footer>
+  <!-- ==========================================================================
+       EDITORIAL FOOTER
+       ========================================================================== -->
+  <footer class="master-footer container">
     <div>
-      <strong>NAMMA SPACE</strong> · Intelligent Spatial Engine &amp; Photorealistic 3D Digital Twin
+      <strong>NAMMA SPACE</strong> · Intelligent Spatial Computing Engine &amp; Photorealistic 3D Digital Twin
     </div>
     <div>
       Team CRA003 · Lead Architect: Atharv Namdeo · Affiliation: Indian Institute of Technology
@@ -1476,7 +1520,9 @@ imu.csv                    # timestamp, ax, ay, az, gx, gy, gz @ 200 Hz</pre>
     </div>
   </footer>
 
-  <!-- THREE.JS IMPORT & LIVE SIMULATION SCRIPT -->
+  <!-- ==========================================================================
+       THREE.JS SCRIPT: NEO-SKEUOMORPHIC 3D SENSOR SIMULATION
+       ========================================================================== -->
   <script type="importmap">
   {
     "imports": {
@@ -1495,93 +1541,91 @@ imu.csv                    # timestamp, ax, ay, az, gx, gy, gz @ 200 Hz</pre>
     const container = canvas.parentElement;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x060a16);
-    scene.fog = new THREE.FogExp2(0x060a16, 0.08);
+    scene.background = new THREE.Color(0x0a0b0e);
+    scene.fog = new THREE.FogExp2(0x0a0b0e, 0.08);
 
     const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
-    camera.position.set(2.8, 2.2, 3.4);
+    camera.position.set(2.4, 1.8, 3.0);
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.0;
 
     const controls = new OrbitControls(camera, canvas);
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
-    controls.target.set(0, 0.4, 0);
+    controls.target.set(0, 0.35, 0);
 
     // Floor Grid (Simulating Real-World Ground at Y = 0)
-    const grid = new THREE.GridHelper(10, 20, 0x0284c7, 0x1e293b);
+    const grid = new THREE.GridHelper(8, 16, 0x3a404d, 0x181a20);
     grid.position.y = 0;
     scene.add(grid);
 
-    // Ambient & Directional Lights
-    const ambLight = new THREE.AmbientLight(0xffffff, 0.6);
+    // Soft Ambient & Directional Lighting
+    const ambLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambLight);
 
-    const dirLight = new THREE.DirectionalLight(0x38bdf8, 1.2);
-    dirLight.position.set(4, 6, 4);
+    const dirLight = new THREE.DirectionalLight(0xd4a373, 1.0);
+    dirLight.position.set(3, 5, 3);
     scene.add(dirLight);
 
-    const pointLight = new THREE.PointLight(0x10b981, 1.5, 10);
-    pointLight.position.set(-2, 3, -2);
-    scene.add(pointLight);
+    const rimLight = new THREE.DirectionalLight(0xa0b2c6, 0.8);
+    rimLight.position.set(-3, 3, -3);
+    scene.add(rimLight);
 
     // Create 3D Smartphone Model Group
     const phoneGroup = new THREE.Group();
 
-    // Phone Body
-    const bodyGeom = new THREE.BoxGeometry(0.36, 0.72, 0.04);
+    // Matte Titanium Phone Chassis
+    const bodyGeom = new THREE.BoxGeometry(0.34, 0.68, 0.038);
     const bodyMat = new THREE.MeshStandardMaterial({
-      color: 0x0f172a,
-      metalness: 0.8,
-      roughness: 0.2
+      color: 0x1f232b,
+      metalness: 0.85,
+      roughness: 0.25
     });
     const phoneBody = new THREE.Mesh(bodyGeom, bodyMat);
     phoneGroup.add(phoneBody);
 
-    // Phone Screen Glass
-    const screenGeom = new THREE.PlaneGeometry(0.33, 0.68);
+    // Dark Display Glass
+    const screenGeom = new THREE.PlaneGeometry(0.31, 0.64);
     const screenMat = new THREE.MeshStandardMaterial({
-      color: 0x0369a1,
+      color: 0x090a0d,
       roughness: 0.1,
-      metalness: 0.9,
-      emissive: 0x0284c7,
-      emissiveIntensity: 0.25
+      metalness: 0.95
     });
     const screen = new THREE.Mesh(screenGeom, screenMat);
-    screen.position.z = 0.021;
+    screen.position.z = 0.02;
     phoneGroup.add(screen);
 
-    // Camera Lens on Back
-    const lensGeom = new THREE.CylinderGeometry(0.04, 0.04, 0.015, 16);
-    const lensMat = new THREE.MeshStandardMaterial({ color: 0x38bdf8, metalness: 0.9, roughness: 0.1 });
+    // Camera Lens Assembly on Rear
+    const lensGeom = new THREE.CylinderGeometry(0.036, 0.036, 0.012, 24);
+    const lensMat = new THREE.MeshStandardMaterial({ color: 0x111317, metalness: 0.9, roughness: 0.1 });
     const lens = new THREE.Mesh(lensGeom, lensMat);
     lens.rotation.x = Math.PI / 2;
-    lens.position.set(0.1, 0.24, -0.025);
+    lens.position.set(0.09, 0.22, -0.024);
     phoneGroup.add(lens);
 
-    // Projected Camera Frustum Pyramid (Laser Depth Beam)
+    // Projected Camera Frustum Pyramid (Soft Cyan/Ice Wireframe)
     const frustumGeom = new THREE.BufferGeometry();
     const fVertices = new Float32Array([
       // Apex at camera lens
-      0.1, 0.24, -0.03, -0.6, -0.6, -1.8,
-      0.1, 0.24, -0.03,  0.8, -0.6, -1.8,
-      0.1, 0.24, -0.03,  0.8,  0.8, -1.8,
-      0.1, 0.24, -0.03, -0.6,  0.8, -1.8,
+      0.09, 0.22, -0.024, -0.55, -0.55, -1.6,
+      0.09, 0.22, -0.024,  0.75, -0.55, -1.6,
+      0.09, 0.22, -0.024,  0.75,  0.75, -1.6,
+      0.09, 0.22, -0.024, -0.55,  0.75, -1.6,
       // Base rectangle
-      -0.6, -0.6, -1.8,  0.8, -0.6, -1.8,
-       0.8, -0.6, -1.8,  0.8,  0.8, -1.8,
-       0.8,  0.8, -1.8, -0.6,  0.8, -1.8,
-      -0.6,  0.8, -1.8, -0.6, -0.6, -1.8
+      -0.55, -0.55, -1.6,  0.75, -0.55, -1.6,
+       0.75, -0.55, -1.6,  0.75,  0.75, -1.6,
+       0.75,  0.75, -1.6, -0.55,  0.75, -1.6,
+      -0.55,  0.75, -1.6, -0.55, -0.55, -1.6
     ]);
     frustumGeom.setAttribute('position', new THREE.BufferAttribute(fVertices, 3));
     const frustumMat = new THREE.LineBasicMaterial({
-      color: 0x38bdf8,
+      color: 0xa0b2c6,
       transparent: true,
-      opacity: 0.45,
-      linewidth: 1.5
+      opacity: 0.4
     });
     const frustumLines = new THREE.LineSegments(frustumGeom, frustumMat);
     phoneGroup.add(frustumLines);
@@ -1590,30 +1634,30 @@ imu.csv                    # timestamp, ax, ay, az, gx, gy, gz @ 200 Hz</pre>
     const gravityArrow = new THREE.ArrowHelper(
       new THREE.Vector3(0, -1, 0),
       new THREE.Vector3(0, 0, 0),
-      0.8,
-      0xf59e0b,
-      0.18,
-      0.1
+      0.75,
+      0xd4a373,
+      0.15,
+      0.08
     );
     phoneGroup.add(gravityArrow);
 
     // 200 Hz Gyroscope Rate Arc Rings
-    const ringGeom = new THREE.TorusGeometry(0.48, 0.008, 8, 32);
-    const ringMat = new THREE.MeshBasicMaterial({ color: 0x10b981, transparent: true, opacity: 0.6 });
+    const ringGeom = new THREE.TorusGeometry(0.44, 0.006, 8, 32);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0x4ade80, transparent: true, opacity: 0.5 });
     const gyroRing = new THREE.Mesh(ringGeom, ringMat);
     gyroRing.rotation.x = Math.PI / 2;
     phoneGroup.add(gyroRing);
 
     scene.add(phoneGroup);
 
-    // Sample Room Obstacles
-    const tableGeom = new THREE.BoxGeometry(1.4, 0.6, 0.9);
-    const tableMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.6 });
+    // Sample Desk Obstacle in Room
+    const tableGeom = new THREE.BoxGeometry(1.2, 0.55, 0.8);
+    const tableMat = new THREE.MeshStandardMaterial({ color: 0x14171d, roughness: 0.7 });
     const table = new THREE.Mesh(tableGeom, tableMat);
-    table.position.set(0, 0.3, -1.2);
+    table.position.set(0, 0.275, -1.0);
     scene.add(table);
 
-    // Window Resize Handler
+    // Resize Handler
     window.addEventListener("resize", () => {
       camera.aspect = container.clientWidth / container.clientHeight;
       camera.updateProjectionMatrix();
@@ -1622,37 +1666,37 @@ imu.csv                    # timestamp, ax, ay, az, gx, gy, gz @ 200 Hz</pre>
 
     // Animation Loop
     let clock = new THREE.Clock();
-    const telemG = document.getElementById("telemG");
+    const simTelemG = document.getElementById("simTelemG");
 
     function animate() {
       requestAnimationFrame(animate);
       const t = clock.getElapsedTime();
 
       // Smooth Trajectory (Walking Perimeter Path)
-      const posX = Math.sin(t * 0.7) * 0.6;
-      const posZ = Math.cos(t * 0.7) * 0.5 + 0.4;
-      const posY = 1.1 + Math.sin(t * 1.8) * 0.04; // subtle walking bob
+      const posX = Math.sin(t * 0.6) * 0.55;
+      const posZ = Math.cos(t * 0.6) * 0.45 + 0.35;
+      const posY = 1.05 + Math.sin(t * 1.6) * 0.03;
 
       phoneGroup.position.set(posX, posY, posZ);
 
-      // Pitch phone slightly downward (mimicking real scanning posture)
-      phoneGroup.rotation.x = -0.32 + Math.sin(t * 0.9) * 0.08;
-      phoneGroup.rotation.y = Math.sin(t * 0.5) * 0.3;
-      phoneGroup.rotation.z = Math.cos(t * 1.1) * 0.05;
+      // Subtle Scanning Tilt Posture
+      phoneGroup.rotation.x = -0.3 + Math.sin(t * 0.8) * 0.06;
+      phoneGroup.rotation.y = Math.sin(t * 0.4) * 0.25;
+      phoneGroup.rotation.z = Math.cos(t * 1.0) * 0.04;
 
       // Pulse gravity arrow
-      const arrowLen = 0.75 + Math.sin(t * 4.0) * 0.06;
-      gravityArrow.setLength(arrowLen, 0.16, 0.09);
+      const arrowLen = 0.72 + Math.sin(t * 3.5) * 0.05;
+      gravityArrow.setLength(arrowLen, 0.14, 0.08);
 
       // Spin gyro ring
-      gyroRing.rotation.z = t * 2.0;
+      gyroRing.rotation.z = t * 1.8;
 
-      // Update telemetry text periodically
-      if (telemG && Math.floor(t * 10) % 5 === 0) {
-        const gx = (Math.sin(t) * 0.15).toFixed(2);
-        const gy = (-9.81 + Math.cos(t * 1.5) * 0.08).toFixed(2);
-        const gz = (Math.cos(t) * 0.12).toFixed(2);
-        telemG.textContent = `[${gx}, ${gy}, ${gz}]`;
+      // Telemetry update
+      if (simTelemG && Math.floor(t * 10) % 5 === 0) {
+        const gx = (Math.sin(t) * 0.12).toFixed(2);
+        const gy = (-9.81 + Math.cos(t * 1.4) * 0.06).toFixed(2);
+        const gz = (Math.cos(t) * 0.09).toFixed(2);
+        simTelemG.textContent = `[${gx}, ${gy}, ${gz}]`;
       }
 
       controls.update();
@@ -1660,11 +1704,25 @@ imu.csv                    # timestamp, ax, ay, az, gx, gy, gz @ 200 Hz</pre>
     }
     animate();
 
-    // Pipeline Stage Selector
-    const pipelineStages = [
+    // Sound toggle for hero film
+    window.toggleFilmSound = function() {
+      const v = document.getElementById("heroFilm");
+      const btnLabel = document.getElementById("soundLabel");
+      if (v.muted) {
+        v.muted = false;
+        btnLabel.textContent = "MUTE AUDIO";
+      } else {
+        v.muted = true;
+        btnLabel.textContent = "ENABLE AUDIO";
+      }
+    };
+
+    // Pipeline Data Matrix
+    const pipelineData = [
       {
-        title: "Stage 1: PoseCam Sensor Ingestion & Hardware Gravity Vector",
-        desc: "The smartphone records native RGB video while querying the device's hardware STMicro accelerometer and gyroscope at 200 Hz. ARCore 6-DoF VIO calculates real-world camera transformations locked directly to Earth's gravity vector.",
+        title: "Stage 01: Sensor Ingestion & Hardware Gravity Vector",
+        module: "monomap/android/PoseCam",
+        desc: "PoseCam logs native camera frames while sampling the phone's hardware accelerometer and gyroscope at 200 Hz. ARCore 6-DoF VIO calculates real-world camera transformations locked directly to Earth's gravity vector.",
         code: `# Raw Output Tuple from PoseCam Android Logger:
 frames/frame_%05d.jpg      # Native RGB 640x480 @ 30 FPS
 poses.csv                  # timestamp, tx, ty, tz, qx, qy, qz, qw (Hamilton)
@@ -1672,17 +1730,19 @@ intrinsics.json            # fx=443.78, fy=442.76, cx=321.46, cy=242.94
 imu.csv                    # timestamp, ax, ay, az, gx, gy, gz @ 200 Hz`
       },
       {
-        title: "Stage 2: Automated Quality Gates & Laplacian Blur Rejection",
+        title: "Stage 02: Automated Quality Gates & Laplacian Blur Rejection",
+        module: "monomap/src/extract_frames.py",
         desc: "Raw video frames pass through automated quality filters. Blurry frames from rapid operator movement are discarded using Laplacian variance thresholding. Trajectory keyframes are decimated by minimum displacement strides.",
         code: `def filter_blur(image, min_var=100.0):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     score = cv2.Laplacian(gray, cv2.CV_64F).var()
     return score >= min_var  # Rejects motion blur < 100.0
 
-# Keyframe Stride: |Δt| > 0.15 m or |Δθ| > 8.0°`
+# Keyframe Decimation: |Δt| > 0.15 m or |Δθ| > 8.0°`
       },
       {
-        title: "Stage 3: Depth-Anything-V2 Metric Indoor Neural Depth",
+        title: "Stage 03: Depth-Anything-V2 Metric Indoor Neural Depth",
+        module: "monomap/src/depth.py",
         desc: "Rather than arbitrary relative depth, Depth-Anything-V2 Metric Indoor ViT estimates scale-consistent metric distances in meters (1.0 = 1 meter). This resolves the fundamental monocular scale ambiguity without requiring LiDAR.",
         code: `# Neural Metric Indoor Depth Estimation
 depth_tensor = model.infer_image(frame_bgr)  # Physical meters (z in [0.2m, 15m])
@@ -1691,7 +1751,8 @@ Y_c = (v - cy) * depth / fy
 Z_c = depth`
       },
       {
-        title: "Stage 4: Coordinate Alignment & Volumetric TSDF Fusion",
+        title: "Stage 04: Coordinate Alignment & Volumetric TSDF Fusion",
+        module: "monomap/src/reconstruct.py",
         desc: "ARCore OpenGL coordinates are converted to OpenCV via diagonal transformation matrix T_GL_TO_CV. Depth frames and metric poses are fused into an Open3D ScalableTSDFVolume with a 3cm voxel grid and 9cm truncation band.",
         code: `T_GL_TO_CV = np.diag([1.0, -1.0, -1.0, 1.0])
 T_world_cv = T_world_gl @ T_GL_TO_CV
@@ -1703,7 +1764,8 @@ volume = o3d.pipelines.integration.ScalableTSDFVolume(
 )`
       },
       {
-        title: "Stage 5: Multi-Representation Delivery & Robotics Costmap",
+        title: "Stage 05: Multi-Representation Delivery & Robotics Costmap",
+        module: "monomap/src/occupancy.py",
         desc: "The fused 3D model is exported across the 10-representation suite (championing Model 1 Dense Metric Cloud). Floor height bandpass slicing [0.08m, 1.80m] generates ROS 2 Nav2 2D occupancy costmaps for obstacle-aware robotics navigation.",
         code: `# ROS 2 Navigation Costmap Export
 walkable_mask = (height >= 0.08) & (height <= 1.80)
@@ -1712,14 +1774,15 @@ export_ros_costmap("floormap.pgm", "floormap.yaml", costmap_2d)`
       }
     ];
 
-    window.selectPipeNode = function(idx) {
-      document.querySelectorAll(".pipe-node").forEach((node, i) => {
-        node.classList.toggle("active", i === idx);
+    window.activateStep = function(idx) {
+      document.querySelectorAll(".pipe-step-card").forEach((card, i) => {
+        card.classList.toggle("active", i === idx);
       });
-      const data = pipelineStages[idx];
-      document.getElementById("pipeDetailTitle").textContent = data.title;
-      document.getElementById("pipeDetailDesc").textContent = data.desc;
-      document.getElementById("pipeDetailCode").textContent = data.code;
+      const data = pipelineData[idx];
+      document.getElementById("stepTitle").textContent = data.title;
+      document.getElementById("stepModule").textContent = data.module;
+      document.getElementById("stepDesc").textContent = data.desc;
+      document.getElementById("stepCode").textContent = data.code;
     };
   </script>
 </body>
