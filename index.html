@@ -95,35 +95,44 @@
        NAVIGATION: TACTILE EDITORIAL HEADER
        ========================================================================== */
     .nav-bar {
-      position: sticky; top: 20px; z-index: 1000;
-      margin: 20px auto 0 auto;
-      max-width: 1216px;
-      padding: 10px 14px;
-      background: rgba(19, 22, 27, 0.72);
-      backdrop-filter: blur(24px) saturate(140%);
+      position: sticky; top: 16px; z-index: 1000;
+      margin: 16px auto 0 auto;
+      max-width: 1240px;
+      width: calc(100% - 32px);
+      height: 56px;
+      padding: 0 16px;
+      background: rgba(18, 21, 26, 0.88);
+      backdrop-filter: blur(28px) saturate(150%);
+      -webkit-backdrop-filter: blur(28px) saturate(150%);
       border: 1px solid var(--border-medium);
       border-radius: var(--radius-pill);
       box-shadow: var(--shadow-soft), var(--shadow-inset-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 12px;
+      white-space: nowrap;
+      box-sizing: border-box;
     }
 
     .brand-cluster {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       text-decoration: none;
-      padding-left: 8px;
+      padding-left: 2px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .brand-mark {
       width: 32px; height: 32px;
+      min-width: 32px;
       border-radius: 50%;
       background: linear-gradient(145deg, #242932, #14161a);
       border: 1px solid var(--border-highlight);
       display: flex; align-items: center; justify-content: center;
       box-shadow: inset 0 1px 1px rgba(255,255,255,0.1), 0 2px 4px rgba(0,0,0,0.5);
+      flex-shrink: 0;
     }
     .brand-mark svg {
       width: 15px; height: 15px;
@@ -132,79 +141,105 @@
     .brand-text {
       display: flex;
       flex-direction: column;
+      line-height: 1.15;
     }
     .brand-name {
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 700;
       letter-spacing: 0.8px;
       color: var(--text-pure);
       text-transform: uppercase;
+      white-space: nowrap;
     }
     .brand-context {
-      font-size: 10px;
+      font-size: 9.5px;
       font-family: 'JetBrains Mono', monospace;
       color: var(--text-muted);
-      letter-spacing: 0.4px;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
     }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 4px;
       list-style: none;
+      margin: 0;
+      padding: 0;
+      white-space: nowrap;
+      flex-shrink: 1;
+    }
+    .nav-links li {
+      display: inline-flex;
+      margin: 0;
+      padding: 0;
+      white-space: nowrap;
     }
     .nav-links a {
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 500;
       color: var(--text-secondary);
       text-decoration: none;
-      padding: 6px 14px;
+      padding: 6px 11px;
       border-radius: var(--radius-pill);
-      transition: all 0.2s var(--transition-smooth);
+      white-space: nowrap !important;
+      display: inline-block;
+      line-height: 1.2;
+      transition: all 0.18s var(--transition-smooth);
     }
     .nav-links a:hover {
       color: var(--text-pure);
-      background: rgba(255, 255, 255, 0.04);
+      background: rgba(255, 255, 255, 0.06);
     }
 
     .nav-actions {
       display: flex;
       align-items: center;
       gap: 8px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .status-pill {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      padding: 5px 12px;
+      gap: 6px;
+      padding: 5px 10px;
       border-radius: var(--radius-pill);
       background: rgba(74, 222, 128, 0.08);
       border: 1px solid rgba(74, 222, 128, 0.2);
-      font-size: 11px;
+      font-size: 10.5px;
       font-family: 'JetBrains Mono', monospace;
       color: var(--status-live);
+      white-space: nowrap !important;
+      line-height: 1;
     }
     .status-dot {
       width: 6px; height: 6px;
+      min-width: 6px;
       border-radius: 50%;
       background: var(--status-live);
       box-shadow: 0 0 6px var(--status-live);
+      flex-shrink: 0;
     }
 
     .btn-tactile {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 18px;
+      justify-content: center;
+      gap: 7px;
+      padding: 7px 16px;
       border-radius: var(--radius-pill);
       background: linear-gradient(180deg, #2a2e38 0%, #1e2229 100%);
       border: 1px solid var(--border-highlight);
       color: var(--text-pure);
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 600;
       text-decoration: none;
+      white-space: nowrap !important;
+      line-height: 1.2;
       box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.12);
       transition: all 0.2s var(--transition-smooth);
+      flex-shrink: 0;
     }
     .btn-tactile:hover {
       transform: translateY(-1px);
@@ -216,6 +251,7 @@
       color: #0d0f12;
       border-color: #ffffff;
       box-shadow: 0 4px 14px rgba(255,255,255,0.15), inset 0 1px 1px rgba(255,255,255,0.8);
+      white-space: nowrap !important;
     }
     .btn-tactile-primary:hover {
       background: linear-gradient(180deg, #ffffff 0%, #e2e4e8 100%);
@@ -937,6 +973,11 @@
     /* ==========================================================================
        RESPONSIVE BREAKPOINTS
        ========================================================================== */
+    @media (max-width: 1200px) {
+      .nav-links { gap: 2px; }
+      .nav-links a { padding: 5px 8px; font-size: 11.5px; }
+      .brand-context { display: none; }
+    }
     @media (max-width: 1024px) {
       .hero-headline-block { grid-template-columns: 1fr; }
       .hero-title { font-size: 42px; }
@@ -947,11 +988,15 @@
       .robotics-editorial-grid { grid-template-columns: 1fr; }
       .submission-materials-grid { grid-template-columns: 1fr; }
       .nav-links { display: none; }
+      .status-pill { display: none; }
     }
     @media (max-width: 640px) {
       .hero-title { font-size: 32px; }
       .reject-models-matrix { grid-template-columns: 1fr; }
       .split-verification-grid { grid-template-columns: 1fr; }
+      .nav-bar { padding: 0 10px; height: 50px; }
+      .brand-name { font-size: 12px; }
+      .btn-tactile { padding: 6px 12px; font-size: 11px; }
     }
   </style>
 </head>
@@ -973,13 +1018,13 @@
       </a>
 
       <ul class="nav-links">
-        <li><a href="#cinematic">Concept Film</a></li>
-        <li><a href="#verification">Input / Output</a></li>
+        <li><a href="#cinematic">Film</a></li>
+        <li><a href="#verification">Walkthrough</a></li>
         <li><a href="#simulator">Sensor VIO</a></li>
         <li><a href="#pipeline">Architecture</a></li>
-        <li><a href="#champion">Model 1 Suite</a></li>
-        <li><a href="#robotics">Robotics Map</a></li>
-        <li><a href="#materials">Submission Hub</a></li>
+        <li><a href="#champion">Model 1</a></li>
+        <li><a href="#robotics">Costmap</a></li>
+        <li><a href="#materials">Docs</a></li>
       </ul>
 
       <div class="nav-actions">
@@ -988,7 +1033,7 @@
           <span>VIO_STABLE</span>
         </div>
         <a href="monomap/web/play.html?scene=scan_posecam_1" class="btn-tactile btn-tactile-primary">
-          Enter 3D Roamer
+          Play 3D Roamer &rarr;
         </a>
       </div>
     </nav>

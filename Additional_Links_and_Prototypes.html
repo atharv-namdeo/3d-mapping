@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Techfest CRA003 Master Links &amp; Prototypes · Namma Space</title>
+
+<style>
+  @page {
+    size: A4;
+    margin: 14mm 14mm 14mm 14mm;
+    @bottom-right {
+      content: "Page " counter(page) " of " counter(pages);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7.5pt;
+      color: #64748b;
+    }
+    @bottom-left {
+      content: "IIT Bombay Techfest 2026–27 · Namma Space CRA003";
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7.5pt;
+      color: #64748b;
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #0d0f12;
+    color: #e2e4e9;
+    line-height: 1.45;
+    font-size: 9pt;
+    margin: 0;
+    padding: 0;
+  }
+
+  .page {
+    height: 268mm;
+    max-height: 268mm;
+    overflow: hidden;
+    page-break-after: always;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2mm 0;
+  }
+  .page:last-child {
+    page-break-after: avoid;
+  }
+
+  .meta-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.5pt;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .meta-tag {
+    color: #d4a373;
+    font-weight: 700;
+  }
+
+  h1 {
+    font-size: 17pt;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.5px;
+    margin: 0 0 4px 0;
+    line-height: 1.15;
+  }
+  .author-strip {
+    font-size: 8pt;
+    color: #94a3b8;
+    margin-bottom: 12px;
+  }
+
+  h2 {
+    font-size: 11pt;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.2px;
+    margin: 10px 0 5px 0;
+    border-left: 3px solid #d4a373;
+    padding-left: 8px;
+    text-transform: uppercase;
+  }
+
+  h3 {
+    font-size: 9pt;
+    font-weight: 700;
+    color: #e2e4e9;
+    margin: 8px 0 3px 0;
+  }
+
+  p {
+    margin: 0 0 6px 0;
+    color: #9aa0ac;
+  }
+  p b, p strong {
+    color: #f1f2f5;
+  }
+
+  .card-box {
+    background: #14171d;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin: 8px 0;
+  }
+
+  .highlight-gold {
+    color: #d4a373;
+    font-weight: 600;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0;
+    font-size: 8pt;
+    background: #121419;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  th, td {
+    padding: 5px 8px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    text-align: left;
+  }
+  th {
+    background: #1a1e26;
+    color: #ffffff;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.5pt;
+    text-transform: uppercase;
+  }
+  td {
+    color: #9aa0ac;
+  }
+  td b {
+    color: #f1f2f5;
+  }
+
+  .code-block {
+    background: #090a0d;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.5pt;
+    color: #a0b2c6;
+    line-height: 1.4;
+    margin: 6px 0;
+  }
+
+  .math {
+    font-family: 'JetBrains Mono', monospace;
+    color: #d4a373;
+    font-size: 8pt;
+  }
+
+  ul {
+    margin: 0 0 6px 0;
+    padding-left: 18px;
+    color: #9aa0ac;
+  }
+  li {
+    margin-bottom: 3px;
+  }
+
+  .page-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7pt;
+    color: #64748b;
+    text-align: center;
+  }
+</style>
+
+</head>
+<body>
+
+<div class="page">
+  <div>
+    <div class="meta-header">
+      <span>IIT Bombay Techfest 2026–27 · Track CRA003</span>
+      <span class="meta-tag">Master Google Drive Materials Hub</span>
+    </div>
+
+    <h1>Namma Space: Submission Links &amp; Interactive Prototypes Master Hub</h1>
+    <div class="author-strip">
+      <b>Team CRA003</b> · Lead Architect: Atharv Namdeo · Affiliation: Indian Institute of Technology
+    </div>
+
+    <div class="card-box" style="border-left: 3px solid #d4a373;">
+      <h3 style="color:#d4a373; margin-top:0;">COMPLIANCE NOTICE (TECHFEST PAGE 5 SUBMISSION GUIDELINES)</h3>
+      <p style="margin:0; font-size:8pt; color:#cbd5e1;">
+        "If your team includes additional links, live web demos, prototype access URLs, or supplementary technical documents inside your Google Drive folder, they must be neatly formatted and presented inside a single organized master PDF or Google Doc (e.g., Additional_Links_and_Prototypes.pdf). Loose links or unorganized files inside the Drive folder will not be reviewed by judges. Ensure all folder permissions remain open ('Anyone with the link can view')."
+      </p>
+    </div>
+
+    <h2>1. Live Web Demos &amp; Zero-Install Interactive Prototypes</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Deliverable Prototype</th>
+          <th>Live Access URL</th>
+          <th>Key Functionality Tested</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Master Submission Portal</b></td>
+          <td><b>https://atharv-namdeo.github.io/3d-mapping/</b></td>
+          <td>Complete submission hub, side-by-side videos, 3D sensor simulation, pipeline flow.</td>
+        </tr>
+        <tr>
+          <td><b>First-Person 3D Roaming Twin</b></td>
+          <td><b>https://atharv-namdeo.github.io/3d-mapping/monomap/web/play.html</b></td>
+          <td>Desktop WASD + PointerLock, sprint, jump, crouch, audio footsteps, live 2D floor radar.</td>
+        </tr>
+        <tr>
+          <td><b>10-Model 3D Comparison Studio</b></td>
+          <td><b>https://atharv-namdeo.github.io/3d-mapping/monomap/web/compare.html</b></td>
+          <td>Keys 1–0 live model switching, telemetry HUD, wireframe &amp; flat shading toggles.</td>
+        </tr>
+        <tr>
+          <td><b>PoseCam Android Scanner APK</b></td>
+          <td><b>https://atharv-namdeo.github.io/3d-mapping/monomap/web/download.html</b></td>
+          <td>Direct APK download (3.8 MB) with QR code installation for hardware sensor logging.</td>
+        </tr>
+        <tr>
+          <td><b>One-Click Vercel Deploy</b></td>
+          <td><b>https://vercel.com/new/clone?repository-url=https://github.com/atharv-namdeo/3d-mapping</b></td>
+          <td>Instant one-click edge deployment of the full platform to your Vercel account.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>2. Open Source Source Code &amp; Documentation Repositories</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Repository Artifact</th>
+          <th>URL / Access Location</th>
+          <th>Contents &amp; Scope</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Public GitHub Codebase</b></td>
+          <td><b>https://github.com/atharv-namdeo/3d-mapping</b></td>
+          <td>Full Python neural SLAM engine, Android Kotlin scanner source, Three.js viewers.</td>
+        </tr>
+        <tr>
+          <td><b>Master AI &amp; Team Context</b></td>
+          <td><b>https://github.com/atharv-namdeo/3d-mapping/blob/main/AI_AND_TEAM_CONTEXT.md</b></td>
+          <td>12-section technical handover covering math derivations, frame matrices, and developer playbook.</td>
+        </tr>
+        <tr>
+          <td><b>Technical Abstract Markdown</b></td>
+          <td><b>https://github.com/atharv-namdeo/3d-mapping/blob/main/NAMMA_SPACE_TECHNICAL_ABSTRACT.md</b></td>
+          <td>Complete 8-section technical abstract document readable online on GitHub.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>3. Video Walkthrough &amp; Demonstration Links</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Video Asset</th>
+          <th>Specifications</th>
+          <th>Location / Playback Link</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Cinematic Technical Film</b></td>
+          <td>1280&times;720, 24 FPS, 10.0s</td>
+          <td>Hosted on Web Portal (#cinematic) / <code>assets/videos/concept_pipeline_cinematic.mp4</code></td>
+        </tr>
+        <tr>
+          <td><b>Raw Input Smartphone Walkthrough</b></td>
+          <td>478&times;850 Portrait, 30 FPS, 57.4s</td>
+          <td>Hosted on Web Portal (#verification) / <code>assets/videos/input_smartphone_walkthrough.mp4</code></td>
+        </tr>
+        <tr>
+          <td><b>Output 3D Digital Twin Screen Capture</b></td>
+          <td>1918&times;968 High-Res, 30 FPS, 38.3s</td>
+          <td>Hosted on Web Portal (#verification) / <code>assets/videos/output_3d_digital_twin_reconstruction.mp4</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-footer">Master Links &amp; Prototypes Directory · Official Drive Submission Material · Team CRA003</div>
+</div>
+
+</body>
+</html>
