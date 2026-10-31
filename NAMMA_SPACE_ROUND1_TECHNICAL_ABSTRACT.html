@@ -30,8 +30,8 @@
 
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: #0d0f12;
-    color: #e2e4e9;
+    background-color: #ffffff;
+    color: #0f172a;
     line-height: 1.45;
     font-size: 9pt;
     margin: 0;
@@ -47,6 +47,7 @@
     flex-direction: column;
     justify-content: space-between;
     padding: 2mm 0;
+    background-color: #ffffff;
   }
   .page:last-child {
     page-break-after: avoid;
@@ -56,70 +57,70 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1.5px solid #e2e8f0;
     padding-bottom: 6px;
     margin-bottom: 10px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 7.5pt;
-    color: #94a3b8;
+    color: #475569;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
   .meta-tag {
-    color: #d4a373;
+    color: #b45309;
     font-weight: 700;
   }
 
   h1 {
-    font-size: 17pt;
+    font-size: 16.5pt;
     font-weight: 800;
-    color: #ffffff;
+    color: #0f172a;
     letter-spacing: -0.5px;
     margin: 0 0 4px 0;
     line-height: 1.15;
   }
   .author-strip {
     font-size: 8pt;
-    color: #94a3b8;
+    color: #475569;
     margin-bottom: 12px;
   }
 
   h2 {
-    font-size: 11pt;
+    font-size: 10.5pt;
     font-weight: 700;
-    color: #ffffff;
+    color: #0f172a;
     letter-spacing: -0.2px;
     margin: 10px 0 5px 0;
-    border-left: 3px solid #d4a373;
+    border-left: 3px solid #b45309;
     padding-left: 8px;
     text-transform: uppercase;
   }
 
   h3 {
-    font-size: 9pt;
+    font-size: 8.8pt;
     font-weight: 700;
-    color: #e2e4e9;
+    color: #1e293b;
     margin: 8px 0 3px 0;
   }
 
   p {
     margin: 0 0 6px 0;
-    color: #9aa0ac;
+    color: #334155;
   }
   p b, p strong {
-    color: #f1f2f5;
+    color: #0f172a;
   }
 
   .card-box {
-    background: #14171d;
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
     border-radius: 8px;
     padding: 10px 14px;
     margin: 8px 0;
   }
 
   .highlight-gold {
-    color: #d4a373;
+    color: #b45309;
     font-weight: 600;
   }
 
@@ -128,60 +129,61 @@
     border-collapse: collapse;
     margin: 8px 0;
     font-size: 8pt;
-    background: #121419;
+    background: #ffffff;
     border-radius: 6px;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid #cbd5e1;
   }
   th, td {
     padding: 5px 8px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid #e2e8f0;
     text-align: left;
   }
   th {
-    background: #1a1e26;
-    color: #ffffff;
+    background: #f1f5f9;
+    color: #0f172a;
     font-weight: 700;
     font-family: 'JetBrains Mono', monospace;
     font-size: 7.5pt;
     text-transform: uppercase;
   }
   td {
-    color: #9aa0ac;
+    color: #334155;
   }
   td b {
-    color: #f1f2f5;
+    color: #0f172a;
   }
 
   .code-block {
-    background: #090a0d;
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
     border-radius: 6px;
     padding: 8px 12px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 7.5pt;
-    color: #a0b2c6;
+    color: #0f172a;
     line-height: 1.4;
     margin: 6px 0;
   }
 
   .math {
     font-family: 'JetBrains Mono', monospace;
-    color: #d4a373;
+    color: #b45309;
     font-size: 8pt;
+    font-weight: 600;
   }
 
   ul {
     margin: 0 0 6px 0;
     padding-left: 18px;
-    color: #9aa0ac;
+    color: #334155;
   }
   li {
     margin-bottom: 3px;
   }
 
   .page-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 1px solid #e2e8f0;
     padding-top: 4px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 7pt;
@@ -220,7 +222,7 @@
     </p>
 
     <div class="card-box">
-      <div style="font-family:'JetBrains Mono', monospace; font-size:7.5pt; color:#d4a373; font-weight:700; margin-bottom:4px;">
+      <div style="font-family:'JetBrains Mono', monospace; font-size:7.5pt; color:#b45309; font-weight:700; margin-bottom:4px;">
         PIPELINE SUBSYSTEM MATRIX // CRA003 ARCHITECTURE
       </div>
       <table style="margin:0;">
@@ -337,8 +339,8 @@ P_world = T_world_cv · P_c
       To rigorously determine the optimal 3D representation for indoor roaming, we generated 10 distinct models from the same sensor capture. <b>Model 1 (Dense Metric Cloud)</b> emerged as the unequivocal champion for the competition submission.
     </p>
 
-    <div class="card-box" style="border-left: 3px solid #d4a373;">
-      <h3 style="color:#d4a373; margin-top:0;">CHAMPION: Model 1 Dense Metric Point Cloud (2,810,480 Points)</h3>
+    <div class="card-box" style="border-left: 3px solid #b45309;">
+      <h3 style="color:#b45309; margin-top:0;">CHAMPION: Model 1 Dense Metric Point Cloud (2,810,480 Points)</h3>
       <p style="margin-bottom:4px;">
         <b>Architectural Superiority:</b> Unprojects Depth-Anything-V2 metric depth directly into fused coordinates without forcing synthetic polygonal stitching across empty spaces.
       </p>
