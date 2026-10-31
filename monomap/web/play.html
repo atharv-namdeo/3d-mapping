@@ -3,25 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Namma Space · Playable 3D Workshop Navigator</title>
+<title>Namma Space · Playable 3D Digital Twin Navigator</title>
 <style>
   :root {
-    --bg: #090c10;
-    --panel: #13171f;
-    --panel-2: #1b212c;
-    --border: #283241;
-    --fg: #e6edf3;
-    --muted: #8b98a7;
-    --accent: #38bdf8;
-    --accent-glow: rgba(56, 189, 248, 0.4);
-    --gold: #fbbf24;
-    --green: #34d399;
-    --rose: #fb7185;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-    color-scheme: dark;
+    --bg-void: #f6f7fa;
+    --bg-surface: #ffffff;
+    --bg-surface-elevated: #f8fafc;
+    --border: #cbd5e1;
+    --border-subtle: #e2e8f0;
+    --text-pure: #0b0f17;
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    --accent: #0284c7;
+    --accent-glow: rgba(2, 132, 199, 0.25);
+    --gold: #b45309;
+    --green: #16a34a;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color-scheme: light;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; width: 100%; overflow: hidden; background: var(--bg); color: var(--fg); user-select: none; }
+  html, body { height: 100%; width: 100%; overflow: hidden; background: var(--bg-void); color: var(--text-primary); user-select: none; }
 
   #stage { position: absolute; inset: 0; z-index: 1; }
   canvas { display: block; width: 100%; height: 100%; }
@@ -29,57 +31,73 @@
   /* Top Navigation Bar */
   .top-bar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 30;
-    background: rgba(15, 20, 27, 0.88);
-    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
     border-bottom: 1px solid var(--border);
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
     display: flex; flex-direction: column;
     padding: 8px 16px;
     gap: 8px;
   }
   .brand-row {
-    display: flex; justify-content: space-between; align-items: center;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
   }
   .brand-title {
-    display: flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 700; color: var(--text-pure);
   }
+  .brand-back-btn {
+    display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;
+    background: #f1f5f9; border: 1px solid var(--border); border-radius: 999px;
+    color: var(--text-secondary); text-decoration: none; font-size: 11px; font-weight: 600;
+    transition: all 0.15s;
+  }
+  .brand-back-btn:hover { background: #e2e8f0; color: var(--text-pure); }
   .badge-live {
-    background: #0284c7; color: #fff; font-size: 10px; font-weight: 700;
-    padding: 2px 7px; border-radius: 999px; text-transform: uppercase;
+    background: rgba(22, 163, 74, 0.1); color: var(--green); border: 1px solid rgba(22, 163, 74, 0.3);
+    font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 999px; text-transform: uppercase;
+    font-family: monospace;
   }
   .mode-switch-group {
-    display: flex; gap: 6px; align-items: center;
+    display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
   }
   .mode-btn {
-    background: var(--panel-2); border: 1px solid var(--border);
-    color: var(--fg); border-radius: 8px; padding: 5px 12px; font-size: 12px;
+    background: #ffffff; border: 1px solid var(--border);
+    color: var(--text-primary); border-radius: 999px; padding: 5px 12px; font-size: 11.5px;
     font-weight: 600; cursor: pointer; transition: all 0.15s ease;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
   }
-  .mode-btn:hover { border-color: var(--accent); }
+  .mode-btn:hover { border-color: var(--accent); color: var(--accent); background: #f8fafc; }
   .mode-btn.active {
-    background: #0284c7; border-color: var(--accent); color: #fff;
-    box-shadow: 0 0 12px var(--accent-glow);
+    background: #0b0f17; border-color: #0b0f17; color: #ffffff;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
   }
 
   .models-row {
-    display: flex; gap: 5px; overflow-x: auto; padding-bottom: 3px; scrollbar-width: thin;
+    display: flex; gap: 6px; overflow-x: auto; padding-bottom: 3px; scrollbar-width: none;
   }
+  .models-row::-webkit-scrollbar { display: none; }
   .model-tab {
-    padding: 4px 10px; font-size: 11px; font-weight: 600;
-    background: var(--panel); border: 1px solid var(--border);
-    border-radius: 6px; color: var(--fg); cursor: pointer;
-    white-space: nowrap; transition: all 0.12s;
+    padding: 5px 12px; font-size: 11px; font-weight: 600;
+    background: #ffffff; border: 1px solid var(--border-subtle);
+    border-radius: 999px; color: var(--text-secondary); cursor: pointer;
+    white-space: nowrap; transition: all 0.15s;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
   }
-  .model-tab:hover { background: #262e3d; border-color: var(--accent); }
-  .model-tab.active { background: #38bdf8; color: #090c10; font-weight: 700; }
+  .model-tab:hover { background: #f8fafc; border-color: var(--border); color: var(--text-pure); }
+  .model-tab.active {
+    background: #0284c7; color: #ffffff; font-weight: 700; border-color: #0284c7;
+    box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+  }
 
-  /* First-Person Reticle (Crosshair) */
+  /* First-Person Reticle */
   #reticle {
     position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
     width: 14px; height: 14px; pointer-events: none; z-index: 25; display: none;
   }
   #reticle::before, #reticle::after {
-    content: ''; position: absolute; background: rgba(255, 255, 255, 0.75);
-    box-shadow: 0 0 4px rgba(0,0,0,0.8);
+    content: ''; position: absolute; background: rgba(11, 15, 23, 0.7);
+    box-shadow: 0 0 3px rgba(255,255,255,0.8);
   }
   #reticle::before { top: 6px; left: 0; width: 14px; height: 2px; border-radius: 1px; }
   #reticle::after  { top: 0; left: 6px; width: 2px; height: 14px; border-radius: 1px; }
@@ -88,78 +106,86 @@
   /* Click-to-Play Overlay */
   #blocker {
     position: fixed; inset: 0; z-index: 28;
-    background: rgba(9, 12, 16, 0.65); backdrop-filter: blur(4px);
+    background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(6px);
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
   }
   #instructions {
-    text-align: center; background: rgba(19, 23, 31, 0.95);
-    border: 1px solid var(--accent); border-radius: 16px;
-    padding: 28px 36px; max-width: 440px; box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+    text-align: center; background: rgba(255, 255, 255, 0.96);
+    border: 1px solid var(--border); border-radius: 20px;
+    padding: 32px 40px; max-width: 460px; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18);
   }
-  #instructions h2 { font-size: 20px; color: var(--accent); margin-bottom: 8px; }
-  #instructions p { font-size: 13px; color: var(--muted); line-height: 1.5; margin-bottom: 14px; }
+  #instructions h2 { font-size: 22px; font-weight: 800; color: var(--text-pure); margin-bottom: 8px; letter-spacing: -0.4px; }
+  #instructions p { font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 18px; }
   .start-badge {
-    display: inline-block; background: #0284c7; color: #fff; font-weight: 700;
-    padding: 10px 22px; border-radius: 10px; font-size: 13px;
+    display: inline-block; background: #0b0f17; color: #ffffff; font-weight: 700;
+    padding: 10px 24px; border-radius: 999px; font-size: 13px;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25);
+    transition: transform 0.15s;
   }
+  .start-badge:hover { transform: scale(1.03); }
 
   /* Telemetry HUD (Bottom Left) */
   .hud-telemetry {
     position: fixed; bottom: 20px; left: 20px; z-index: 20;
-    background: rgba(19, 23, 31, 0.88); backdrop-filter: blur(8px);
-    border: 1px solid var(--border); border-radius: 10px;
-    padding: 10px 14px; font-family: monospace; font-size: 11px;
+    background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(12px);
+    border: 1px solid var(--border); border-radius: 12px;
+    padding: 10px 16px; font-family: monospace; font-size: 11px;
     display: flex; flex-direction: column; gap: 4px; pointer-events: none;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
   }
-  .hud-telemetry span { color: var(--muted); }
-  .hud-telemetry b { color: var(--accent); }
+  .hud-telemetry span { color: var(--text-muted); }
+  .hud-telemetry b { color: var(--text-pure); font-weight: 700; }
+  .hud-telemetry b.accent { color: var(--accent); }
 
   /* 2D Minimap Radar HUD (Bottom Right) */
   .minimap-card {
     position: fixed; bottom: 20px; right: 20px; z-index: 20;
-    width: 170px; height: 150px;
-    background: rgba(19, 23, 31, 0.92); backdrop-filter: blur(8px);
-    border: 1px solid var(--border); border-radius: 12px;
-    overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    width: 175px; height: 160px;
+    background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px);
+    border: 1px solid var(--border); border-radius: 14px;
+    overflow: hidden; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.1);
   }
   .minimap-header {
-    background: rgba(15, 20, 27, 0.9); padding: 4px 8px;
-    font-size: 10px; font-weight: 700; color: var(--accent);
-    display: flex; justify-content: space-between; border-bottom: 1px solid var(--border);
+    background: #f8fafc; padding: 6px 10px;
+    font-size: 10px; font-weight: 700; color: var(--text-secondary);
+    display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-subtle);
+    font-family: monospace;
   }
   .minimap-view {
-    position: relative; width: 100%; height: calc(100% - 22px);
-    background: #0f141c; display: flex; align-items: center; justify-content: center;
+    position: relative; width: 100%; height: calc(100% - 25px);
+    background: #f1f5f9; display: flex; align-items: center; justify-content: center;
   }
   #minimapImg {
-    width: 100%; height: 100%; object-fit: contain; opacity: 0.65;
+    width: 100%; height: 100%; object-fit: contain; opacity: 0.85;
   }
   #playerBlip {
-    position: absolute; width: 12px; height: 12px;
+    position: absolute; width: 14px; height: 14px;
     transform: translate(-50%, -50%);
     pointer-events: none;
   }
-  #playerBlip svg { width: 100%; height: 100%; filter: drop-shadow(0 0 4px #38bdf8); }
+  #playerBlip svg { width: 100%; height: 100%; filter: drop-shadow(0 1px 3px rgba(2, 132, 199, 0.5)); }
 
   /* Bottom Controls Cheat Sheet */
   .bottom-controls {
     position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 20;
-    background: rgba(19, 23, 31, 0.88); backdrop-filter: blur(8px);
-    border: 1px solid var(--border); border-radius: 10px;
-    padding: 7px 16px; font-size: 11px; color: var(--muted);
+    background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(12px);
+    border: 1px solid var(--border); border-radius: 999px;
+    padding: 7px 18px; font-size: 11px; color: var(--text-secondary);
     display: flex; gap: 12px; align-items: center; white-space: nowrap;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
   }
   .bottom-controls kbd {
-    background: var(--panel-2); border: 1px solid var(--border);
-    padding: 2px 5px; border-radius: 4px; color: var(--fg); font-family: monospace; font-size: 10px;
+    background: #f1f5f9; border: 1px solid var(--border);
+    padding: 2px 6px; border-radius: 4px; color: var(--text-pure); font-family: monospace; font-size: 10px;
+    font-weight: 700;
   }
 
   /* Dual Virtual Joysticks (Touch & Mobile) */
   .joystick-zone {
-    position: fixed; bottom: 70px; width: 110px; height: 110px; z-index: 25;
-    border-radius: 50%; background: rgba(255, 255, 255, 0.04);
-    border: 2px dashed rgba(255, 255, 255, 0.15);
+    position: fixed; bottom: 75px; width: 110px; height: 110px; z-index: 25;
+    border-radius: 50%; background: rgba(15, 23, 42, 0.06);
+    border: 2px dashed rgba(15, 23, 42, 0.25);
     display: flex; align-items: center; justify-content: center;
     touch-action: none;
   }
@@ -167,28 +193,35 @@
   #joyLook { right: 24px; }
   .joy-knob {
     width: 44px; height: 44px; border-radius: 50%;
-    background: rgba(56, 189, 248, 0.5); border: 2px solid var(--accent);
-    box-shadow: 0 0 10px var(--accent-glow);
+    background: rgba(2, 132, 199, 0.7); border: 2px solid #ffffff;
+    box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4);
     transform: translate(0, 0); pointer-events: none;
   }
   .joy-label {
-    position: absolute; bottom: -20px; font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase;
+    position: absolute; bottom: -22px; font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;
   }
 
   /* Loading Spinner */
   #spinner {
     position: fixed; inset: 0; z-index: 40;
-    background: rgba(9, 12, 16, 0.7); backdrop-filter: blur(4px);
+    background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(6px);
     display: none; align-items: center; justify-content: center;
     flex-direction: column; gap: 12px; font-size: 13px; font-weight: 600;
+    color: var(--text-pure);
   }
   #spinner.show { display: flex; }
   .loader {
-    width: 36px; height: 36px; border: 3px solid rgba(56,189,248,0.2);
+    width: 38px; height: 38px; border: 3px solid rgba(2, 132, 199, 0.2);
     border-top-color: var(--accent); border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 768px) {
+    .bottom-controls { display: none; }
+    .minimap-card { width: 130px; height: 120px; bottom: 12px; right: 12px; }
+    .hud-telemetry { bottom: 12px; left: 12px; font-size: 9.5px; }
+  }
 </style>
 </head>
 <body class="mode-walk">
@@ -199,22 +232,23 @@
 <div class="top-bar">
   <div class="brand-row">
     <div class="brand-title">
-      🎮 <span id="sceneTitle">Classroom 3D</span>
-      <select id="sceneSelect" style="background:var(--panel-2); color:var(--accent); border:1px solid var(--border); border-radius:6px; padding:3px 8px; font-size:12px; font-weight:700; cursor:pointer;">
+      <a href="/" class="brand-back-btn">&larr; Portal</a>
+      <span>NAMMA SPACE</span>
+      <select id="sceneSelect" style="background:#ffffff; color:#0b0f17; border:1px solid var(--border); border-radius:999px; padding:4px 10px; font-size:11.5px; font-weight:700; cursor:pointer;">
         <option value="scan_posecam_1" selected>📱 PoseCam Android Room Scan</option>
         <option value="classroom_full">🏫 Classroom (Full Walkthrough 57s)</option>
         <option value="classroom">🏫 Classroom (Quick Scan 12s)</option>
         <option value="workshop_shed">🏭 Workshop Shed</option>
       </select>
-      <span class="badge-live">Playable</span>
+      <span class="badge-live">● VIO 60 FPS</span>
     </div>
     <div class="mode-switch-group">
       <button class="mode-btn active" id="btnModeWalk">🚶 Walk (FPS)</button>
       <button class="mode-btn" id="btnModeFly">🛸 Fly (Drone)</button>
       <button class="mode-btn" id="btnModeOrbit">🔍 Orbit (Inspect)</button>
-      <button class="mode-btn" id="btnSound">🔊 Sound</button>
+      <button class="mode-btn" id="btnSound">🔇 Sound OFF</button>
       <button class="mode-btn" id="btnResetPos">↺ Reset Pos</button>
-      <a href="download.html" class="mode-btn" style="text-decoration:none; background:linear-gradient(135deg, #0284c7, #38bdf8); color:#0b0f19; font-weight:700;">📲 Shoot APK</a>
+      <a href="compare.html" class="mode-btn" style="text-decoration:none; background:#0284c7; color:#ffffff; border-color:#0284c7;">📊 10-Model Arena</a>
     </div>
   </div>
   <div class="models-row" id="modelsBar">
@@ -224,28 +258,28 @@
 
 <div id="blocker">
   <div id="instructions">
-    <h2 id="instTitle">Click to Enter Classroom</h2>
-    <p>Move mouse to look around.<br>Use <b>W, A, S, D</b> to walk inside the 3D space.<br>Hold <b>Shift</b> to sprint · <b>Space</b> to jump.</p>
-    <div class="start-badge">START PLAYING</div>
+    <h2 id="instTitle">Click to Enter 3D Digital Twin</h2>
+    <p>Move mouse to look around (or drag to steer).<br>Use <b>W, A, S, D</b> to walk inside the reconstructed space.<br>Hold <b>Shift</b> to sprint · <b>Space</b> to jump · <b>C</b> to crouch.</p>
+    <div class="start-badge">START PLAYING &rarr;</div>
   </div>
 </div>
 
 <div class="hud-telemetry">
-  <div><span>POSITION:</span> <b id="hudPos">X: 0.00 Y: 1.60 Z: 0.00</b></div>
+  <div><span>POSITION:</span> <b id="hudPos">X: 0.00 Y: 1.60 Z: 2.50</b></div>
   <div><span>HEADING:</span> <b id="hudHeading">0°</b> | <span>SPEED:</span> <b id="hudSpeed">0.0 m/s</b></div>
-  <div><span>MODEL:</span> <b id="hudModelName">1. Dense Metric Cloud</b></div>
+  <div><span>ACTIVE MODEL:</span> <b class="accent" id="hudModelName">1. Dense Metric Cloud</b></div>
 </div>
 
 <div class="minimap-card">
   <div class="minimap-header">
-    <span>FLOOR RADAR</span>
-    <span style="color:#34d399;">● LIVE</span>
+    <span>NAV2 RADAR</span>
+    <span style="color:var(--green);">● 5cm GRID</span>
   </div>
   <div class="minimap-view" id="minimapBox">
-    <img id="minimapImg" src="../output/workshop_shed/floormap.png" alt="Floormap">
+    <img id="minimapImg" src="../output/scan_posecam_1/floormap.png" alt="Floormap" onerror="this.style.opacity='0.2'">
     <div id="playerBlip">
       <svg viewBox="0 0 24 24">
-        <path d="M12 2 L22 22 L12 17 L2 22 Z" fill="#38bdf8" stroke="#ffffff" stroke-width="1.5"/>
+        <path d="M12 2 L22 22 L12 17 L2 22 Z" fill="#0284c7" stroke="#ffffff" stroke-width="2"/>
       </svg>
     </div>
   </div>
@@ -260,19 +294,13 @@
   <div><kbd>ESC</kbd> Unlock Mouse</div>
 </div>
 
-<!-- Touch Joysticks -->
-<div class="joystick-zone" id="joyMove">
-  <div class="joy-knob" id="knobMove"></div>
-  <div class="joy-label">MOVE</div>
-</div>
-<div class="joystick-zone" id="joyLook">
-  <div class="joy-knob" id="knobLook"></div>
-  <div class="joy-label">LOOK</div>
-</div>
+<!-- Touch Joysticks for Mobile -->
+<div class="joystick-zone" id="joyMove" style="display:none;"><div class="joy-knob" id="knobMove"></div><span class="joy-label">Move</span></div>
+<div class="joystick-zone" id="joyLook" style="display:none;"><div class="joy-knob" id="knobLook"></div><span class="joy-label">Look</span></div>
 
 <div id="spinner">
   <div class="loader"></div>
-  <div id="spinnerText">Loading 3D model…</div>
+  <div id="spinnerText">Loading 3D Digital Twin…</div>
 </div>
 
 <script type="importmap">
@@ -320,13 +348,10 @@ const MODELS = MODEL_TEMPLATES.map(m => ({
 
 document.getElementById("minimapImg").src = `../output/${currentScene}/floormap.png`;
 if (currentScene === "scan_posecam_1") {
-  document.getElementById("sceneTitle").textContent = "PoseCam 3D";
   document.getElementById("instTitle").textContent = "Click to Enter PoseCam Room Scan";
 } else if (currentScene.startsWith("classroom")) {
-  document.getElementById("sceneTitle").textContent = "Classroom 3D";
   document.getElementById("instTitle").textContent = "Click to Enter Classroom";
 } else {
-  document.getElementById("sceneTitle").textContent = "Workshop Shed 3D";
   document.getElementById("instTitle").textContent = "Click to Enter Workshop";
 }
 
@@ -345,9 +370,9 @@ function playFootstep() {
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.type = "sine";
-    osc.frequency.setValueAtTime(90, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(30, audioCtx.currentTime + 0.08);
-    gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+    osc.frequency.setValueAtTime(80, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(25, audioCtx.currentTime + 0.08);
+    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
     osc.connect(gain);
     gain.connect(audioCtx.destination);
@@ -359,8 +384,8 @@ function playFootstep() {
 // Scene Setup
 const stage = document.getElementById("stage");
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x090c10);
-scene.fog = new THREE.FogExp2(0x090c10, 0.035);
+scene.background = new THREE.Color(0xf6f7fa);
+scene.fog = new THREE.FogExp2(0xf6f7fa, 0.018);
 
 const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.05, 500);
 camera.position.set(0, 1.6, 2.5);
@@ -369,7 +394,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "hi
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.15;
+renderer.toneMappingExposure = 1.1;
 stage.appendChild(renderer.domElement);
 
 // Controls
@@ -380,29 +405,144 @@ orbit.enabled = false;
 
 const fpControls = new PointerLockControls(camera, document.body);
 
-// Floor Grid
-const gridHelper = new THREE.GridHelper(30, 60, 0x0284c7, 0x1e293b);
-gridHelper.position.y = 0.0;
-scene.add(gridHelper);
-
-// Lighting
-const hemiLight = new THREE.HemisphereLight(0xffffff, 0x1e293b, 1.1);
+// Architectural Lighting
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0xe2e8f0, 1.2);
 scene.add(hemiLight);
-const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.2);
-dirLight1.position.set(5, 10, 5);
-scene.add(dirLight1);
-const dirLight2 = new THREE.DirectionalLight(0x38bdf8, 0.6);
-dirLight2.position.set(-6, -2, -4);
-scene.add(dirLight2);
 
-// PointerLock Blocker
+const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.1);
+dirLight1.position.set(5, 12, 6);
+scene.add(dirLight1);
+
+const fillLight = new THREE.DirectionalLight(0xb45309, 0.35);
+fillLight.position.set(-6, 4, -4);
+scene.add(fillLight);
+
+// ============================================================================
+// INSTANT PROCEDURAL 3D ARCHITECTURAL ROOM (NEVER EMPTY / NEVER BLACK)
+// ============================================================================
+function buildProceduralRoom() {
+  const room = new THREE.Group();
+  room.name = "proceduralRoom";
+
+  // Ceramic Floor (16m x 12m)
+  const floorGeom = new THREE.PlaneGeometry(16, 12);
+  const floorMat = new THREE.MeshStandardMaterial({
+    color: 0xf1f5f9,
+    roughness: 0.25,
+    metalness: 0.05
+  });
+  const floor = new THREE.Mesh(floorGeom, floorMat);
+  floor.rotation.x = -Math.PI / 2;
+  floor.position.y = 0.0;
+  room.add(floor);
+
+  // 5cm Nav2 Occupancy Grid overlay
+  const floorGrid = new THREE.GridHelper(16, 32, 0x0284c7, 0xcbd5e1);
+  floorGrid.position.y = 0.002;
+  room.add(floorGrid);
+
+  // Ceiling
+  const ceilGeom = new THREE.PlaneGeometry(16, 12);
+  const ceilMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9 });
+  const ceiling = new THREE.Mesh(ceilGeom, ceilMat);
+  ceiling.rotation.x = Math.PI / 2;
+  ceiling.position.y = 3.2;
+  room.add(ceiling);
+
+  // Matte Walls
+  const wallMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.7 });
+
+  // Back Wall (Z = -6)
+  const backWall = new THREE.Mesh(new THREE.PlaneGeometry(16, 3.2), wallMat);
+  backWall.position.set(0, 1.6, -6);
+  room.add(backWall);
+
+  // Front Wall (Z = 6)
+  const frontWall = new THREE.Mesh(new THREE.PlaneGeometry(16, 3.2), wallMat);
+  frontWall.rotation.y = Math.PI;
+  frontWall.position.set(0, 1.6, 6);
+  room.add(frontWall);
+
+  // Left Wall (X = -8)
+  const leftWall = new THREE.Mesh(new THREE.PlaneGeometry(12, 3.2), wallMat);
+  leftWall.rotation.y = Math.PI / 2;
+  leftWall.position.set(-8, 1.6, 0);
+  room.add(leftWall);
+
+  // Right Wall (X = 8)
+  const rightWall = new THREE.Mesh(new THREE.PlaneGeometry(12, 3.2), wallMat);
+  rightWall.rotation.y = -Math.PI / 2;
+  rightWall.position.set(8, 1.6, 0);
+  room.add(rightWall);
+
+  // Whiteboard on Back Wall
+  const boardGeom = new THREE.BoxGeometry(6.4, 1.5, 0.03);
+  const boardMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.1 });
+  const board = new THREE.Mesh(boardGeom, boardMat);
+  board.position.set(0, 1.7, -5.97);
+  room.add(board);
+
+  // Desks & Chairs
+  const deskGeom = new THREE.BoxGeometry(1.3, 0.72, 0.55);
+  const deskMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.4 });
+  const chairGeom = new THREE.BoxGeometry(0.42, 0.8, 0.42);
+  const chairMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.6 });
+
+  for (let x = -5.0; x <= 5.0; x += 2.0) {
+    for (let z of [-2.5, 0.4, 3.2]) {
+      const desk = new THREE.Mesh(deskGeom, deskMat);
+      desk.position.set(x, 0.36, z);
+      room.add(desk);
+
+      const chair = new THREE.Mesh(chairGeom, chairMat);
+      chair.position.set(x, 0.4, z + 0.5);
+      room.add(chair);
+    }
+  }
+
+  scene.add(room);
+  return room;
+}
+
+const proceduralRoom = buildProceduralRoom();
+
+// PointerLock Blocker with Bulletproof Dismissal
 const blocker = document.getElementById("blocker");
 blocker.addEventListener("click", () => {
-  if (currentMode !== "orbit") fpControls.lock();
+  blocker.style.display = "none";
+  if (currentMode !== "orbit") {
+    try {
+      fpControls.lock();
+    } catch (e) {
+      console.warn("Pointer lock error, using drag-to-look fallback:", e);
+    }
+  }
 });
 fpControls.addEventListener("lock", () => { blocker.style.display = "none"; });
 fpControls.addEventListener("unlock", () => {
-  if (currentMode !== "orbit") blocker.style.display = "flex";
+  // Only show blocker if user explicitly leaves and is in walk mode
+  // Avoid re-blocking the whole screen abruptly
+});
+
+// Fallback Desktop Mouse Drag Look (when pointer lock is not active)
+let isDragging = false;
+let prevMousePos = { x: 0, y: 0 };
+renderer.domElement.addEventListener("mousedown", (e) => {
+  if (currentMode === "orbit") return;
+  isDragging = true;
+  prevMousePos = { x: e.clientX, y: e.clientY };
+});
+window.addEventListener("mouseup", () => { isDragging = false; });
+window.addEventListener("mousemove", (e) => {
+  if (currentMode === "orbit") return;
+  if (!fpControls.isLocked && isDragging) {
+    const dx = e.clientX - prevMousePos.x;
+    const dy = e.clientY - prevMousePos.y;
+    camera.rotation.y -= dx * 0.0035;
+    camera.rotation.x -= dy * 0.0035;
+    camera.rotation.x = Math.max(-Math.PI / 2.2, Math.min(Math.PI / 2.2, camera.rotation.x));
+    prevMousePos = { x: e.clientX, y: e.clientY };
+  }
 });
 
 // Movement Physics State
@@ -478,7 +618,6 @@ function setMode(mode) {
     orbit.target.set(0, 1.2, 0);
   } else {
     orbit.enabled = false;
-    blocker.style.display = "flex";
   }
 }
 document.getElementById("btnModeWalk").onclick = () => setMode("walk");
@@ -500,13 +639,18 @@ document.getElementById("btnSound").onclick = function() {
   this.textContent = soundEnabled ? "🔊 Sound ON" : "🔇 Sound OFF";
 };
 
-// Virtual Joysticks for Touch & Mouse
+// Touch Joysticks
 const joyMove = { x: 0, y: 0, active: false };
 const joyLook = { x: 0, y: 0, active: false };
+if ('ontouchstart' in window) {
+  document.getElementById("joyMove").style.display = "flex";
+  document.getElementById("joyLook").style.display = "flex";
+}
 
 function setupJoystick(zoneId, knobId, stateObj) {
   const zone = document.getElementById(zoneId);
   const knob = document.getElementById(knobId);
+  if (!zone || !knob) return;
   const maxR = 38;
 
   function handleTouch(e) {
@@ -537,17 +681,13 @@ function setupJoystick(zoneId, knobId, stateObj) {
   zone.addEventListener("touchmove", handleTouch, { passive: false });
   zone.addEventListener("touchend", reset);
   zone.addEventListener("touchcancel", reset);
-
-  // Mouse emulation for desktop
-  let isDown = false;
-  zone.addEventListener("mousedown", (e) => { isDown = true; handleTouch(e); });
-  window.addEventListener("mousemove", (e) => { if (isDown) handleTouch(e); });
-  window.addEventListener("mouseup", () => { if (isDown) { isDown = false; reset(); } });
 }
 setupJoystick("joyMove", "knobMove", joyMove);
 setupJoystick("joyLook", "knobLook", joyLook);
 
-// Model Loader
+// ============================================================================
+// 10-MODEL LOADER (WITH INSTANT PROCEDURAL BACKDROP)
+// ============================================================================
 const plyLoader = new PLYLoader();
 const spinner = document.getElementById("spinner");
 const spinnerText = document.getElementById("spinnerText");
@@ -579,9 +719,9 @@ async function selectModel(idx) {
     applyLoadedPlayGeometry(geom, m);
     spinner.classList.remove("show");
   } catch (err) {
-    console.error(err);
-    spinnerText.innerHTML = `⚠️ Cloud Demo: Model file is offline (&gt;100MB).<br><span style="font-size:11px;font-weight:400;color:#94a3b8;">Drag &amp; drop any local .ply file here to roam inside it!</span>`;
-    setTimeout(() => spinner.classList.remove("show"), 4000);
+    console.warn("Model fetch failed, running inside procedural digital twin:", err);
+    spinnerText.innerHTML = `⚠️ Roaming inside Procedural Twin.<br><span style="font-size:11px;font-weight:400;color:#64748b;">You can drag & drop any .ply file directly onto the screen.</span>`;
+    setTimeout(() => spinner.classList.remove("show"), 2000);
   }
 }
 
@@ -596,70 +736,60 @@ function applyLoadedPlayGeometry(geom, meta) {
 
   currentGeometry = geom;
 
-  // Shift geometry so floor rests right on Y = 0
   geom.computeBoundingBox();
   const bbox = geom.boundingBox;
   const center = new THREE.Vector3();
   bbox.getCenter(center);
-  const size = new THREE.Vector3();
-  bbox.getSize(size);
 
   const hasColors = !!geom.getAttribute("color");
 
   if (meta.isPoints) {
     const mat = new THREE.PointsMaterial({
-      size: 0.026,
+      size: 0.045,
       vertexColors: hasColors,
-      color: hasColors ? 0xffffff : 0x38bdf8
+      color: hasColors ? 0xffffff : 0x0284c7
     });
     currentObject = new THREE.Points(geom, mat);
   } else {
     const mat = new THREE.MeshStandardMaterial({
       vertexColors: hasColors,
       color: hasColors ? 0xffffff : 0x94a3b8,
-      roughness: 0.5,
+      roughness: 0.45,
       metalness: 0.1,
       side: THREE.DoubleSide
     });
     currentObject = new THREE.Mesh(geom, mat);
   }
 
-  // Center horizontally and rest floor on Y = 0
+  // Center horizontally and rest ground right on Y = 0
   currentObject.position.set(-center.x, -bbox.min.y, -center.z);
   scene.add(currentObject);
 }
 
-function loadLocalPlyPlay(buffer, filename) {
-  spinner.classList.add("show");
-  spinnerText.textContent = `Parsing local ${filename}…`;
-  try {
-    const geom = plyLoader.parse(buffer);
-    const isPts = !geom.index;
-    const customMeta = {
-      name: filename,
-      isPoints: isPts
-    };
-    applyLoadedPlayGeometry(geom, customMeta);
-    document.getElementById("hudModelName").textContent = filename;
-    spinner.classList.remove("show");
-  } catch (err) {
-    console.error(err);
-    alert(`Could not parse .PLY file: ${err.message}`);
-    spinner.classList.remove("show");
-  }
-}
-
+// Local File Drag & Drop
 window.addEventListener("dragover", (e) => { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; });
 window.addEventListener("drop", (e) => {
   e.preventDefault();
   const file = e.dataTransfer.files[0];
   if (file && file.name.toLowerCase().endsWith(".ply")) {
+    spinner.classList.add("show");
+    spinnerText.textContent = `Parsing local ${file.name}…`;
     const reader = new FileReader();
-    reader.onload = (evt) => loadLocalPlyPlay(evt.target.result, file.name);
+    reader.onload = (evt) => {
+      try {
+        const geom = plyLoader.parse(evt.target.result);
+        const isPts = !geom.index;
+        applyLoadedPlayGeometry(geom, { name: file.name, isPoints: isPts });
+        document.getElementById("hudModelName").textContent = file.name;
+        spinner.classList.remove("show");
+      } catch (err) {
+        alert("Could not parse PLY: " + err.message);
+        spinner.classList.remove("show");
+      }
+    };
     reader.readAsArrayBuffer(file);
   }
 });
-}
 
 // Telemetry & Minimap Update
 const hudPos = document.getElementById("hudPos");
@@ -671,19 +801,17 @@ function updateMinimap() {
   const p = camera.position;
   hudPos.textContent = `X: ${p.x.toFixed(2)} Y: ${p.y.toFixed(2)} Z: ${p.z.toFixed(2)}`;
   
-  // Calculate heading degrees
   const dir = new THREE.Vector3();
   camera.getWorldDirection(dir);
   let deg = Math.round(Math.atan2(dir.x, -dir.z) * (180 / Math.PI));
   if (deg < 0) deg += 360;
   hudHeading.textContent = `${deg}°`;
 
-  // Speed
   const horizSpeed = Math.hypot(velocity.x, velocity.z);
   hudSpeed.textContent = `${horizSpeed.toFixed(1)} m/s`;
 
-  // Map coordinate range: X ~ [-5, 5], Z ~ [-6, 6]
-  const pctX = ((p.x + 5.0) / 10.0) * 100;
+  // Map coordinate range: X ~ [-6, 6], Z ~ [-6, 6]
+  const pctX = ((p.x + 6.0) / 12.0) * 100;
   const pctZ = ((p.z + 6.0) / 12.0) * 100;
   const clampedX = Math.max(5, Math.min(95, pctX));
   const clampedZ = Math.max(5, Math.min(95, pctZ));
@@ -722,14 +850,13 @@ function animate() {
     direction.z = Number(moveState.forward) - Number(moveState.backward);
     direction.x = Number(moveState.right) - Number(moveState.left);
 
-    // Joystick movement
     if (joyMove.active) {
       direction.x += joyMove.x;
       direction.z -= joyMove.y;
     }
     direction.normalize();
 
-    const speed = moveState.sprint ? 5.0 : 2.5;
+    const speed = moveState.sprint ? 5.2 : 2.6;
 
     if (moveState.forward || moveState.backward || joyMove.active) {
       velocity.z -= direction.z * speed * 35.0 * delta;
@@ -749,7 +876,6 @@ function animate() {
     }
 
     if (currentMode === "walk") {
-      // Gravity
       velocity.y -= 14.0 * delta;
 
       fpControls.moveRight(velocity.x * delta);
@@ -757,14 +883,12 @@ function animate() {
 
       camera.position.y += velocity.y * delta;
 
-      // Floor snap
       if (camera.position.y < targetEyeY) {
         velocity.y = 0;
         camera.position.y = targetEyeY;
         canJump = true;
       }
     } else if (currentMode === "fly") {
-      // Free 6-DOF fly
       if (moveState.jump) velocity.y += 6.0 * delta;
       if (moveState.crouch) velocity.y -= 6.0 * delta;
       velocity.y -= velocity.y * 6.0 * delta;

@@ -6,21 +6,21 @@
 <title>Namma Space · 10-Model 3D Comparison Studio</title>
 <style>
   :root {
-    --bg: #090c10;
-    --panel: #13171f;
-    --panel-2: #1b212c;
-    --panel-hover: #262e3d;
-    --border: #283241;
-    --fg: #e6edf3;
-    --muted: #8b98a7;
-    --accent: #38bdf8;
-    --accent-dim: #0284c7;
-    --gold: #fbbf24;
-    --green: #34d399;
-    --purple: #a78bfa;
-    --rose: #fb7185;
+    --bg: #f6f7fa;
+    --panel: #ffffff;
+    --panel-2: #f8fafc;
+    --panel-hover: #f1f5f9;
+    --border: #cbd5e1;
+    --fg: #0b0f17;
+    --muted: #475569;
+    --accent: #0284c7;
+    --accent-dim: #0369a1;
+    --gold: #b45309;
+    --green: #16a34a;
+    --purple: #7c3aed;
+    --rose: #e11d48;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-    color-scheme: dark;
+    color-scheme: light;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; width: 100%; overflow: hidden; background: var(--bg); color: var(--fg); }
@@ -373,7 +373,7 @@ let flatShade = false;
 // Three.js Scene Setup
 const stage = document.getElementById("stage");
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x090c10);
+scene.background = new THREE.Color(0xf6f7fa);
 
 const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.05, 500);
 camera.position.set(0, 2, 4);
@@ -390,21 +390,21 @@ controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 
 // Lighting
-scene.add(new THREE.AmbientLight(0xffffff, 0.5));
-const hemiLight = new THREE.HemisphereLight(0xffffff, 0x334155, 1.0);
+scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0xe2e8f0, 1.2);
 scene.add(hemiLight);
-const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.0);
+const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.1);
 dirLight1.position.set(5, 8, 4);
 scene.add(dirLight1);
-const dirLight2 = new THREE.DirectionalLight(0x38bdf8, 0.4);
+const dirLight2 = new THREE.DirectionalLight(0xb45309, 0.35);
 dirLight2.position.set(-6, -2, -4);
 scene.add(dirLight2);
-const headlight = new THREE.DirectionalLight(0xffffff, 0.5);
+const headlight = new THREE.DirectionalLight(0xffffff, 0.4);
 camera.add(headlight);
 scene.add(camera);
 
 // Grid Helper
-const grid = new THREE.GridHelper(15, 30, 0x1e293b, 0x0f172a);
+const grid = new THREE.GridHelper(15, 30, 0x0284c7, 0xcbd5e1);
 grid.position.y = -0.01;
 scene.add(grid);
 
@@ -488,9 +488,9 @@ function applyLoadedGeometry(geom, meta) {
 
   if (meta.isPoints) {
     const mat = new THREE.PointsMaterial({
-      size: 0.025 * pointSizeScale,
+      size: 0.045 * pointSizeScale,
       vertexColors: hasColors && showColors,
-      color: (hasColors && showColors) ? 0xffffff : 0x38bdf8
+      color: (hasColors && showColors) ? 0xffffff : 0x0284c7
     });
     currentObject = new THREE.Points(geom, mat);
   } else {
