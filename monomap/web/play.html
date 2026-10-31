@@ -214,7 +214,7 @@
       <button class="mode-btn" id="btnModeOrbit">🔍 Orbit (Inspect)</button>
       <button class="mode-btn" id="btnSound">🔊 Sound</button>
       <button class="mode-btn" id="btnResetPos">↺ Reset Pos</button>
-      <a href="/web/download.html" class="mode-btn" style="text-decoration:none; background:linear-gradient(135deg, #0284c7, #38bdf8); color:#0b0f19; font-weight:700;">📲 Shoot APK</a>
+      <a href="download.html" class="mode-btn" style="text-decoration:none; background:linear-gradient(135deg, #0284c7, #38bdf8); color:#0b0f19; font-weight:700;">📲 Shoot APK</a>
     </div>
   </div>
   <div class="models-row" id="modelsBar">
@@ -242,7 +242,7 @@
     <span style="color:#34d399;">● LIVE</span>
   </div>
   <div class="minimap-view" id="minimapBox">
-    <img id="minimapImg" src="/output/workshop_shed/floormap.png" alt="Floormap">
+    <img id="minimapImg" src="../output/workshop_shed/floormap.png" alt="Floormap">
     <div id="playerBlip">
       <svg viewBox="0 0 24 24">
         <path d="M12 2 L22 22 L12 17 L2 22 Z" fill="#38bdf8" stroke="#ffffff" stroke-width="1.5"/>
@@ -315,10 +315,10 @@ const MODEL_TEMPLATES = [
 
 const MODELS = MODEL_TEMPLATES.map(m => ({
   ...m,
-  file: `/output/${currentScene}/models/${m.file}`
+  file: `../output/${currentScene}/models/${m.file}`
 }));
 
-document.getElementById("minimapImg").src = `/output/${currentScene}/floormap.png`;
+document.getElementById("minimapImg").src = `../output/${currentScene}/floormap.png`;
 if (currentScene === "scan_posecam_1") {
   document.getElementById("sceneTitle").textContent = "PoseCam 3D";
   document.getElementById("instTitle").textContent = "Click to Enter PoseCam Room Scan";
