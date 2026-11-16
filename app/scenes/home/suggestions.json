@@ -1,0 +1,99 @@
+[
+ {
+  "kind": "object",
+  "hint": "tall fixture (wall unit / partition)",
+  "position": [
+   2.398,
+   -1.727
+  ],
+  "height_m": 2.31,
+  "footprint_m2": 1.59,
+  "size_m": [
+   1.7,
+   1.95
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall fixture (wall unit / partition)",
+  "position": [
+   2.748,
+   0.256
+  ],
+  "height_m": 2.2,
+  "footprint_m2": 1.59,
+  "size_m": [
+   2.9,
+   0.95
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "table-height object (table / desk / counter)",
+  "position": [
+   4.66,
+   -1.264
+  ],
+  "height_m": 1.1,
+  "footprint_m2": 0.15,
+  "size_m": [
+   0.6,
+   0.45
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall object (shelf / cabinet / appliance / pillar)",
+  "position": [
+   3.802,
+   -1.224
+  ],
+  "height_m": 1.77,
+  "footprint_m2": 0.14,
+  "size_m": [
+   0.55,
+   0.4
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall object (shelf / cabinet / appliance / pillar)",
+  "position": [
+   -0.777,
+   0.111
+  ],
+  "height_m": 2.38,
+  "footprint_m2": 0.09,
+  "size_m": [
+   0.6,
+   0.25
+  ]
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   0.004,
+   -0.606
+  ],
+  "radius_m": 0.66
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   1.404,
+   -0.656
+  ],
+  "radius_m": 0.63
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   4.229,
+   -0.656
+  ],
+  "radius_m": 0.45
+ }
+]

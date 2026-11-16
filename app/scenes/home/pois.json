@@ -1,0 +1,249 @@
+[
+  {
+    "id": "kitchen",
+    "name": "Kitchen",
+    "category": "room",
+    "aliases": [
+      "cooking area",
+      "tiled floor"
+    ],
+    "description": "Hex-tiled kitchen floor at the centre of the home.",
+    "position": [
+      0.0,
+      1.3,
+      -0.45
+    ],
+    "zone": [
+      [
+        -1.2,
+        -1.15
+      ],
+      [
+        1.0,
+        -1.15
+      ],
+      [
+        1.0,
+        0.25
+      ],
+      [
+        -1.2,
+        0.25
+      ]
+    ]
+  },
+  {
+    "id": "dining-area",
+    "name": "Dining area",
+    "category": "room",
+    "aliases": [
+      "dining room",
+      "eat"
+    ],
+    "description": "Dining corner with the wooden table.",
+    "position": [
+      0.75,
+      1.3,
+      0.95
+    ],
+    "zone": [
+      [
+        -0.6,
+        0.25
+      ],
+      [
+        1.3,
+        0.25
+      ],
+      [
+        1.3,
+        1.6
+      ],
+      [
+        -0.6,
+        1.6
+      ]
+    ]
+  },
+  {
+    "id": "hallway",
+    "name": "Hallway",
+    "category": "room",
+    "aliases": [
+      "corridor",
+      "passage",
+      "blue rug"
+    ],
+    "description": "Corridor with the blue rug leading towards the bedrooms.",
+    "position": [
+      3.4,
+      1.3,
+      -0.6
+    ],
+    "zone": [
+      [
+        2.0,
+        -1.0
+      ],
+      [
+        4.95,
+        -1.0
+      ],
+      [
+        4.95,
+        -0.2
+      ],
+      [
+        2.0,
+        -0.2
+      ]
+    ]
+  },
+  {
+    "id": "back-passage",
+    "name": "Back passage",
+    "category": "entrance",
+    "aliases": [
+      "back door",
+      "exit",
+      "way out"
+    ],
+    "description": "Passage past the pillar towards the back of the house.",
+    "position": [
+      1.45,
+      1.3,
+      -2.3
+    ],
+    "zone": [
+      [
+        1.0,
+        -2.9
+      ],
+      [
+        2.0,
+        -2.9
+      ],
+      [
+        2.0,
+        -1.2
+      ],
+      [
+        1.0,
+        -1.2
+      ]
+    ]
+  },
+  {
+    "id": "dining-table",
+    "name": "Dining table",
+    "category": "table",
+    "aliases": [
+      "wooden table",
+      "dinner table"
+    ],
+    "description": "Square wooden dining table with chairs.",
+    "position": [
+      0.15,
+      0.95,
+      0.95
+    ]
+  },
+  {
+    "id": "digital-piano",
+    "name": "Digital piano",
+    "category": "leisure",
+    "aliases": [
+      "keyboard",
+      "piano",
+      "music"
+    ],
+    "description": "88-key digital piano against the wall.",
+    "position": [
+      -1.25,
+      1.0,
+      -1.35
+    ]
+  },
+  {
+    "id": "study-desk",
+    "name": "Study desk",
+    "category": "table",
+    "aliases": [
+      "computer",
+      "monitor",
+      "workstation",
+      "desk"
+    ],
+    "description": "Desk with the monitor, next to the dining table.",
+    "position": [
+      -1.15,
+      1.0,
+      1.25
+    ]
+  },
+  {
+    "id": "kitchen-trolley",
+    "name": "Kitchen trolley",
+    "category": "storage",
+    "aliases": [
+      "cart",
+      "shelf",
+      "rack"
+    ],
+    "description": "White storage trolley by the kitchen wall.",
+    "position": [
+      -1.95,
+      1.0,
+      -0.35
+    ]
+  },
+  {
+    "id": "plant-shelf",
+    "name": "Plant shelf",
+    "category": "landmark",
+    "aliases": [
+      "plants",
+      "bookshelf",
+      "greenery"
+    ],
+    "description": "Wooden shelf with house plants.",
+    "position": [
+      0.9,
+      1.5,
+      -1.3
+    ]
+  },
+  {
+    "id": "hallway-painting",
+    "name": "Hallway painting",
+    "category": "landmark",
+    "aliases": [
+      "art",
+      "picture",
+      "frame",
+      "yellow painting"
+    ],
+    "description": "Framed painting on the hallway wall.",
+    "position": [
+      1.8,
+      1.7,
+      0.35
+    ]
+  },
+  {
+    "id": "landscape-painting",
+    "name": "Landscape painting",
+    "category": "landmark",
+    "aliases": [
+      "art",
+      "picture",
+      "red painting"
+    ],
+    "description": "Red landscape painting above the dining table.",
+    "position": [
+      0.1,
+      1.6,
+      1.9
+    ]
+  }
+]

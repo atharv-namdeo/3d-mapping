@@ -1,0 +1,6 @@
+{
+  "id": "home",
+  "name": "Home — Kitchen, Dining & Lounge",
+  "source": { "path": "../../../data/sources/kitchen_30k.ply", "type": "gaussian-splat" },
+  "calibration": { "up": [0, 0, 1], "metresPerUnit": 2.34 }
+}

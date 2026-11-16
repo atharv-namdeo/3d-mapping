@@ -1,0 +1,14 @@
+{
+  "name": "namma-space",
+  "version": "2.0.0",
+  "description": "Namma Space — smartphone capture to navigable 3D digital twin (Techfest 2026-27)",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 8080",
+    "test": "node --test tests/*.test.mjs",
+    "test:pipeline": "python3 -m unittest discover -s tests -p 'test_*.py' -v",
+    "build:scenes": "python3 -m navkit build --all"
+  },
+  "engines": { "node": ">=20" }
+}

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <title>Namma Space — Indoor Navigator</title>
+  <meta name="description" content="Walk through a photorealistic 3D scan, search for a place and follow an obstacle-aware walking route to it.">
+  <meta name="theme-color" content="#0b0d12">
+  <link rel="stylesheet" href="styles.css">
+  <script type="importmap">{ "imports": { "three": "./vendor/three.module.js" } }</script>
+</head>
+<body>
+  <div id="stage" aria-label="3D walkthrough"></div>
+  <div id="pins" aria-label="Points of interest"></div>
+  <div id="crosshair" hidden></div>
+  <div id="vignette"></div>
+
+  <!-- Search -->
+  <header class="topbar">
+    <a class="brand" href="../" title="Back to the project portal">
+      <span class="brand__mark">N</span>
+      <span class="brand__text"><b>Namma Space</b><small id="scene-name">Indoor Navigator</small></span>
+    </a>
+    <div class="search" role="search">
+      <div class="search__field">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="search-input" type="search" autocomplete="off" spellcheck="false" placeholder="Search a place or thing — try “nearest chair”"
+               aria-label="Search places" aria-controls="search-results" aria-expanded="false" role="combobox">
+        <button id="voice-btn" class="icon-btn" type="button" title="Search by voice" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        </button>
+        <kbd>/</kbd>
+      </div>
+      <ul id="search-results" class="results" role="listbox" hidden></ul>
+    </div>
+    <nav class="tools" aria-label="View tools">
+      <button id="btn-mode" class="chip" type="button" title="Switch between the photoreal scan and the blueprint (B)">Blueprint</button>
+      <button id="btn-nav" class="chip" type="button" title="Show the walkable area the planner uses (V)">Walkable area</button>
+      <button id="btn-edit" class="chip" type="button" title="Add or edit points of interest (E)">Edit POIs</button>
+      <button id="btn-help" class="chip chip--round" type="button" title="Controls (?)">?</button>
+    </nav>
+  </header>
+
+  <!-- Selected place -->
+  <aside id="card" class="panel card" hidden aria-live="polite"></aside>
+
+  <!-- Turn-by-turn guidance -->
+  <section id="hud" class="panel hud" hidden aria-live="polite">
+    <div class="hud__turn"><span id="hud-icon" class="turn-icon"></span></div>
+    <div class="hud__body">
+      <div id="hud-text" class="hud__text"></div>
+      <div class="hud__meta"><b id="hud-distance"></b><span id="hud-eta"></span><span id="hud-dest"></span></div>
+      <div class="hud__bar"><i id="hud-progress"></i></div>
+    </div>
+    <div class="hud__actions">
+      <button id="hud-auto" class="btn btn--primary" type="button" title="Walk the route automatically (G)">Auto-walk</button>
+      <button id="hud-stop" class="btn" type="button" title="End navigation (Esc)">End</button>
+    </div>
+  </section>
+
+  <!-- Map -->
+  <section id="map" class="panel map">
+    <canvas id="map-canvas" aria-label="Floor plan. Click to set a destination."></canvas>
+    <button id="map-expand" class="icon-btn map__expand" type="button" title="Expand map (M)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10V4h6M20 14v6h-6M4 4l7 7M20 20l-7-7"/></svg>
+    </button>
+  </section>
+
+  <!-- Editor -->
+  <aside id="editor" class="panel editor" hidden></aside>
+
+  <footer class="statusbar">
+    <span id="status-hint">Drag to look · <b>W A S D</b> to walk · click a label or the floor</span>
+    <span class="statusbar__right">
+      <label class="switch" title="Plan routes that keep a wheelchair-width clearance">
+        <input id="opt-accessible" type="checkbox"><span>Step-free width</span>
+      </label>
+      <span id="fps" class="mono"></span>
+    </span>
+  </footer>
+
+  <div id="toasts" aria-live="assertive"></div>
+
+  <div id="help" class="overlay" hidden>
+    <div class="panel help">
+      <h2>Controls</h2>
+      <dl>
+        <dt><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / arrows</dt><dd>Walk · hold <kbd>Shift</kbd> to run</dd>
+        <dt>Drag</dt><dd>Look around · <kbd>F</kbd> toggles mouse-look</dd>
+        <dt>Click</dt><dd>A label, a zone or any floor spot to see it or go there</dd>
+        <dt><kbd>/</kbd></dt><dd>Search · <kbd>Enter</kbd> directions · <kbd>Shift</kbd>+<kbd>Enter</kbd> jump there</dd>
+        <dt><kbd>G</kbd></dt><dd>Auto-walk the active route · <kbd>Esc</kbd> ends navigation</dd>
+        <dt><kbd>M</kbd> <kbd>B</kbd> <kbd>V</kbd> <kbd>E</kbd></dt><dd>Map · Blueprint · Walkable area · POI editor</dd>
+        <dt>Touch</dt><dd>Left thumb walks, right thumb looks, tap to select</dd>
+      </dl>
+      <button class="btn btn--primary" type="button" data-close>Got it</button>
+    </div>
+  </div>
+
+  <div id="loading" class="overlay loading">
+    <div class="loading__box">
+      <span class="brand__mark brand__mark--lg">N</span>
+      <h1 id="loading-title">Namma Space</h1>
+      <p id="loading-text">Loading the space…</p>
+      <div class="loading__bar"><i id="loading-progress"></i></div>
+    </div>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
