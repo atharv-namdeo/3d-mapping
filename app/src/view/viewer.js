@@ -15,6 +15,18 @@ const BLUEPRINT_CUT = 1.15;   // metres: blueprint mode slices the model here
 /** Order matters: splats draw first, occluders write depth, guidance draws over both. */
 export const RENDER_ORDER = { occluder: 10, navOverlay: 15, pathGhost: 20, path: 21, beacon: 22 };
 
+/**
+ * Does this browser run WebAssembly SIMD? The splat sorter ships a SIMD build that never
+ * reports back on engines without it, which would leave the scan loading forever.
+ */
+function wasmSimdSupported() {
+  try {
+    return WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 123, 3, 2, 1, 0, 10, 10, 1, 8, 0, 65, 0, 253, 15, 253, 98, 11]));
+  } catch {
+    return false;
+  }
+}
+
 export class Viewer {
   constructor(container) {
     this.container = container;
@@ -124,6 +136,7 @@ export class Viewer {
         gpuAcceleratedSort: false,
         sphericalHarmonicsDegree: 0,
         freeIntermediateSplatData: true,
+        enableSIMDInSort: wasmSimdSupported(),
       });
       await splats.addSplatScene(url, {
         showLoadingUI: false, splatAlphaRemovalThreshold: 6,

@@ -217,3 +217,7 @@ body[data-mode="blueprint"] .statusbar { background: linear-gradient(transparent
   #scene-picker { max-width: 84px; }
   .search__field kbd { display: none; }
 }
+
+/* Photoreal scan streaming in behind the blueprint */
+.scan-status { position: fixed; left: 50%; bottom: calc(44px + var(--safe-b)); transform: translateX(-50%); padding: 7px 14px; border-radius: 999px; background: var(--panel-solid); border: 1px solid var(--line); box-shadow: var(--shadow); font-size: 12.5px; font-weight: 600; color: #c9cfda; z-index: 12; max-width: calc(100vw - 24px); text-align: center; pointer-events: none; }
+body:has(#hud:not([hidden])) .scan-status { bottom: calc(150px + var(--safe-b)); }

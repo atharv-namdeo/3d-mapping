@@ -83,28 +83,43 @@ class App {
     this.#wire();
     this.#syncPois();
     this.#loop();
-    await this.#loadVisual(base, nav.assets);
+    this.#loadVisual(base, nav.assets);
     this.#openDeepLink();
   }
 
-  async #loadVisual(base, assets) {
+  /**
+   * The space is usable straight away in blueprint view; the photoreal scan streams in
+   * behind it and takes over when ready. A slow or failed scan never blocks navigation.
+   */
+  #loadVisual(base, assets) {
     const phone = matchMedia('(pointer: coarse)').matches || Math.min(screen.width, screen.height) < 700;
     const quality = params.get('quality') ?? (phone ? 'lite' : 'full');
-    const bar = $('#loading-progress');
-    try {
-      if (quality !== 'off') {
-        $('#loading-text').textContent = assets.splat ? 'Streaming the photoreal scan…' : 'Loading the scan…';
-        await this.viewer.loadPhotoreal(base, assets, { lite: quality === 'lite', pointSize: this.scene.view?.pointSize, onProgress: (f) => { bar.style.width = `${Math.round(f * 100)}%`; } });
-      } else this.viewer.setMode('blueprint');
-    } catch (err) {
-      console.error(err);
-      this.viewer.setMode('blueprint');
-      toast('The photoreal scan could not be loaded — showing the blueprint instead.', 'error', 6000);
-    }
-    this.setMode(this.scene.view?.defaultMode === 'blueprint' ? 'blueprint' : this.viewer.mode);
-    $('#btn-mode').disabled = !this.viewer.photoreal;
+    const pill = $('#scan-status');
+    const finish = () => { pill.hidden = true; clearTimeout(slow); };
+    this.setMode('blueprint');
+    $('#btn-mode').disabled = true;
     $('#loading').classList.add('is-done');
     setTimeout(() => { $('#loading').hidden = true; }, 500);
+    if (quality === 'off') return;
+
+    pill.hidden = false;
+    pill.textContent = 'Loading the photoreal scan…';
+    const slow = setTimeout(() => {
+      pill.textContent = 'The photoreal scan is slow on this device — keep using the blueprint view';
+      setTimeout(() => { pill.hidden = true; }, 6000);
+    }, 45000);
+    this.viewer.loadPhotoreal(base, assets, {
+      lite: quality === 'lite', pointSize: this.scene.view?.pointSize,
+      onProgress: (f) => { pill.textContent = f < 1 ? `Loading the photoreal scan… ${Math.round(f * 100)}%` : 'Preparing the photoreal scan…'; },
+    }).then(() => {
+      finish();
+      $('#btn-mode').disabled = !this.viewer.photoreal;
+      this.setMode(this.scene.view?.defaultMode === 'blueprint' ? 'blueprint' : 'photoreal');
+    }).catch((err) => {
+      console.error(err);
+      finish();
+      toast('The photoreal scan could not be loaded — showing the blueprint instead.', 'error', 6000);
+    });
   }
 
   // ───────────────────────────── queries ─────────────────────────────
