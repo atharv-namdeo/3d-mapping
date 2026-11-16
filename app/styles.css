@@ -54,7 +54,10 @@ body.is-flying #vignette { opacity: 1; }
 .brand__mark { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--accent), #7a5cff); color: #fff; font-weight: 800; }
 .brand__mark--lg { width: 52px; height: 52px; border-radius: 15px; font-size: 24px; margin: 0 auto; }
 .brand__text { display: flex; flex-direction: column; line-height: 1.15; }
-.brand__text small { color: var(--muted); font-size: 11.5px; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.brand__mark { text-decoration: none; }
+#scene-picker { max-width: 230px; margin-left: -3px; padding: 0 14px 0 2px; border: 0; background: transparent; color: var(--muted); font-size: 11.5px; cursor: pointer; text-overflow: ellipsis; }
+#scene-picker:hover { color: var(--text); }
+#scene-picker option { background: var(--panel-solid); color: var(--text); }
 
 .search { position: relative; flex: 1; max-width: 520px; margin: 0 auto; }
 .search__field { display: flex; align-items: center; gap: 8px; height: 46px; padding: 0 12px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
@@ -194,14 +197,15 @@ body[data-mode="blueprint"] .statusbar { background: linear-gradient(transparent
 /* ── Small screens ─────────────────────────────────────────────── */
 @media (max-width: 820px) {
   .topbar { flex-wrap: wrap; top: 8px; left: 8px; right: 8px; gap: 8px; }
-  .brand__text { display: none; }
-  .brand { padding: 7px; }
-  .search { order: 2; flex: 1 1 60%; max-width: none; }
+  .brand__text b { display: none; }
+  .brand { padding: 7px; height: 46px; }
+  .search { flex: 1 1 0; min-width: 0; max-width: none; margin: 0; }
   .tools { order: 3; flex: 1 1 100%; justify-content: flex-start; }
   .chip { height: 30px; padding: 0 10px; font-size: 12px; }
   .card, .editor { top: auto; left: 8px; right: 8px; bottom: calc(42px + var(--safe-b)); width: auto; max-height: 52vh; }
-  .map { width: 120px; height: 120px; left: 8px; top: 112px; bottom: auto; }
-  .map.is-expanded { top: 112px; height: 50vh; }
+  .map { width: 120px; height: 120px; left: 8px; top: 102px; bottom: auto; }
+  .map.is-expanded { top: 102px; height: 50vh; }
+  #scene-picker { max-width: 150px; }
   .hud { bottom: calc(42px + var(--safe-b)); flex-wrap: wrap; }
   .hud__actions { flex: 1 1 100%; }
   .hud__actions .btn { flex: 1; }
@@ -209,3 +213,7 @@ body[data-mode="blueprint"] .statusbar { background: linear-gradient(transparent
   body:has(#hud:not([hidden])) .card { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+@media (max-width: 520px) {
+  #scene-picker { max-width: 84px; }
+  .search__field kbd { display: none; }
+}

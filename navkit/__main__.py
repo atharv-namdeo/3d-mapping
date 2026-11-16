@@ -16,7 +16,14 @@ def main(argv: list[str] | None = None) -> int:
     build = sub.add_parser("build", help="generate nav.json, floorplan and web visuals for a scene")
     build.add_argument("scenes", nargs="*", type=Path, help="scene folders containing scene.json")
     build.add_argument("--all", action="store_true", help=f"build every scene under {SCENES_ROOT}")
+    synth = sub.add_parser("synth", help="generate the synthetic ground-truth office capture")
+    synth.add_argument("scene", type=Path, nargs="?", default=SCENES_ROOT / "office")
     args = parser.parse_args(argv)
+
+    if args.command == "synth":
+        from .synth import write_scene
+        write_scene(args.scene)
+        return 0
 
     scenes = list(args.scenes)
     if args.all:

@@ -91,6 +91,7 @@ export class SearchIndex {
    */
   query(text, { distanceTo = () => 0, limit = 8 } = {}) {
     const { terms, nearest } = this.parse(text);
+    const typed = tokenise(text).join(' ');
     const results = [];
     for (const { poi, fields } of this.entries) {
       const distance = distanceTo(poi);
@@ -108,7 +109,12 @@ export class SearchIndex {
         total += best;
         if (best > bestField) { bestField = best; matched = bestKind; }
       }
-      if (total > 0) results.push({ poi, score: total / terms.length, distance, matched });
+      if (total > 0) {
+        // Typing a place's exact name must always beat partial matches elsewhere.
+        const name = fields[0].words.join(' ');
+        const exact = name === typed || name === terms.join(' ') ? 0.5 : 0;
+        results.push({ poi, score: total / terms.length + exact, distance, matched });
+      }
     }
     const byDistance = (a, b) => a.distance - b.distance || a.poi.name.localeCompare(b.poi.name);
     if (!terms.length || nearest) results.sort(byDistance);

@@ -61,3 +61,8 @@ monomap/capture/**/_frames/
 !monomap/output/**/models/model_01_dense_pointcloud.ply
 !assets/models/*.ply
 !monomap/web/*.png
+
+# Round 2: raw reconstruction sources are fetched/generated, never committed
+data/sources/
+app/scenes/*/source.ply
+node_modules/

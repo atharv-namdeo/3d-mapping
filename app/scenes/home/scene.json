@@ -1,6 +1,12 @@
 {
   "id": "home",
   "name": "Home — Kitchen, Dining & Lounge",
+  "description": "Real smartphone capture of a lived-in home, reconstructed as a Gaussian splat (Nerfstudio splatfacto, 30k iterations).",
   "source": { "path": "../../../data/sources/kitchen_30k.ply", "type": "gaussian-splat" },
-  "calibration": { "up": [0, 0, 1], "metresPerUnit": 2.34 }
+  "calibration": {
+    "up": [0, 0, 1],
+    "metresPerUnit": 2.34,
+    "note": "Radiance-field exports have no absolute scale. 2.34 m/unit is estimated from the dining table top (assumed 0.75 m high); replace with a measured reference or ARCore poses for survey-grade distances."
+  },
+  "spawn": { "position": [0.2, -0.6], "yawDeg": 180 }
 }

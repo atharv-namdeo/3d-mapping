@@ -116,7 +116,7 @@ export class Viewer {
    * Load the capture itself. Resolves once the first frame can be drawn.
    * @param {(fraction: number) => void} onProgress
    */
-  async loadPhotoreal(baseUrl, assets, { lite = false, onProgress = () => {} } = {}) {
+  async loadPhotoreal(baseUrl, assets, { lite = false, pointSize = 0.04, onProgress = () => {} } = {}) {
     if (assets.splat) {
       const url = baseUrl + (lite && assets.splatLite ? assets.splatLite : assets.splat);
       const splats = new GaussianSplats3D.DropInViewer({
@@ -144,7 +144,7 @@ export class Viewer {
       const g = new THREE.BufferGeometry();
       g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
       g.setAttribute('color', new THREE.BufferAttribute(col, 3, true));
-      this.photoreal = new THREE.Points(g, new THREE.PointsMaterial({ size: 0.035, vertexColors: true, sizeAttenuation: true }));
+      this.photoreal = new THREE.Points(g, new THREE.PointsMaterial({ size: pointSize, vertexColors: true, sizeAttenuation: true }));
       this.photoreal.frustumCulled = false;
       onProgress(1);
     }

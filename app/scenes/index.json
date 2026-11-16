@@ -1,1 +1,6 @@
-{ "scenes": [ { "id": "home", "name": "Home — Kitchen, Dining & Lounge" } ] }
+{
+  "scenes": [
+    { "id": "home", "name": "Home — Kitchen, Dining & Lounge", "kind": "Real capture · Gaussian splat" },
+    { "id": "office", "name": "Office floor — synthetic benchmark", "kind": "Synthetic ground truth · point cloud" }
+  ]
+}

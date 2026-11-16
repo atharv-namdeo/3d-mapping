@@ -112,17 +112,29 @@ function astar(grid, start, goal, walker) {
   return { cells, expanded, cost: g[goalK] };
 }
 
-/** Greedy any-angle shortcutting that preserves the walker's clearance. */
+/**
+ * Any-angle shortcutting that preserves the walker's clearance. From each anchor it
+ * gallops ahead (1, 2, 4, … points) while the straight line stays clear, then binary
+ * searches the last visible point — O(log n) sight checks per segment instead of O(n).
+ */
 function pullString(grid, pts, radius) {
+  const sees = (a, b) => grid.lineOfSight(pts[a][0], pts[a][1], pts[b][0], pts[b][1], radius);
   const out = [pts[0]];
+  const last = pts.length - 1;
   let anchor = 0;
-  while (anchor < pts.length - 1) {
-    let next = anchor + 1;
-    for (let probe = pts.length - 1; probe > anchor + 1; probe--) {
-      if (grid.lineOfSight(pts[anchor][0], pts[anchor][1], pts[probe][0], pts[probe][1], radius)) { next = probe; break; }
+  while (anchor < last) {
+    let lo = anchor + 1;                 // always reachable: adjacent cells of a valid path
+    let hi = lo;
+    for (let jump = 2; hi === lo && lo < last; jump *= 2) {
+      const probe = Math.min(last, anchor + jump);
+      if (sees(anchor, probe)) lo = hi = probe; else hi = probe;
     }
-    out.push(pts[next]);
-    anchor = next;
+    while (hi - lo > 1) {
+      const mid = (lo + hi) >> 1;
+      if (sees(anchor, mid)) lo = mid; else hi = mid;
+    }
+    out.push(pts[lo]);
+    anchor = lo;
   }
   return out;
 }

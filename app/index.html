@@ -17,10 +17,12 @@
 
   <!-- Search -->
   <header class="topbar">
-    <a class="brand" href="../" title="Back to the project portal">
-      <span class="brand__mark">N</span>
-      <span class="brand__text"><b>Namma Space</b><small id="scene-name">Indoor Navigator</small></span>
-    </a>
+    <div class="brand">
+      <a class="brand__mark" href="../" title="Back to the project portal">N</a>
+      <span class="brand__text"><b>Namma Space</b>
+        <select id="scene-picker" aria-label="Choose a space" title="Choose a space"></select>
+      </span>
+    </div>
     <div class="search" role="search">
       <div class="search__field">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>

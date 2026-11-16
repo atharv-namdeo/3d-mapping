@@ -9,6 +9,55 @@
 
 ---
 
+## 🧭 Round 2 — Indoor Navigator (POIs, search, obstacle-aware routes)
+
+**Open [`app/`](app/)** — a zero-install web app: walk through the photoreal scan, click or search
+for a place, and follow a walking route that goes around real furniture and walls.
+
+```bash
+git clone https://github.com/atharv-namdeo/3d-mapping.git && cd 3d-mapping
+python3 -m http.server 8080          # any static server works; there is no build step
+# open http://localhost:8080/app/
+```
+
+| Do this | With |
+|---|---|
+| Walk / look | `W A S D`, drag (or `F` for mouse-look); touch: left thumb walks, right thumb looks |
+| Find a place | `/` then type — typos, aliases and "nearest …" work; `Enter` directions, `Shift+Enter` jump |
+| Follow the route | `G` auto-walk, `Esc` end; leaving the route re-plans it |
+| Inspect | `V` walkable area, `B` blueprint, `M` map (click it to route anywhere) |
+| Tag the venue | `E` — click to add a POI, draw a zone, export `pois.json` |
+
+**Tests** (no dependencies for the first; numpy/scipy/pillow for the second):
+
+```bash
+npm test                 # 35 tests: grid, planner, search, spatial index, guidance, shipped scenes
+pip install -r navkit/requirements.txt && npm run test:pipeline   # pipeline vs. ground truth
+```
+
+**Rebuild a scene from its reconstruction** (`nav.json`, floor plan, web-ready splat):
+
+```bash
+python -m navkit synth && python -m navkit build app/scenes/office      # synthetic benchmark
+git clone --depth 1 https://github.com/BENi-Aditya/Namma-Space ../Namma-Space
+python scripts/fetch_home_splat.py ../Namma-Space && python -m navkit build app/scenes/home
+```
+
+**Add your own space:** create `app/scenes/<id>/scene.json` pointing at a 3DGS `.ply` or a point
+cloud, run `python -m navkit build app/scenes/<id>`, add it to `app/scenes/index.json`, then tag
+POIs in the browser with `E`.
+
+How it works, what was measured and the known limits: **[docs/ROUND2.md](docs/ROUND2.md)**.
+
+```
+app/        web app (ES modules, no bundler)  · core/ logic · view/ three.js · ui/ DOM · scenes/ data
+navkit/     reconstruction → walkable grid, floor plan, web splat (Python)
+tests/      JavaScript and Python tests       · .github/workflows/ci.yml runs both
+monomap/    Round 1 capture + reconstruction pipeline (PoseCam, depth, TSDF, 10-model suite)
+```
+
+---
+
 ## 📌 Detailed Handover & AI Context
 👉 **For a complete mathematical, architectural, and code handover specification, please read [AI_AND_TEAM_CONTEXT.md](AI_AND_TEAM_CONTEXT.md).**
 

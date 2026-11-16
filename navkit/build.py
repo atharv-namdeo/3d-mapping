@@ -91,6 +91,28 @@ def crop_for_viewing(cloud: Cloud, grid: NavGrid, margin: float, ceiling: float)
     return cloud.select(keep)
 
 
+def publish_source_pois(scene_dir: Path, frame) -> int:
+    """Convert POIs tagged in *capture* coordinates (``pois.source.json``) to the nav frame.
+
+    Lets a venue be tagged against a floor plan or survey before reconstruction settles;
+    scenes tagged in the browser editor already use nav coordinates and skip this step.
+    """
+    src = scene_dir / "pois.source.json"
+    if not src.exists():
+        return 0
+    out = []
+    for poi in json.loads(src.read_text()):
+        poi = dict(poi)
+        poi["position"] = frame.apply(np.array([poi["position"]], float))[0].round(3).tolist()
+        if poi.get("zone"):
+            corners = np.array([[x, 0.0, z] for x, z in poi["zone"]])
+            poi["zone"] = frame.apply(corners)[:, [0, 2]].round(3).tolist()
+        poi.setdefault("id", "-".join("".join(ch if ch.isalnum() else " " for ch in poi["name"].lower()).split()))
+        out.append(poi)
+    (scene_dir / "pois.json").write_text(json.dumps(out, indent=1))
+    return len(out)
+
+
 def build_scene(scene_dir: str | Path, *, verbose: bool = True) -> dict:
     scene_dir = Path(scene_dir)
     cfg = json.loads((scene_dir / "scene.json").read_text())
@@ -108,6 +130,10 @@ def build_scene(scene_dir: str | Path, *, verbose: bool = True) -> dict:
         cloud, up_hint=cal.get("up", [0, 0, 1]), metres_per_unit=cal.get("metresPerUnit", 1.0),
         square_up=cal.get("squareUp", True), yaw_deg=cal.get("yawDeg"))
     log(f"  floor plane inliers {align_report['floor_inlier_ratio']:.1%}, yaw {align_report['yaw_deg']}°")
+    if align_report["floor_inlier_ratio"] < 0.05:
+        raise RuntimeError(
+            f"only {align_report['floor_inlier_ratio']:.1%} of the reconstruction lies on a floor plane - it is too "
+            "noisy to navigate. Re-capture with more floor in view (see docs/CAPTURE_SOP.md).")
     cloud = transform_cloud(cloud, frame)
 
     a = cfg.get("agent", {})
@@ -135,6 +161,7 @@ def build_scene(scene_dir: str | Path, *, verbose: bool = True) -> dict:
     render_floorplan(confident if cloud.is_splat else cloud, grid,
                      ceiling=view.get("floorplanCeiling", 1.9)).save(scene_dir / "floorplan.png", optimize=True)
 
+    publish_source_pois(scene_dir, frame)
     suggestions = suggest_objects(grid) + suggest_zones(grid)
     (scene_dir / "suggestions.json").write_text(json.dumps(suggestions, indent=1))
 

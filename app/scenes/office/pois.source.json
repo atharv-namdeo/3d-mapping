@@ -1,0 +1,548 @@
+[
+ {
+  "name": "Reception desk",
+  "category": "service",
+  "aliases": [
+   "front desk",
+   "help desk",
+   "info"
+  ],
+  "description": "Sign in here on arrival.",
+  "position": [
+   3.0,
+   1.4,
+   2.8
+  ]
+ },
+ {
+  "name": "Visitor sofa",
+  "category": "seating",
+  "aliases": [
+   "3-seater sofa",
+   "couch",
+   "waiting area"
+  ],
+  "description": "Three-seater sofa for visitors.",
+  "position": [
+   1.55,
+   1.1,
+   5.05
+  ]
+ },
+ {
+  "name": "Table A",
+  "category": "table",
+  "aliases": [
+   "meeting table"
+  ],
+  "description": "Eight-seat table in Meeting Room A.",
+  "position": [
+   9.0,
+   1.0899999999999999,
+   3.3
+  ]
+ },
+ {
+  "name": "Table B",
+  "category": "table",
+  "aliases": [
+   "meeting table"
+  ],
+  "description": "Eight-seat table in Meeting Room B.",
+  "position": [
+   15.0,
+   1.0899999999999999,
+   3.3
+  ]
+ },
+ {
+  "name": "Display screen",
+  "category": "appliance",
+  "aliases": [
+   "tv",
+   "monitor",
+   "projector"
+  ],
+  "description": "Wall display in Meeting Room A.",
+  "position": [
+   9.0,
+   2.25,
+   0.30000000000000004
+  ]
+ },
+ {
+  "name": "Whiteboard",
+  "category": "landmark",
+  "aliases": [
+   "board"
+  ],
+  "description": "Whiteboard in Meeting Room B.",
+  "position": [
+   15.0,
+   2.35,
+   0.25
+  ]
+ },
+ {
+  "name": "Pantry counter",
+  "category": "food",
+  "aliases": [
+   "kitchen counter",
+   "sink"
+  ],
+  "description": "Counter with the sink.",
+  "position": [
+   20.5,
+   1.27,
+   0.65
+  ]
+ },
+ {
+  "name": "Coffee machine",
+  "category": "food",
+  "aliases": [
+   "coffee",
+   "espresso",
+   "tea"
+  ],
+  "description": "Bean-to-cup machine on the counter.",
+  "position": [
+   19.25,
+   1.7000000000000002,
+   0.65
+  ]
+ },
+ {
+  "name": "Fridge",
+  "category": "appliance",
+  "aliases": [
+   "refrigerator",
+   "cold drinks"
+  ],
+  "description": "Shared fridge.",
+  "position": [
+   23.4,
+   2.2,
+   0.7000000000000001
+  ]
+ },
+ {
+  "name": "Pantry table",
+  "category": "table",
+  "aliases": [
+   "lunch table",
+   "eat"
+  ],
+  "description": "High table for lunch.",
+  "position": [
+   21.0,
+   1.0899999999999999,
+   4.2
+  ]
+ },
+ {
+  "name": "Desk row 1",
+  "category": "table",
+  "aliases": [
+   "desks",
+   "workstation"
+  ],
+  "description": "Row 1 of the open workspace.",
+  "position": [
+   2.2,
+   1.0899999999999999,
+   10.8
+  ]
+ },
+ {
+  "name": "Desk row 2",
+  "category": "table",
+  "aliases": [
+   "desks",
+   "workstation"
+  ],
+  "description": "Row 2 of the open workspace.",
+  "position": [
+   2.2,
+   1.0899999999999999,
+   12.700000000000001
+  ]
+ },
+ {
+  "name": "Desk row 3",
+  "category": "table",
+  "aliases": [
+   "desks",
+   "workstation"
+  ],
+  "description": "Row 3 of the open workspace.",
+  "position": [
+   2.2,
+   1.0899999999999999,
+   14.6
+  ]
+ },
+ {
+  "name": "Printer",
+  "category": "appliance",
+  "aliases": [
+   "copier",
+   "scanner",
+   "print"
+  ],
+  "description": "Multi-function printer.",
+  "position": [
+   13.35,
+   1.4500000000000002,
+   9.75
+  ]
+ },
+ {
+  "name": "Lounge sofas",
+  "category": "seating",
+  "aliases": [
+   "3-seater sofas",
+   "couch",
+   "sofa"
+  ],
+  "description": "Three-seater sofas around the coffee table.",
+  "position": [
+   16.0,
+   1.1,
+   14.1
+  ]
+ },
+ {
+  "name": "Coffee table",
+  "category": "table",
+  "aliases": [
+   "low table"
+  ],
+  "description": "Low table in the lounge.",
+  "position": [
+   16.0,
+   0.77,
+   12.2
+  ]
+ },
+ {
+  "name": "Bookshelf",
+  "category": "storage",
+  "aliases": [
+   "books",
+   "library",
+   "shelf"
+  ],
+  "description": "Lounge bookshelf.",
+  "position": [
+   19.5,
+   2.25,
+   15.100000000000001
+  ]
+ },
+ {
+  "name": "Server racks",
+  "category": "appliance",
+  "aliases": [
+   "servers",
+   "network",
+   "rack"
+  ],
+  "description": "Three 42U racks.",
+  "position": [
+   22.4,
+   2.35,
+   12.9
+  ]
+ },
+ {
+  "name": "Plant",
+  "category": "landmark",
+  "aliases": [
+   "greenery",
+   "tree"
+  ],
+  "description": "Large potted plant by reception.",
+  "position": [
+   5.45,
+   1.65,
+   7.45
+  ]
+ },
+ {
+  "name": "Main entrance",
+  "category": "entrance",
+  "aliases": [
+   "exit",
+   "door",
+   "way out",
+   "front door"
+  ],
+  "description": "Street entrance on the west side.",
+  "position": [
+   0.7,
+   1.6,
+   8.0
+  ]
+ },
+ {
+  "name": "Reception",
+  "category": "service",
+  "aliases": [
+   "front desk",
+   "help",
+   "lobby"
+  ],
+  "description": "",
+  "position": [
+   3.0,
+   1.9,
+   3.5
+  ],
+  "zone": [
+   [
+    0.1,
+    0.1
+   ],
+   [
+    5.9,
+    0.1
+   ],
+   [
+    5.9,
+    6.9
+   ],
+   [
+    0.1,
+    6.9
+   ]
+  ]
+ },
+ {
+  "name": "Meeting Room A",
+  "category": "room",
+  "aliases": [
+   "conference room",
+   "meeting room 1"
+  ],
+  "description": "",
+  "position": [
+   9.0,
+   1.9,
+   3.5
+  ],
+  "zone": [
+   [
+    6.1,
+    0.1
+   ],
+   [
+    11.9,
+    0.1
+   ],
+   [
+    11.9,
+    6.9
+   ],
+   [
+    6.1,
+    6.9
+   ]
+  ]
+ },
+ {
+  "name": "Meeting Room B",
+  "category": "room",
+  "aliases": [
+   "conference room",
+   "meeting room 2"
+  ],
+  "description": "",
+  "position": [
+   15.0,
+   1.9,
+   3.5
+  ],
+  "zone": [
+   [
+    12.1,
+    0.1
+   ],
+   [
+    17.9,
+    0.1
+   ],
+   [
+    17.9,
+    6.9
+   ],
+   [
+    12.1,
+    6.9
+   ]
+  ]
+ },
+ {
+  "name": "Pantry",
+  "category": "food",
+  "aliases": [
+   "kitchen",
+   "cafeteria",
+   "break room"
+  ],
+  "description": "",
+  "position": [
+   21.0,
+   1.9,
+   3.5
+  ],
+  "zone": [
+   [
+    18.1,
+    0.1
+   ],
+   [
+    23.9,
+    0.1
+   ],
+   [
+    23.9,
+    6.9
+   ],
+   [
+    18.1,
+    6.9
+   ]
+  ]
+ },
+ {
+  "name": "Main corridor",
+  "category": "room",
+  "aliases": [
+   "hallway",
+   "passage"
+  ],
+  "description": "",
+  "position": [
+   12.0,
+   1.9,
+   8.0
+  ],
+  "zone": [
+   [
+    0.1,
+    7.1
+   ],
+   [
+    23.9,
+    7.1
+   ],
+   [
+    23.9,
+    8.9
+   ],
+   [
+    0.1,
+    8.9
+   ]
+  ]
+ },
+ {
+  "name": "Open workspace",
+  "category": "room",
+  "aliases": [
+   "desks",
+   "office",
+   "work area"
+  ],
+  "description": "",
+  "position": [
+   7.0,
+   1.9,
+   12.5
+  ],
+  "zone": [
+   [
+    0.1,
+    9.1
+   ],
+   [
+    13.9,
+    9.1
+   ],
+   [
+    13.9,
+    15.9
+   ],
+   [
+    0.1,
+    15.9
+   ]
+  ]
+ },
+ {
+  "name": "Lounge",
+  "category": "seating",
+  "aliases": [
+   "break area",
+   "sofa area",
+   "relax"
+  ],
+  "description": "",
+  "position": [
+   17.0,
+   1.9,
+   12.5
+  ],
+  "zone": [
+   [
+    14.1,
+    9.1
+   ],
+   [
+    19.9,
+    9.1
+   ],
+   [
+    19.9,
+    15.9
+   ],
+   [
+    14.1,
+    15.9
+   ]
+  ]
+ },
+ {
+  "name": "Server room",
+  "category": "room",
+  "aliases": [
+   "it room",
+   "data room"
+  ],
+  "description": "",
+  "position": [
+   22.0,
+   1.9,
+   12.5
+  ],
+  "zone": [
+   [
+    20.1,
+    9.1
+   ],
+   [
+    23.9,
+    9.1
+   ],
+   [
+    23.9,
+    15.9
+   ],
+   [
+    20.1,
+    15.9
+   ]
+  ]
+ }
+]

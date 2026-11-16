@@ -54,7 +54,9 @@ class App {
     this.scene = scene;
     this.sceneId = sceneId;
     document.title = `${scene.name} — Namma Space`;
-    $('#scene-name').textContent = scene.name;
+    const picker = $('#scene-picker');
+    picker.replaceChildren(...index.scenes.map((s) => Object.assign(document.createElement('option'), { value: s.id, textContent: s.name, selected: s.id === sceneId })));
+    picker.addEventListener('change', () => { location.search = new URLSearchParams({ scene: picker.value }).toString(); });
     $('#loading-title').textContent = scene.name;
 
     this.grid = NavGrid.fromJSON(nav);
@@ -92,14 +94,14 @@ class App {
     try {
       if (quality !== 'off') {
         $('#loading-text').textContent = assets.splat ? 'Streaming the photoreal scan…' : 'Loading the scan…';
-        await this.viewer.loadPhotoreal(base, assets, { lite: quality === 'lite', onProgress: (f) => { bar.style.width = `${Math.round(f * 100)}%`; } });
+        await this.viewer.loadPhotoreal(base, assets, { lite: quality === 'lite', pointSize: this.scene.view?.pointSize, onProgress: (f) => { bar.style.width = `${Math.round(f * 100)}%`; } });
       } else this.viewer.setMode('blueprint');
     } catch (err) {
       console.error(err);
       this.viewer.setMode('blueprint');
       toast('The photoreal scan could not be loaded — showing the blueprint instead.', 'error', 6000);
     }
-    this.setMode(this.viewer.mode);
+    this.setMode(this.scene.view?.defaultMode === 'blueprint' ? 'blueprint' : this.viewer.mode);
     $('#btn-mode').disabled = !this.viewer.photoreal;
     $('#loading').classList.add('is-done');
     setTimeout(() => { $('#loading').hidden = true; }, 500);
