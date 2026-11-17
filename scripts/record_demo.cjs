@@ -3,7 +3,7 @@
  * Records the Round 2 demonstration video by driving the real web app frame by frame.
  *
  *   python3 -m http.server 8765 &                 # serve the repository root
- *   node scripts/record_demo.cjs [outDir] [segment ...]
+ *   node scripts/record_demo.cjs [outDir] [home|office|editor|cards ...]   (default: everything)
  *   → outDir/namma_space_round2_demo.mp4
  *
  * The app is opened with ?capture=1, which hands its clock to this script: every video
@@ -237,17 +237,23 @@ const SEGMENTS = {
   } },
 };
 
-function card(title, lines) {
+const imageData = (file) => (fs.existsSync(file) ? `data:image/png;base64,${fs.readFileSync(file).toString('base64')}` : '');
+
+function card(title, lines, images = []) {
   return `<!doctype html><meta charset="utf-8"><body style="margin:0;height:100vh;display:grid;place-items:center;background:#0b0d12;color:#eef1f6;font-family:system-ui,sans-serif">
   <div style="width:980px"><div style="display:flex;align-items:center;gap:18px;margin-bottom:26px">
   <span style="display:grid;place-items:center;width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,#4d9bff,#7a5cff);font:800 30px system-ui">N</span>
   <h1 style="margin:0;font-size:46px">${title}</h1></div>
-  ${lines.map((l) => `<p style="margin:12px 0;font-size:25px;line-height:1.4;color:#c9cfda">${l}</p>`).join('')}</div>`;
+  ${lines.map((l) => `<p style="margin:12px 0;font-size:${images.length ? 21 : 25}px;line-height:1.4;color:#c9cfda">${l}</p>`).join('')}
+  ${images.length ? `<div style="display:flex;gap:20px;margin-top:22px">${images.map(([src, label]) => `<figure style="margin:0;flex:1"><img src="${src}" style="width:100%;height:300px;object-fit:contain;background:#05070b;border-radius:12px;border:1px solid #2a2f3a"><figcaption style="margin-top:8px;color:#9aa3b2;font-size:17px">${label}</figcaption></figure>`).join('')}</div>` : ''}</div>`;
 }
 
 const CARDS = {
+  pipeline: ['How the walkable map is made', ['The splat has no floor, walls or scale. <b style="color:#fff">navkit</b> finds the floor plane (RANSAC), levels it, squares the walls and sets metres.', 'A 5 cm cell is walkable only where floor was <i>seen</i> and nothing stands 0.12–1.8 m above it. Unseen space is never assumed free. Built in ~3 s.'],
+    () => [[imageData(path.join(OUT, 'pipe_plan.png')), 'Automatic floor plan (ceiling removed)'], [imageData(path.join(OUT, 'pipe_walk.png')), 'Walkable floor (green) and obstacles (red) used by the planner']]],
+  office: ['Venue-scale benchmark', ['A 24 m × 16 m office, <b style="color:#fff">synthetic</b>, generated from a known layout so accuracy can be measured exactly.', 'Same pipeline, same app — long multi-room routes, re-routing and multi-stop trips.']],
   title: ['Namma Space — Round 2', ['POI tagging · spatial search · obstacle-aware navigation', 'Phone capture → Gaussian splat → <b style="color:#fff">navkit</b> (floor, obstacles, scale) → zero-install web app', '<span style="color:#9aa3b2;font-size:20px">Techfest 2026-27, IIT Bombay · recorded from the live app, frame by frame</span>']],
-  end: ['How it is verified', ['<b style="color:#fff">43 automated tests</b> in CI — 35 for the navigation core, 8 for the pipeline', 'Every route is sampled every 2 cm and must keep body clearance from obstacles', 'On ground truth: <b style="color:#fff">0.01 %</b> of cells marked walkable are actually solid', 'A capture tilted 17° and scaled 0.21× is re-aligned to under 0.5° of gravity', '<span style="color:#4d9bff">atharv-namdeo.github.io/3d-mapping/app</span> · github.com/atharv-namdeo/3d-mapping']],
+  end: ['How it is verified', ['<b style="color:#fff">43 automated tests</b> in CI — 35 for the navigation core, 8 for the pipeline', 'Every route is sampled every 2 cm and must keep body clearance from obstacles', 'On ground truth: <b style="color:#fff">0.01 %</b> of cells marked walkable are actually solid', 'A capture tilted 17° and scaled 0.21× is re-aligned to under 0.5° of gravity', 'Live app: <span style="color:#4d9bff">atharv-namdeo.github.io/3d-mapping/app</span>', 'Code: <span style="color:#4d9bff">github.com/atharv-namdeo/3d-mapping</span>']],
 };
 
 (async () => {
@@ -255,11 +261,12 @@ const CARDS = {
   const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
   const wanted = (name) => !ONLY.length || ONLY.includes(name);
 
-  for (const [name, [title, lines]] of Object.entries(CARDS)) {
-    if (!wanted(name)) continue;
+  for (const [name, [title, lines, images]] of Object.entries(CARDS)) {
+    if (!wanted(name) && !wanted('cards')) continue;
     const page = await browser.newPage({ viewport: SIZE });
-    await page.setContent(card(title, lines));
-    await page.screenshot({ path: path.join(OUT, `${name}.png`) });
+    await page.setContent(card(title, lines, images ? images() : []));
+    await page.waitForTimeout(300);
+    await page.screenshot({ path: path.join(OUT, `card_${name}.png`) });
     await page.close();
   }
 
@@ -285,15 +292,15 @@ const CARDS = {
   }
   await browser.close();
 
-  // Assemble: title card, the three takes, end card.
+  // Assemble: cards interleaved with the recorded takes.
+  const ORDER = [['card', 'title', 7], ['take', 'home'], ['card', 'pipeline', 16], ['card', 'office', 6], ['take', 'office'], ['take', 'editor'], ['card', 'end', 12]];
   const parts = [];
   const encode = (args, out) => { execFileSync('ffmpeg', ['-y', '-loglevel', 'error', ...args, '-vf', 'fps=24,format=yuv420p', '-c:v', 'libx264', '-crf', '20', '-preset', 'medium', out]); parts.push(out); };
-  const still = (name, seconds) => fs.existsSync(path.join(OUT, `${name}.png`)) && encode(['-loop', '1', '-t', String(seconds), '-i', path.join(OUT, `${name}.png`)], path.join(OUT, `_${name}.mp4`));
-  still('title', 5);
-  for (const name of Object.keys(SEGMENTS)) {
-    if (fs.existsSync(path.join(OUT, name, '00000.jpg'))) encode(['-framerate', String(FPS), '-i', path.join(OUT, name, '%05d.jpg')], path.join(OUT, `_${name}.mp4`));
+  for (const [kind, name, seconds] of ORDER) {
+    const still = path.join(OUT, `card_${name}.png`);
+    if (kind === 'card' && fs.existsSync(still)) encode(['-loop', '1', '-t', String(seconds), '-i', still], path.join(OUT, `_card_${name}.mp4`));
+    if (kind === 'take' && fs.existsSync(path.join(OUT, name, '00000.jpg'))) encode(['-framerate', String(FPS), '-i', path.join(OUT, name, '%05d.jpg')], path.join(OUT, `_${name}.mp4`));
   }
-  still('end', 9);
   const list = path.join(OUT, '_list.txt');
   fs.writeFileSync(list, parts.map((p) => `file '${p}'`).join('\n'));
   const final = path.join(OUT, 'namma_space_round2_demo.mp4');

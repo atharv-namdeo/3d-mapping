@@ -7,7 +7,7 @@ The organised master document for the Drive folder is **[Round2_Submission.pdf](
 |---|---|
 | Live web app | https://atharv-namdeo.github.io/3d-mapping/app/ |
 | Code repository | https://github.com/atharv-namdeo/3d-mapping (branch `main`) |
-| Demonstration video | `namma_space_round2_demo.mp4`, recorded with `node scripts/record_demo.cjs` |
+| Demonstration video | https://atharv-namdeo.github.io/3d-mapping/assets/videos/namma_space_round2_demo.mp4 (3 min 19 s; recorded with `node scripts/record_demo.cjs`) |
 | Technical notes | [`docs/ROUND2.md`](../../docs/ROUND2.md) |
 
 ## Drive folder checklist
