@@ -67,6 +67,10 @@ class Take {
 
   /** Show a pointer at an element, then click it. */
   async click(selector, options = {}) {
+    if (!(await this.page.locator(selector).first().isVisible())) {
+      console.warn(`  (skipped click: ${selector} is not on screen)`);
+      return;
+    }
     const box = await this.page.locator(selector).first().boundingBox();
     if (box) await this.pointer(box.x + box.width / 2, box.y + box.height / 2);
     await this.page.locator(selector).first().click({ force: true, ...options });
@@ -104,11 +108,12 @@ const SEGMENTS = {
     await t.keys(['w'], 3.2);
     await t.look(Math.PI, 0, 2.5);
     await t.keys(['w'], 3.0);
-    await t.look(0.9, 0, 1.5);
+    await t.js(() => { window.nammaSpace.director.flyTo(0.2, -0.6, Math.PI / 2, { duration: 1.6 }); });
+    await t.until(() => !window.nammaSpace.director.busy, 3);
     await t.caption('POI tagging: click a label, a zone or any floor spot to see what it is and how far it is on foot.');
     await t.click('.poi-pin:has-text("Digital piano")');
     await t.hold(3);
-    const [fx, fy] = await t.screenOf(0.3, 0, -0.2);
+    const [fx, fy] = await t.screenOf(-0.6, 0, -0.3);
     await t.clickAt(fx, fy);
     await t.hold(2.5);
     await t.click('.card__close');
