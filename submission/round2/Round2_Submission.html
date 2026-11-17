@@ -75,7 +75,7 @@
 <ul>
   <li>No build step: ES modules served as static files. <code>python3 -m http.server</code> and open <code>/app/</code>.</li>
   <li>Logic (<code>app/src/core</code>) is separate from rendering (<code>view</code>) and DOM (<code>ui</code>), so it runs and is tested in Node.</li>
-  <li>42 automated tests in GitHub Actions: 35 for grid, planner, search, spatial index, guidance and the shipped scenes; 7 for the pipeline against ground truth.</li>
+  <li>43 automated tests in GitHub Actions: 35 for grid, planner, search, spatial index, guidance and the shipped scenes; 8 for the pipeline against ground truth.</li>
   <li>Reproducible: <code>python -m navkit build app/scenes/&lt;id&gt;</code> regenerates every derived file from the reconstruction.</li>
 </ul>
 
@@ -84,7 +84,7 @@
 
 <h2>5. Scenes and honest limits</h2>
 <ul>
-  <li><b>Home</b> — real capture, Gaussian splat (Nerfstudio splatfacto). About 10 m² of walkable floor. Scale is estimated from the dining-table height, so distances may be off by roughly ±10 %. POIs were placed from the reconstruction.</li>
+  <li><b>Home</b> — real capture, Gaussian splat (Nerfstudio splatfacto). About 10 m² of walkable floor. Scale is estimated from the dining-table height, so distances may be off by roughly ±10 %. New captures use a one-measurement calibration (floor-to-ceiling height), tested to within 1 % on ground truth. POIs were placed from the reconstruction.</li>
   <li><b>Office</b> — 24 m × 16 m, <b>synthetic</b>, built from a known layout to measure accuracy and show multi-room routing. Clearly labelled as synthetic in the app.</li>
   <li>One flat floor per scene; stairs, ramps and tiered seating are not yet handled.</li>
   <li>Round 1 PoseCam point clouds were too noisy to navigate on (under 4 % of points on a floor plane); the pipeline rejects such input with an explanation rather than producing a bad map.</li>

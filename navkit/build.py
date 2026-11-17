@@ -128,8 +128,9 @@ def build_scene(scene_dir: str | Path, *, verbose: bool = True) -> dict:
     cal = cfg.get("calibration", {})
     frame, align_report = estimate_frame(
         cloud, up_hint=cal.get("up", [0, 0, 1]), metres_per_unit=cal.get("metresPerUnit", 1.0),
-        square_up=cal.get("squareUp", True), yaw_deg=cal.get("yawDeg"))
-    log(f"  floor plane inliers {align_report['floor_inlier_ratio']:.1%}, yaw {align_report['yaw_deg']}°")
+        square_up=cal.get("squareUp", True), yaw_deg=cal.get("yawDeg"), ceiling_height_m=cal.get("ceilingHeight"))
+    log(f"  floor plane inliers {align_report['floor_inlier_ratio']:.1%}, yaw {align_report['yaw_deg']}°, "
+        f"scale {align_report['metres_per_unit']:.4f} m/unit from {align_report['scale_from']}")
     if align_report["floor_inlier_ratio"] < 0.05:
         raise RuntimeError(
             f"only {align_report['floor_inlier_ratio']:.1%} of the reconstruction lies on a floor plane - it is too "

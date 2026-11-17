@@ -26,11 +26,9 @@ class Take {
   constructor(page, dir, settleMs) { this.page = page; this.dir = dir; this.settle = settleMs; this.n = 0; }
 
   async frame() {
+    // The splat depth-sort runs in a worker; give it a moment before drawing the frame.
+    if (this.settle) await this.page.waitForTimeout(this.settle);
     await this.page.evaluate((dt) => window.nammaSpace.step(dt), 1 / FPS);
-    if (this.settle) {                    // let the splat depth-sort catch up with the camera
-      await this.page.waitForTimeout(this.settle);
-      await this.page.evaluate(() => window.nammaSpace.step(0));
-    }
     const file = path.join(this.dir, `${String(this.n++).padStart(5, '0')}.jpg`);
     await this.page.screenshot({ path: file, type: 'jpeg', quality: 92, timeout: 180000 });
   }
@@ -244,7 +242,7 @@ function card(title, lines) {
 
 const CARDS = {
   title: ['Namma Space — Round 2', ['POI tagging · spatial search · obstacle-aware navigation', 'Phone capture → Gaussian splat → <b style="color:#fff">navkit</b> (floor, obstacles, scale) → zero-install web app', '<span style="color:#9aa3b2;font-size:20px">Techfest 2026-27, IIT Bombay · recorded from the live app, frame by frame</span>']],
-  end: ['How it is verified', ['<b style="color:#fff">42 automated tests</b> in CI — 35 for the navigation core, 7 for the pipeline', 'Every route is sampled every 2 cm and must keep body clearance from obstacles', 'On ground truth: <b style="color:#fff">0.01 %</b> of cells marked walkable are actually solid', 'A capture tilted 17° and scaled 0.21× is re-aligned to under 0.5° of gravity', '<span style="color:#4d9bff">atharv-namdeo.github.io/3d-mapping/app</span> · github.com/atharv-namdeo/3d-mapping']],
+  end: ['How it is verified', ['<b style="color:#fff">43 automated tests</b> in CI — 35 for the navigation core, 8 for the pipeline', 'Every route is sampled every 2 cm and must keep body clearance from obstacles', 'On ground truth: <b style="color:#fff">0.01 %</b> of cells marked walkable are actually solid', 'A capture tilted 17° and scaled 0.21× is re-aligned to under 0.5° of gravity', '<span style="color:#4d9bff">atharv-namdeo.github.io/3d-mapping/app</span> · github.com/atharv-namdeo/3d-mapping']],
 };
 
 (async () => {

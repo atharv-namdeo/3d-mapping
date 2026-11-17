@@ -57,6 +57,20 @@ class SyntheticOffice(unittest.TestCase):
         extent = np.sort(np.ptp(aligned[:, [0, 2]], axis=0))
         np.testing.assert_allclose(extent, [16.15, 24.15], atol=0.2)
 
+    def test_scale_from_one_ceiling_measurement(self):
+        # Close the office with a ceiling at 2.7 m, then shrink it by an unknown factor.
+        rng = np.random.default_rng(5)
+        n = 250_000
+        ceiling = np.column_stack([rng.uniform(0, synth.WIDTH, n), np.full(n, synth.WALL_H), rng.uniform(0, synth.DEPTH, n)])
+        closed = np.vstack([self.xyz, ceiling + rng.normal(0, 0.008, ceiling.shape)])
+        shrink = 0.137
+        frame, report = estimate_frame(Cloud(closed * shrink, np.zeros((len(closed), 3), np.uint8)),
+                                       up_hint=[0, 1, 0], square_up=False, ceiling_height_m=2.7)
+        self.assertAlmostEqual(report["metres_per_unit"] * shrink, 1.0, delta=0.01, msg=report["scale_from"])
+        # Without enough ceiling in view it refuses rather than guessing.
+        with self.assertRaisesRegex(RuntimeError, "too little ceiling"):
+            estimate_frame(Cloud(self.xyz * shrink, self.rgb), up_hint=[0, 1, 0], ceiling_height_m=2.7)
+
     def test_end_to_end_bundle(self):
         with tempfile.TemporaryDirectory() as tmp:
             scene = Path(tmp)

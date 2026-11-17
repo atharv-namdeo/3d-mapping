@@ -95,15 +95,49 @@ def manhattan_yaw(xz: np.ndarray, cell: float = 0.05) -> float:
     return float(fine[int(np.argmin([entropy(t) for t in fine]))])
 
 
+def ceiling_height(xyz: np.ndarray, normal: np.ndarray, offset: float) -> tuple[float, float]:
+    """Floor-to-ceiling distance in source units, and how much of the upper scene supports it.
+
+    The ceiling is the densest horizontal slab in the top part of the scene. Returns
+    (height, support); support is the fraction of points in that slab — under ~3 % means
+    the capture did not see enough ceiling to trust the measurement.
+    """
+    h = xyz @ normal - offset
+    top = np.percentile(h, 99.5)
+    upper = h[(h > 0.45 * top) & (h <= top * 1.02)]
+    if len(upper) < 200:
+        return float("nan"), 0.0
+    bin_width = 0.01 * top
+    hist, edges = np.histogram(upper, bins=np.arange(upper.min(), upper.max() + bin_width, bin_width))
+    k = int(np.argmax(hist))
+    near = upper[np.abs(upper - (edges[k] + bin_width / 2)) < 1.5 * bin_width]
+    return float(np.median(near)), float(len(near) / len(h))
+
+
 def estimate_frame(cloud: Cloud, *, up_hint=(0, 0, 1), metres_per_unit: float = 1.0,
-                   square_up: bool = True, yaw_deg: float | None = None) -> tuple[Frame, dict]:
-    """Estimate the source→navigation transform and report how well the floor was found."""
+                   square_up: bool = True, yaw_deg: float | None = None,
+                   ceiling_height_m: float | None = None) -> tuple[Frame, dict]:
+    """Estimate the source→navigation transform and report how well the floor was found.
+
+    Scale comes from `metres_per_unit`, or — preferably — from one tape measurement:
+    `ceiling_height_m`, the real floor-to-ceiling height, which is matched against the
+    ceiling plane found in the reconstruction.
+    """
     confident = cloud.xyz
     if cloud.is_splat:  # ignore faint / oversized splats: they are mostly floaters
         size = cloud.scales.max(axis=1)
         confident = cloud.xyz[(cloud.opacity > 0.5) & (size < np.percentile(size, 90))]
 
     normal, offset, inlier_ratio = fit_floor_plane(confident, np.asarray(up_hint, float))
+    scale_source = "metresPerUnit"
+    if ceiling_height_m:
+        units, support = ceiling_height(confident, normal, offset)
+        if not np.isfinite(units) or support < 0.03:
+            raise RuntimeError(
+                "calibration.ceilingHeight is set, but the reconstruction shows too little ceiling to measure "
+                f"({support:.1%} of points). Capture more of the ceiling, or set calibration.metresPerUnit instead.")
+        metres_per_unit = ceiling_height_m / units
+        scale_source = f"ceiling {ceiling_height_m} m = {units:.4f} units ({support:.1%} support)"
     helper = np.array([1.0, 0, 0]) if abs(normal[0]) < 0.9 else np.array([0, 0, 1.0])
     e1 = np.cross(helper, normal)
     e1 /= np.linalg.norm(e1)
@@ -126,7 +160,8 @@ def estimate_frame(cloud: Cloud, *, up_hint=(0, 0, 1), metres_per_unit: float = 
         frame = Frame(np.array([[c, 0, -s], [0, 1, 0], [s, 0, c]]) @ R, metres_per_unit, frame.t)
 
     report = {"floor_inlier_ratio": round(inlier_ratio, 4), "yaw_deg": round(float(np.degrees(yaw)), 2),
-              "up_in_source": normal.round(5).tolist(), "metres_per_unit": metres_per_unit}
+              "up_in_source": normal.round(5).tolist(), "metres_per_unit": round(float(metres_per_unit), 6),
+              "scale_from": scale_source}
     return frame, report
 
 

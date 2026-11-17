@@ -56,7 +56,8 @@ re-plans automatically, and multi-stop trips are ordered with nearest-neighbour 
 
 ## 3. What was measured
 
-Run `npm test` (35 tests) and `npm run test:pipeline` (7 tests); CI runs both.
+Run `npm test` (35 tests) and `npm run test:pipeline` (8 tests); CI runs both. The demonstration
+video is recorded from the real app with `node scripts/record_demo.cjs` (see the script header).
 
 | Claim | Evidence |
 |---|---|
@@ -70,8 +71,9 @@ Run `npm test` (35 tests) and `npm run test:pipeline` (7 tests); CI runs both.
 ## 4. Known limits (stated plainly)
 
 - **Scale of the home scene is estimated**, not measured (see `app/scenes/home/scene.json`).
-  Distances are consistent but could be off by roughly ±10 %. Fix: one measured reference, or
-  train the splat on PoseCam's metric ARCore poses.
+  Distances are consistent but could be off by roughly ±10 %. New captures should set
+  `calibration.ceilingHeight` from one tape measurement (see [CAPTURE_SOP.md](CAPTURE_SOP.md));
+  `navkit` then derives the scale from the ceiling plane, tested to within 1 % on ground truth.
 - **The Round 1 PoseCam point clouds are not navigable**: under 4 % of their points lie on a
   floor plane (monocular depth noise), and the builder refuses them with a clear error instead of
   producing a bad map. The Round 2 demo therefore uses the Gaussian-splat capture.
