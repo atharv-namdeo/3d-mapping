@@ -28,7 +28,11 @@ export function formatDuration(seconds) {
   return `${Math.round(seconds / 60)} min`;
 }
 
+// Frame-by-frame recordings run far slower than real time; keep toasts on screen to match.
+const TOAST_STRETCH = new URLSearchParams(globalThis.location?.search ?? '').has('capture') ? 14 : 1;
+
 export function toast(message, kind = 'info', ms = 3200) {
+  ms *= TOAST_STRETCH;
   const node = el('div', { class: `toast toast--${kind}`, text: message });
   $('#toasts').appendChild(node);
   setTimeout(() => { node.classList.add('is-leaving'); setTimeout(() => node.remove(), 300); }, ms);

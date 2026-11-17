@@ -53,7 +53,10 @@ export class Editor extends EventTarget {
     this.render();
   }
 
-  #emitZone() { this.dispatchEvent(new CustomEvent('zone', { detail: this.draft?.zone ?? null })); }
+  #emitZone() {
+    document.body.classList.toggle('is-drawing', this.drawing);   // labels stop intercepting clicks
+    this.dispatchEvent(new CustomEvent('zone', { detail: this.draft?.zone ?? null }));
+  }
 
   #unlabelled() {
     // A suggestion is "done" once any POI sits on top of it.
@@ -87,7 +90,13 @@ export class Editor extends EventTarget {
 
     let body;
     if (d) {
-      const form = el('form', { class: 'editor__form', onsubmit: (e) => { e.preventDefault(); this.#save(form); } },
+      // Keep what has been typed in the draft, so re-rendering (e.g. while drawing a zone) never loses it.
+      const remember = () => {
+        const data = new FormData(form);
+        Object.assign(d, { name: data.get('name'), category: data.get('category'), description: data.get('description'),
+          aliases: data.get('aliases').split(',').map((a) => a.trim()).filter(Boolean) });
+      };
+      const form = el('form', { class: 'editor__form', oninput: remember, onsubmit: (e) => { e.preventDefault(); this.#save(form); } },
         el('label', {}, el('span', { text: 'Name' }), el('input', { name: 'name', required: true, maxlength: '60', value: d.name, placeholder: 'e.g. Meeting Room A' })),
         el('label', {}, el('span', { text: 'Category' }),
           el('select', { name: 'category' }, ...Object.entries(CATEGORIES).map(([key, c]) => el('option', { value: key, selected: key === d.category, text: `${c.icon}  ${c.label}` })))),

@@ -7,6 +7,7 @@
  *   poi=<id>               open with this place selected and routed to
  *   jump=1                 …and jump straight to it
  *   quality=full|lite|off  splat detail (default: lite on phones, full elsewhere)
+ *   capture=1              do not self-animate; an external script drives step(dt)
  */
 import { NavGrid } from './core/navgrid.js';
 import { PoiStore } from './core/poi-store.js';
@@ -247,7 +248,13 @@ class App {
   #pickWorld(hit) {
     const [x, , z] = hit.point;
     const existing = this.store.spatial.resolve(x, z, hit.onFloor ? 0.45 : 0.8);
-    if (this.editor.open) { this.editor.handlePick(hit, existing); return; }
+    if (this.editor.open) {
+      // While tagging, clicking inside a room must create a new place in it; only a click
+      // right on an existing point (or its label) opens that point for editing.
+      const point = this.store.spatial.withinRadius(x, z, hit.onFloor ? 0.45 : 0.8).find(({ poi }) => !poi.zone);
+      this.editor.handlePick(hit, point?.poi ?? null);
+      return;
+    }
     if (existing) { this.select(existing); return; }
     const spot = this.grid.nearestFree(x, z, this.navigator.walker.radius, 2.5);
     if (!spot) { toast('That spot was not mapped as walkable floor.'); return; }
@@ -357,18 +364,26 @@ class App {
     });
   }
 
+  /** Advance the whole app by `dt` seconds and draw one frame. */
+  step(dt) {
+    this.clock = (this.clock ?? 0) + dt;
+    this.director.update(dt);
+    this.player.update(dt);
+    this.navigator.update(this.player.position, dt);
+    this.path.update(this.clock, this.viewer.camera.position);
+    this.viewer.render();
+    this.markers.update();
+    this.minimap.draw(this.player, this.clock);
+  }
+
   #loop() {
+    // ?capture=1 hands the clock to an external driver (scripts/record_demo.cjs), which
+    // calls step() once per video frame so recordings are smooth on any machine.
+    if (params.has('capture')) return;
     let last = performance.now(), frames = 0, fpsAt = last;
     const tick = (now) => {
-      const dt = Math.min(0.1, (now - last) / 1000);
+      this.step(Math.min(0.1, (now - last) / 1000));
       last = now;
-      this.director.update(dt);
-      this.player.update(dt);
-      this.navigator.update(this.player.position, dt);
-      this.path.update(now / 1000, this.viewer.camera.position);
-      this.viewer.render();
-      this.markers.update();
-      this.minimap.draw(this.player, now / 1000);
       if (++frames && now - fpsAt >= 1000) { $('#fps').textContent = `${Math.round((frames * 1000) / (now - fpsAt))} fps`; frames = 0; fpsAt = now; }
       requestAnimationFrame(tick);
     };
