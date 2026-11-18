@@ -6,7 +6,8 @@
  *   scene=<id>             which scene to open (default: first in scenes/index.json)
  *   poi=<id>               open with this place selected and routed to
  *   jump=1                 …and jump straight to it
- *   quality=full|lite|off  splat detail (default: lite on phones, full elsewhere)
+ *   quality=auto|full|lite|off  splat detail (default: lite on phones; elsewhere lite first,
+ *                          upgraded to full when the device renders it smoothly)
  *   capture=1              do not self-animate; an external script drives step(dt)
  */
 import { NavGrid } from './core/navgrid.js';
@@ -89,38 +90,62 @@ class App {
   }
 
   /**
-   * The space is usable straight away in blueprint view; the photoreal scan streams in
-   * behind it and takes over when ready. A slow or failed scan never blocks navigation.
+   * The space is usable straight away in blueprint view while the scan streams in:
+   *   1. the light version (phones' level) loads first, so the real scan appears quickly;
+   *   2. on a computer that renders it smoothly, the full-detail version then loads in the
+   *      background and replaces it.
+   * Progress stays visible the whole time, and a failure never blocks navigation.
    */
   #loadVisual(base, assets) {
     const phone = matchMedia('(pointer: coarse)').matches || Math.min(screen.width, screen.height) < 700;
-    const quality = params.get('quality') ?? (phone ? 'lite' : 'full');
+    const quality = params.get('quality') ?? (phone ? 'lite' : 'auto');
     const pill = $('#scan-status');
-    const finish = () => { pill.hidden = true; clearTimeout(slow); };
+    const status = (text) => { pill.hidden = !text; pill.textContent = text ?? ''; };
     this.setMode('blueprint');
     $('#btn-mode').disabled = true;
     $('#loading').classList.add('is-done');
     setTimeout(() => { $('#loading').hidden = true; }, 500);
     if (quality === 'off') return;
 
-    pill.hidden = false;
-    pill.textContent = 'Loading the photoreal scan…';
-    const slow = setTimeout(() => {
-      pill.textContent = 'The photoreal scan is slow on this device — keep using the blueprint view';
-      setTimeout(() => { pill.hidden = true; }, 6000);
-    }, 45000);
-    this.viewer.loadPhotoreal(base, assets, {
-      lite: quality === 'lite', pointSize: this.scene.view?.pointSize,
-      onProgress: (f) => { pill.textContent = f < 1 ? `Loading the photoreal scan… ${Math.round(f * 100)}%` : 'Preparing the photoreal scan…'; },
-    }).then(() => {
-      finish();
-      $('#btn-mode').disabled = !this.viewer.photoreal;
-      this.setMode(this.scene.view?.defaultMode === 'blueprint' ? 'blueprint' : 'photoreal');
-    }).catch((err) => {
-      console.error(err);
-      finish();
-      toast('The photoreal scan could not be loaded — showing the blueprint instead.', 'error', 6000);
-    });
+    const hasLite = Boolean(assets.splat && assets.splatLite);
+    const firstLite = hasLite && quality !== 'full';
+    const label = firstLite ? 'Loading the 3D scan' : 'Loading the 3D scan (full detail)';
+    status(`${label}…`);
+    const started = performance.now();
+    const progress = (f) => {
+      const slow = performance.now() - started > 45000 ? ' — slow connection, you can keep using the map' : '';
+      status(f < 1 ? `${label}… ${Math.round(f * 100)}%${slow}` : 'Preparing the 3D scan…');
+    };
+    this.viewer.loadPhotoreal(base, assets, { lite: firstLite, pointSize: this.scene.view?.pointSize, onProgress: progress })
+      .then(() => {
+        status(null);
+        $('#btn-mode').disabled = !this.viewer.photoreal;
+        this.setMode(this.scene.view?.defaultMode === 'blueprint' ? 'blueprint' : 'photoreal');
+        if (firstLite && quality === 'auto') this.#maybeUpgrade(base, assets);
+      })
+      .catch((err) => {
+        console.error(err);
+        status(null);
+        toast('The 3D scan could not be loaded on this device — showing the blueprint instead.', 'error', 10000);
+      });
+  }
+
+  /** Load full detail only if the light version runs smoothly (≥ 40 fps over a few seconds). */
+  #maybeUpgrade(base, assets) {
+    let frames = 0;
+    const t0 = performance.now();
+    const count = () => {
+      frames++;
+      if (performance.now() - t0 < 4000) { requestAnimationFrame(count); return; }
+      const fps = (frames * 1000) / (performance.now() - t0);
+      if (fps < 40 || document.hidden) return;
+      const pill = $('#scan-status');
+      pill.hidden = false;
+      this.viewer.upgradePhotoreal(base, assets, {
+        onProgress: (f) => { pill.textContent = f < 1 ? `Loading full detail… ${Math.round(f * 100)}%` : 'Preparing full detail…'; },
+      }).then(() => { pill.hidden = true; }, (err) => { console.warn('full detail unavailable', err); pill.hidden = true; });
+    };
+    requestAnimationFrame(count);
   }
 
   // ───────────────────────────── queries ─────────────────────────────

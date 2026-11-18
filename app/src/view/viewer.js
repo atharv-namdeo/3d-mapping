@@ -84,23 +84,41 @@ export class Viewer {
     this.floorplan.position.y = -0.005;
     this.blueprint.add(this.floorplan);
 
-    // One instanced box per occupied cell — a few thousand instances, a single draw call.
-    const cells = [];
-    for (let k = 0; k < grid.obstacleHeight.length; k++) if (grid.obstacleHeight[k] > 0) cells.push(k);
+    // Obstacles as instanced boxes. Neighbouring cells of similar height are merged into one
+    // long box (row runs), which cuts the instance count ~10× on large noisy scans.
     const box = new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0);
-    // Full-height copy hides the route behind real furniture in photoreal mode; the blueprint
-    // copy is cut off at chest height, like an architectural model you can see across.
-    this.occluders = new THREE.InstancedMesh(box, new THREE.MeshBasicMaterial({ colorWrite: false, transparent: true }), cells.length);
-    this.model = new THREE.InstancedMesh(box, new THREE.MeshLambertMaterial({ color: 0xffffff }), cells.length);
-    const m = new THREE.Matrix4(), color = new THREE.Color();
-    cells.forEach((k, n) => {
-      const i = k % grid.width, j = Math.floor(k / grid.width), h = grid.obstacleHeight[k];
-      const x = grid.x0 + (i + 0.5) * grid.res, z = grid.z0 + (j + 0.5) * grid.res;
-      this.occluders.setMatrixAt(n, m.makeScale(grid.res, h, grid.res).setPosition(x, 0, z));
-      this.model.setMatrixAt(n, m.makeScale(grid.res, Math.min(h, BLUEPRINT_CUT), grid.res).setPosition(x, 0, z));
-      // Walls (taller than the cut) read darker than furniture.
-      this.model.setColorAt(n, h > BLUEPRINT_CUT ? color.setHex(0x8792a8) : color.setHSL(0.6, 0.2, 0.74 + 0.2 * (h / BLUEPRINT_CUT)));
-    });
+    const runs = (heightOf, step) => {
+      const out = [];
+      for (let j = 0; j < grid.height; j++) {
+        let start = -1, level = 0;
+        for (let i = 0; i <= grid.width; i++) {
+          const h = i < grid.width ? heightOf(grid.obstacleHeight[j * grid.width + i]) : 0;
+          const q = h > 0 ? Math.ceil(h / step) * step : 0;
+          if (start >= 0 && q === level) continue;
+          if (start >= 0 && level > 0) out.push([start, i, j, level]);
+          start = i; level = q;
+        }
+      }
+      return out;
+    };
+    const place = (mesh, list, colorOf) => {
+      const m = new THREE.Matrix4(), color = new THREE.Color();
+      list.forEach(([i0, i1, j, h], n) => {
+        const x = grid.x0 + ((i0 + i1) / 2) * grid.res, z = grid.z0 + (j + 0.5) * grid.res;
+        mesh.setMatrixAt(n, m.makeScale((i1 - i0) * grid.res, h, grid.res).setPosition(x, 0, z));
+        if (colorOf) mesh.setColorAt(n, colorOf(h, color));
+      });
+    };
+    // Full-height copy (depth only) hides the route behind real furniture in photoreal mode; the
+    // blueprint copy is cut off at chest height, like an architectural model you can see across.
+    const occluderRuns = runs((h) => h, 0.1);
+    const modelRuns = runs((h) => Math.min(h, BLUEPRINT_CUT), 0.1);
+    this.occluders = new THREE.InstancedMesh(box, new THREE.MeshBasicMaterial({ colorWrite: false, transparent: true }), occluderRuns.length);
+    this.model = new THREE.InstancedMesh(box, new THREE.MeshLambertMaterial({ color: 0xffffff }), modelRuns.length);
+    place(this.occluders, occluderRuns);
+    // Walls (cut at the blueprint height) read darker than furniture.
+    place(this.model, modelRuns, (h, c) => (h >= BLUEPRINT_CUT ? c.setHex(0x8792a8) : c.setHSL(0.6, 0.2, 0.74 + 0.2 * (h / BLUEPRINT_CUT))));
+    this.obstacleInstances = { cells: grid.obstacleHeight.reduce((n, h) => n + (h > 0), 0), occluders: occluderRuns.length, model: modelRuns.length };
     this.occluders.renderOrder = RENDER_ORDER.occluder;
     this.occluders.frustumCulled = this.model.frustumCulled = false;
     this.scene.add(this.occluders);
@@ -128,24 +146,42 @@ export class Viewer {
    * Load the capture itself. Resolves once the first frame can be drawn.
    * @param {(fraction: number) => void} onProgress
    */
+  /** Load one Gaussian-splat file into a DropInViewer (not yet added to the scene). */
+  async #loadSplats(url, onProgress) {
+    const splats = new GaussianSplats3D.DropInViewer({
+      sharedMemoryForWorkers: false,  // works on any static host (no COOP/COEP headers needed)
+      gpuAcceleratedSort: false,
+      sphericalHarmonicsDegree: 0,
+      freeIntermediateSplatData: true,
+      enableSIMDInSort: wasmSimdSupported(),
+      // Show the whole scene at once: the default radial fade-in advances per frame, so on
+      // large spaces and slow devices most of the scan stays hidden for a long time.
+      sceneRevealMode: GaussianSplats3D.SceneRevealMode.Instant,
+    });
+    await splats.addSplatScene(url, {
+      showLoadingUI: false, splatAlphaRemovalThreshold: 6,
+      onProgress: (percent) => onProgress(Math.min(1, percent / 100)),
+    });
+    return splats;
+  }
+
+  /** Swap in a higher-detail splat set once it is ready, then free the old one. */
+  async upgradePhotoreal(baseUrl, assets, { onProgress = () => {} } = {}) {
+    const next = await this.#loadSplats(baseUrl + assets.splat, onProgress);
+    const old = this.photoreal;
+    this.photoreal = next;
+    this.scene.add(next);
+    if (old) {
+      this.scene.remove(old);
+      try { old.dispose?.(); } catch { /* already gone */ }
+    }
+    this.setMode(this.mode);
+  }
+
   async loadPhotoreal(baseUrl, assets, { lite = false, pointSize = 0.04, onProgress = () => {} } = {}) {
     if (assets.splat) {
       const url = baseUrl + (lite && assets.splatLite ? assets.splatLite : assets.splat);
-      const splats = new GaussianSplats3D.DropInViewer({
-        sharedMemoryForWorkers: false,  // works on any static host (no COOP/COEP headers needed)
-        gpuAcceleratedSort: false,
-        sphericalHarmonicsDegree: 0,
-        freeIntermediateSplatData: true,
-        enableSIMDInSort: wasmSimdSupported(),
-        // Show the whole scene at once: the default radial fade-in advances per frame, so on
-        // large spaces and slow devices most of the scan stays hidden for a long time.
-        sceneRevealMode: GaussianSplats3D.SceneRevealMode.Instant,
-      });
-      await splats.addSplatScene(url, {
-        showLoadingUI: false, splatAlphaRemovalThreshold: 6,
-        onProgress: (percent) => onProgress(Math.min(1, percent / 100)),
-      });
-      this.photoreal = splats;
+      this.photoreal = await this.#loadSplats(url, onProgress);
     } else if (assets.points) {
       const buffer = await (await fetch(baseUrl + assets.points)).arrayBuffer();
       const STRIDE = 15, n = Math.floor(buffer.byteLength / STRIDE);
