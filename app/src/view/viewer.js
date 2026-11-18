@@ -146,8 +146,32 @@ export class Viewer {
    * Load the capture itself. Resolves once the first frame can be drawn.
    * @param {(fraction: number) => void} onProgress
    */
+  /**
+   * Download a file with progress. Done here rather than by the splat library because static
+   * hosts such as GitHub Pages gzip binary files on the fly and report the *compressed* size in
+   * Content-Length; the library sizes its buffer from that header, overflows it and stalls.
+   * `expectedBytes` (known from nav.json) gives honest progress for the decompressed stream.
+   */
+  static async download(url, expectedBytes, onProgress) {
+    const res = await fetch(url);
+    if (!res.ok || !res.body) throw new Error(`${url}: HTTP ${res.status}`);
+    const reader = res.body.getReader();
+    const parts = [];
+    let received = 0;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      parts.push(value);
+      received += value.byteLength;
+      if (expectedBytes) onProgress(Math.min(0.99, received / expectedBytes));
+    }
+    return new Blob(parts);
+  }
+
   /** Load one Gaussian-splat file into a DropInViewer (not yet added to the scene). */
-  async #loadSplats(url, onProgress) {
+  async #loadSplats(url, onProgress, expectedBytes) {
+    const blob = await Viewer.download(url, expectedBytes, onProgress);
+    const blobUrl = URL.createObjectURL(blob);
     const splats = new GaussianSplats3D.DropInViewer({
       sharedMemoryForWorkers: false,  // works on any static host (no COOP/COEP headers needed)
       gpuAcceleratedSort: false,
@@ -158,16 +182,20 @@ export class Viewer {
       // large spaces and slow devices most of the scan stays hidden for a long time.
       sceneRevealMode: GaussianSplats3D.SceneRevealMode.Instant,
     });
-    await splats.addSplatScene(url, {
-      showLoadingUI: false, splatAlphaRemovalThreshold: 6,
-      onProgress: (percent) => onProgress(Math.min(1, percent / 100)),
-    });
+    try {
+      await splats.addSplatScene(blobUrl, {
+        showLoadingUI: false, splatAlphaRemovalThreshold: 6, format: GaussianSplats3D.SceneFormat.Splat,
+      });
+    } finally {
+      URL.revokeObjectURL(blobUrl);
+    }
+    onProgress(1);
     return splats;
   }
 
   /** Swap in a higher-detail splat set once it is ready, then free the old one. */
   async upgradePhotoreal(baseUrl, assets, { onProgress = () => {} } = {}) {
-    const next = await this.#loadSplats(baseUrl + assets.splat, onProgress);
+    const next = await this.#loadSplats(baseUrl + assets.splat, onProgress, assets.splatCount * 32);
     const old = this.photoreal;
     this.photoreal = next;
     this.scene.add(next);
@@ -180,8 +208,9 @@ export class Viewer {
 
   async loadPhotoreal(baseUrl, assets, { lite = false, pointSize = 0.04, onProgress = () => {} } = {}) {
     if (assets.splat) {
-      const url = baseUrl + (lite && assets.splatLite ? assets.splatLite : assets.splat);
-      this.photoreal = await this.#loadSplats(url, onProgress);
+      const useLite = lite && assets.splatLite;
+      const url = baseUrl + (useLite ? assets.splatLite : assets.splat);
+      this.photoreal = await this.#loadSplats(url, onProgress, (useLite ? assets.splatLiteCount : assets.splatCount) * 32);
     } else if (assets.points) {
       const buffer = await (await fetch(baseUrl + assets.points)).arrayBuffer();
       const STRIDE = 15, n = Math.floor(buffer.byteLength / STRIDE);
