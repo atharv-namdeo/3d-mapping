@@ -40,8 +40,8 @@
   <tr><th>Deliverable</th><th>Link</th></tr>
   <tr><td>Live web app</td><td><a href="https://atharv-namdeo.github.io/3d-mapping/app/">https://atharv-namdeo.github.io/3d-mapping/app/</a><br><span class="sub">Zero install. Desktop: Chrome, Edge, Firefox or Safari. Also works on phones (touch controls).</span></td></tr>
   <tr><td>Code repository (POI + navigation)</td><td><a href="https://github.com/atharv-namdeo/3d-mapping">https://github.com/atharv-namdeo/3d-mapping</a> — branch <code>main</code><br><span class="sub">Web app: <code>app/</code> · pipeline: <code>navkit/</code> · tests: <code>tests/</code> · technical notes: <code>docs/ROUND2.md</code></span></td></tr>
-  <tr><td>Demonstration video</td><td><b>namma_space_round2_demo.mp4</b> in this Drive folder (3 min 19 s)<br>Also online: <a href="https://atharv-namdeo.github.io/3d-mapping/assets/videos/namma_space_round2_demo.mp4">…/assets/videos/namma_space_round2_demo.mp4</a><br><span class="sub">Recorded from the real app, frame by frame (<code>scripts/record_demo.cjs</code>).</span></td></tr>
-  <tr><td>Direct: route to a place</td><td><a href="https://atharv-namdeo.github.io/3d-mapping/app/?scene=home&poi=dining-table">…/app/?scene=home&amp;poi=dining-table</a></td></tr>
+  <tr><td>Demonstration video</td><td><b>namma_space_round2_demo.mp4</b> in this Drive folder<br>Also online: <a href="https://atharv-namdeo.github.io/3d-mapping/assets/videos/namma_space_round2_demo.mp4">…/assets/videos/namma_space_round2_demo.mp4</a><br><span class="sub">Recorded from the real app, frame by frame (<code>scripts/record_demo.cjs</code>).</span></td></tr>
+  <tr><td>Direct: our hostel capture</td><td><a href="https://atharv-namdeo.github.io/3d-mapping/app/?scene=hostel">…/app/?scene=hostel</a> · routed to the stairs: <a href="https://atharv-namdeo.github.io/3d-mapping/app/?scene=hostel&poi=staircase">…/app/?scene=hostel&amp;poi=staircase</a></td></tr>
   <tr><td>Direct: venue-scale scene</td><td><a href="https://atharv-namdeo.github.io/3d-mapping/app/?scene=office">…/app/?scene=office</a> <span class="sub">(synthetic benchmark with ground truth)</span></td></tr>
   <tr><td>Automated tests (CI)</td><td><a href="https://github.com/atharv-namdeo/3d-mapping/actions">https://github.com/atharv-namdeo/3d-mapping/actions</a></td></tr>
   <tr><td>Round 1 portal</td><td><a href="https://atharv-namdeo.github.io/3d-mapping/">https://atharv-namdeo.github.io/3d-mapping/</a></td></tr>
@@ -75,24 +75,25 @@
 <ul>
   <li>No build step: ES modules served as static files. <code>python3 -m http.server</code> and open <code>/app/</code>.</li>
   <li>Logic (<code>app/src/core</code>) is separate from rendering (<code>view</code>) and DOM (<code>ui</code>), so it runs and is tested in Node.</li>
-  <li>43 automated tests in GitHub Actions: 35 for grid, planner, search, spatial index, guidance and the shipped scenes; 8 for the pipeline against ground truth.</li>
+  <li>45 automated tests in GitHub Actions: 37 for grid, planner, search, spatial index, guidance and every shipped scene (each POI valid, searchable and reachable on foot); 8 for the pipeline against ground truth.</li>
   <li>Reproducible: <code>python -m navkit build app/scenes/&lt;id&gt;</code> regenerates every derived file from the reconstruction.</li>
 </ul>
 
 <h2>4. Pipeline</h2>
-<p><b>Phone capture</b> (SOP from Round 1) → <b>Gaussian splat</b> reconstruction → <b>navkit</b>: RANSAC floor plane → gravity alignment and wall squaring → metric scale → walkable grid + obstacle heightfield → automatic floor plan → importance-sorted web splat with a light version for phones → <b>web app</b>. The navigation step runs in about 3 s for a 1 M-splat capture, so it fits inside the on-site turnaround of Round 3.</p>
+<p><b>PoseCam capture</b> (our ARCore recorder: every frame’s pose in metres, gravity up) → <b>navkit posecam</b>, CPU only: per-frame depth (Depth Anything V2) placed with the ARCore poses; the depth scale is <i>measured</i> by triangulating image features against ARCore’s motion (hostel: 154 frame pairs, scale 0.572), cross-checked by the floor (phone 1.33 m above it); frames fuse into 4 cm voxels seen from ≥ 2 views → <b>navkit build</b>: floor plane, wall squaring, walkable grid + obstacle heightfield (the walked path counts as floor), automatic floor plan, web-ready points → <b>web app</b>. The hostel took ≈ 6 min of depth on 4 CPU cores and 10 s to build the navigation data. Gaussian-splat reconstructions go through the same <code>navkit build</code> for a photoreal view.</p>
 
 <h2>5. Scenes and honest limits</h2>
 <ul>
-  <li><b>Home</b> — real capture, Gaussian splat (Nerfstudio splatfacto). About 10 m² of walkable floor. Scale is estimated from the dining-table height, so distances may be off by roughly ±10 %. New captures use a one-measurement calibration (floor-to-ceiling height), tested to within 1 % on ground truth. POIs were placed from the reconstruction.</li>
+  <li><b>Hostel</b> — <b>our own capture</b>: one 4-minute PoseCam walk (Nothing Phone A059), 174 m, lobby + three corridors, 176 m² of walkable floor, 16 tagged places and zones. Metric scale from ARCore. Shown as a coloured point cloud (640×480 frames), not photoreal. The uploaded session had frames 0–5,499 of 6,908, so the last corridor leg is not mapped. Individual room numbers were not readable and are not yet tagged.</li>
+  <li><b>Home</b> — a Gaussian-splat scene from our teammate’s training workspace, kept as a photoreal example. Scale estimated (about ±10 %); splat scenes can instead use a one-measurement calibration (floor-to-ceiling height), tested to within 1 % on ground truth.</li>
   <li><b>Office</b> — 24 m × 16 m, <b>synthetic</b>, built from a known layout to measure accuracy and show multi-room routing. Clearly labelled as synthetic in the app.</li>
   <li>One flat floor per scene; stairs, ramps and tiered seating are not yet handled.</li>
-  <li>Round 1 PoseCam point clouds were too noisy to navigate on (under 4 % of points on a floor plane); the pipeline rejects such input with an explanation rather than producing a bad map.</li>
+  <li>Round 1’s per-frame PoseCam clouds were too noisy to navigate (under 4 % of points on a floor plane). The fused, scale-measured pipeline above replaces them; the builder still rejects unusable input with an explanation instead of producing a bad map.</li>
   <li>AR navigation (bonus) is planned for Round 3 and is not part of this submission.</li>
 </ul>
 
 <h2>6. Third-party software</h2>
-<p>three.js r167 (MIT); GaussianSplats3D 0.4.7 by Mark Kellogg (MIT) — vendored with licences in <code>app/vendor/</code>. Splat training: Nerfstudio (Apache-2.0). Build time: numpy, scipy (BSD), Pillow (HPND). Video assembly: FFmpeg; recording: Playwright (Apache-2.0).</p>
+<p>three.js r167 (MIT); GaussianSplats3D 0.4.7 by Mark Kellogg (MIT) — vendored with licences in <code>app/vendor/</code>. Depth: Depth Anything V2 Metric-Indoor-Small (Apache-2.0) via PyTorch and Hugging Face Transformers; feature triangulation: OpenCV (Apache-2.0). Splat training (home scene): Nerfstudio (Apache-2.0). Build time: numpy, scipy (BSD), Pillow (HPND). Video assembly: FFmpeg; recording: Playwright (Apache-2.0).</p>
 
 <footer>Namma Space · Round 2 · generated from <code>submission/round2/Round2_Submission.html</code> in the repository</footer>
 </body></html>

@@ -97,6 +97,49 @@ class Take {
 }
 
 const SEGMENTS = {
+  // ── Our own capture: the hostel, recorded with PoseCam ─────────────────────────
+  hostel: { query: 'scene=hostel', settle: 0, async run(t) {
+    await t.js(() => { const a = window.nammaSpace; a.player.place(-13.1, 23.1, Math.PI); a.player.pitch = -0.05; });
+    await t.caption('Our hostel, captured with our PoseCam app: one 4-minute walk, 174 m, ARCore poses in real metres.');
+    await t.hold(2.5);
+    await t.look(Math.PI, 0, 4);
+    await t.caption('Free first-person roaming (W A S D + mouse). Walls and objects stop you.');
+    await t.keys(['w'], 2.2);
+    await t.look(0.5, 0, 1.2);
+    await t.caption('Click a label or anywhere inside a zone to see what it is and how far it is on foot.');
+    await t.click('.poi-pin:has-text("Visitor seating")');
+    await t.hold(3);
+    await t.click('.card__close');
+    await t.js(() => { const a = window.nammaSpace; a.deselect(); a.player.place(-13.1, 21.6, 0); a.player.pitch = -0.08; });
+    await t.caption('Search understands everyday words: “nearest fire extinguisher” is ranked by walking distance.');
+    await t.page.keyboard.press('/');
+    await t.type('nearest fire extinguisher');
+    await t.hold(3);
+    await t.caption('Enter → a walking route that stays on the floor and keeps clear of walls and objects.');
+    await t.page.keyboard.press('Enter');
+    await t.hold(1);
+    await t.click('#map-expand');
+    await t.hold(4);
+    await t.click('#map-expand');
+    await t.caption('Auto-walk follows the route; the guidance names landmarks and updates as you move.');
+    await t.page.keyboard.press('g');
+    await t.until(() => !window.nammaSpace.navigator.active, 18);
+    await t.hold(2);
+    await t.caption('Aliases work too: “stairs” finds the Staircase 70 m away. Shift+Enter jumps straight there.');
+    await t.page.keyboard.press('/');
+    await t.type('stairs');
+    await t.hold(2);
+    await t.page.keyboard.press('Shift+Enter');
+    await t.until(() => !window.nammaSpace.director.busy, 4);
+    await t.hold(2.5);
+    await t.caption('What the planner uses: green = walkable floor found in the scan, amber = tight spots.');
+    await t.js(() => { const a = window.nammaSpace; a.deselect(); a.toggleNavOverlay(); a.setMode('blueprint'); });
+    await t.click('#map-expand');
+    await t.hold(4);
+    await t.click('#map-expand');
+    await t.js(() => { const a = window.nammaSpace; a.toggleNavOverlay(); a.setMode('photoreal'); });
+  } },
+
   // ── Real capture: walkthrough, POIs, search, route ─────────────────────────────
   home: { query: 'scene=home&quality=lite', settle: 110, waitPhotoreal: true, async run(t) {
     await t.js(() => window.nammaSpace.player.place(0.2, -0.6, Math.PI));
@@ -249,11 +292,11 @@ function card(title, lines, images = []) {
 }
 
 const CARDS = {
-  pipeline: ['How the walkable map is made', ['The splat has no floor, walls or scale. <b style="color:#fff">navkit</b> finds the floor plane (RANSAC), levels it, squares the walls and sets metres.', 'A 5 cm cell is walkable only where floor was <i>seen</i> and nothing stands 0.12–1.8 m above it. Unseen space is never assumed free. Built in ~3 s.'],
-    () => [[imageData(path.join(OUT, 'pipe_plan.png')), 'Automatic floor plan (ceiling removed)'], [imageData(path.join(OUT, 'pipe_walk.png')), 'Walkable floor (green) and obstacles (red) used by the planner']]],
+  posecam: ['From one phone walk to a map', ['PoseCam saves ARCore’s pose for every frame — metres, gravity up. A depth network estimates depth per frame on a CPU; its scale is <b style="color:#fff">measured</b> by triangulating image features against ARCore’s motion (154 frame pairs).', 'Check: the phone then sits 1.33 m above the floor. Frames fuse into 4 cm voxels seen from ≥ 2 views; the walked path counts as floor.'],
+    () => [[imageData(path.join(OUT, 'hostel_path.png')), 'The 174 m walk recorded by PoseCam (grey: no images uploaded)'], [imageData(path.join(OUT, 'hostel_walk.png')), 'Walkable floor (green) and obstacles (red) found by navkit']]],
   office: ['Venue-scale benchmark', ['A 24 m × 16 m office, <b style="color:#fff">synthetic</b>, generated from a known layout so accuracy can be measured exactly.', 'Same pipeline, same app — long multi-room routes, re-routing and multi-stop trips.']],
-  title: ['Namma Space — Round 2', ['POI tagging · spatial search · obstacle-aware navigation', 'Phone capture → Gaussian splat → <b style="color:#fff">navkit</b> (floor, obstacles, scale) → zero-install web app', '<span style="color:#9aa3b2;font-size:20px">Techfest 2026-27, IIT Bombay · recorded from the live app, frame by frame</span>']],
-  end: ['How it is verified', ['<b style="color:#fff">43 automated tests</b> in CI — 35 for the navigation core, 8 for the pipeline', 'Every route is sampled every 2 cm and must keep body clearance from obstacles', 'On ground truth: <b style="color:#fff">0.01 %</b> of cells marked walkable are actually solid', 'A capture tilted 17° and scaled 0.21× is re-aligned to under 0.5° of gravity', 'Live app: <span style="color:#4d9bff">atharv-namdeo.github.io/3d-mapping/app</span>', 'Code: <span style="color:#4d9bff">github.com/atharv-namdeo/3d-mapping</span>']],
+  title: ['Namma Space — Round 2', ['POI tagging · spatial search · obstacle-aware navigation', 'PoseCam phone capture → <b style="color:#fff">navkit</b> (metric depth, floor, obstacles) → zero-install web app', '<span style="color:#9aa3b2;font-size:20px">Techfest 2026-27, IIT Bombay · recorded from the live app, frame by frame</span>']],
+  end: ['How it is verified', ['<b style="color:#fff">45 automated tests</b> in CI — 37 for the navigation core and shipped scenes, 8 for the pipeline', 'Every route is sampled every 2 cm and must keep body clearance from obstacles', 'On ground truth: <b style="color:#fff">0.01 %</b> of cells marked walkable are actually solid', 'A capture tilted 17° and scaled 0.21× is re-aligned to under 0.5° of gravity', 'Live app: <span style="color:#4d9bff">atharv-namdeo.github.io/3d-mapping/app</span>', 'Code: <span style="color:#4d9bff">github.com/atharv-namdeo/3d-mapping</span>']],
 };
 
 (async () => {
@@ -293,7 +336,7 @@ const CARDS = {
   await browser.close();
 
   // Assemble: cards interleaved with the recorded takes.
-  const ORDER = [['card', 'title', 7], ['take', 'home'], ['card', 'pipeline', 16], ['card', 'office', 6], ['take', 'office'], ['take', 'editor'], ['card', 'end', 12]];
+  const ORDER = [['card', 'title', 7], ['card', 'posecam', 16], ['take', 'hostel'], ['card', 'office', 6], ['take', 'office'], ['take', 'editor'], ['card', 'end', 12]];
   const parts = [];
   const encode = (args, out) => { execFileSync('ffmpeg', ['-y', '-loglevel', 'error', ...args, '-vf', 'fps=24,format=yuv420p', '-c:v', 'libx264', '-crf', '20', '-preset', 'medium', out]); parts.push(out); };
   for (const [kind, name, seconds] of ORDER) {
