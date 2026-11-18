@@ -137,6 +137,9 @@ export class Viewer {
         sphericalHarmonicsDegree: 0,
         freeIntermediateSplatData: true,
         enableSIMDInSort: wasmSimdSupported(),
+        // Show the whole scene at once: the default radial fade-in advances per frame, so on
+        // large spaces and slow devices most of the scan stays hidden for a long time.
+        sceneRevealMode: GaussianSplats3D.SceneRevealMode.Instant,
       });
       await splats.addSplatScene(url, {
         showLoadingUI: false, splatAlphaRemovalThreshold: 6,

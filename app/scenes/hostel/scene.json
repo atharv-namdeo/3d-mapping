@@ -4,7 +4,7 @@
   "source": {
     "path": "source.ply",
     "type": "point-cloud",
-    "capture": "PoseCam session capture-20261118T084722-0ef44e, frames 0-5499 (stride 8)"
+    "capture": "PoseCam session capture-20261118T084722-0ef44e, frames 0-5499 (every 4th frame)"
   },
   "calibration": {
     "up": [
@@ -15,12 +15,13 @@
     "metresPerUnit": 1.0
   },
   "view": {
-    "maxPoints": 1400000,
     "floorplanCeiling": 1.9,
-    "pointSize": 0.035,
-    "defaultMode": "photoreal"
+    "defaultMode": "photoreal",
+    "surfels": true,
+    "maxSplats": 1500000,
+    "liteSplats": 400000
   },
-  "description": "Real capture with the team's PoseCam app (Nothing Phone A059, ARCore poses). Geometry from per-frame metric depth placed with ARCore's metric poses; depth scale fixed by triangulation against the poses; the walked path counts as observed floor.",
+  "description": "Real capture with the team's PoseCam app (Nothing Phone A059, ARCore poses). Geometry from per-frame metric depth (1,376 frames) placed with ARCore's metric poses; depth scale fixed by triangulation against the poses; the walked path counts as observed floor. Rendered as oriented surface discs (surfels) so walls and floors read as continuous surfaces.",
   "spawn": {
     "position": [
       -13.1,

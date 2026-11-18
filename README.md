@@ -39,7 +39,7 @@ pip install -r navkit/requirements.txt && npm run test:pipeline   # pipeline vs.
 **Build a scene from a PoseCam session** (CPU only — see [docs/CAPTURE_SOP.md](docs/CAPTURE_SOP.md)):
 
 ```bash
-python -m navkit posecam path/to/posecam-session app/scenes/hostel && python -m navkit build app/scenes/hostel
+python -m navkit posecam path/to/posecam-session app/scenes/hostel --stride 4 && python -m navkit build app/scenes/hostel
 ```
 
 **Rebuild a scene from its reconstruction** (`nav.json`, floor plan, web-ready splat):

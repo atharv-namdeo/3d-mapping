@@ -58,8 +58,15 @@ gravity-aligned pose for every frame, so scale and "which way is up" are measure
    features against ARCore's metric camera motion**, finds the floor, fuses frames into a 4 cm voxel
    cloud (keeping only voxels seen from ≥ 2 frames) and saves the walked path. The log prints two
    independent checks — the triangulated scale and the per-frame floor correction (should be ≈ 1.0).
-4. `scene.json` for a PoseCam scene uses `"up": [0, 1, 0]` and `"metresPerUnit": 1.0`; then continue
-   with step 4 below. `navkit build` treats the walked path as observed free floor.
+4. `scene.json` for a PoseCam scene uses `"up": [0, 1, 0]` and `"metresPerUnit": 1.0`, and
+   `"view": { "surfels": true }` so the cloud is drawn as continuous surfaces (see below); then continue
+   with step 4. `navkit build` treats the walked path as observed free floor. Use `--stride 4` (every 4th
+   frame) for the final build: twice the views fills more holes in walls.
+
+**Surfels.** With `view.surfels`, every point becomes a small disc lying on its local surface (normal
+from its neighbours) and just wide enough to meet them, so walls and floors render as surfaces instead of
+separate squares. The phone version is built from a sparser sample with wider discs, not cut from the
+full one, so it has no extra gaps.
 
 ## 3b. Train a Gaussian splat (photoreal view; needs a GPU)
 

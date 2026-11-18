@@ -157,7 +157,18 @@ def build_scene(scene_dir: str | Path, *, verbose: bool = True) -> dict:
     view = cfg.get("view", {})
     visible = crop_for_viewing(cloud, grid, view.get("cropMargin", 2.5), view.get("ceiling", 4.0))
     assets: dict[str, object] = {"floorplan": "floorplan.png"}
-    if visible.is_splat:
+    if not visible.is_splat and view.get("surfels"):
+        # Each level of detail gets its own surfels, so the sparser phone version uses
+        # larger discs instead of leaving the gaps a plain subset would.
+        from .surfels import to_surfels
+        rng = np.random.default_rng(0)
+        def level(count):
+            pick = rng.choice(len(visible), count, replace=False) if len(visible) > count else np.arange(len(visible))
+            return to_surfels(visible.select(np.sort(pick)), log=lambda m: log(" ", m))
+        n = write_splat(scene_dir / "scene.splat", level(view.get("maxSplats", 1_300_000)))
+        lite = write_splat(scene_dir / "scene.lite.splat", level(view.get("liteSplats", 450_000)))
+        assets.update(splat="scene.splat", splatCount=n, splatLite="scene.lite.splat", splatLiteCount=lite, surfels=True)
+    elif visible.is_splat:
         n = write_splat(scene_dir / "scene.splat", visible, view.get("maxSplats"))
         lite = write_splat(scene_dir / "scene.lite.splat", visible, min(n, view.get("liteSplats", 160_000)))
         assets.update(splat="scene.splat", splatCount=n, splatLite="scene.lite.splat", splatLiteCount=lite)

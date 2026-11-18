@@ -1,50 +1,374 @@
 [
-  { "id": "lobby", "name": "Lobby", "category": "room", "aliases": ["entrance hall", "reception area", "foyer"],
+  {
+    "id": "lobby",
+    "name": "Lobby",
+    "category": "room",
+    "aliases": [
+      "entrance hall",
+      "reception area",
+      "foyer"
+    ],
     "description": "Ground-floor lobby with the entry turnstiles, security desk and visitor seating.",
-    "position": [-13.0, 2.1, 19.5], "zone": [[-16.6, 15.2], [-9.6, 15.2], [-9.6, 25.6], [-16.6, 25.6]] },
-  { "id": "main-entrance", "name": "Main entrance", "category": "entrance", "aliases": ["main door", "exit", "way out", "digital clock", "front door"],
+    "position": [
+      -13.0,
+      2.1,
+      19.5
+    ],
+    "zone": [
+      [
+        -16.6,
+        15.2
+      ],
+      [
+        -9.6,
+        15.2
+      ],
+      [
+        -9.6,
+        25.6
+      ],
+      [
+        -16.6,
+        25.6
+      ]
+    ]
+  },
+  {
+    "id": "main-entrance",
+    "name": "Main entrance",
+    "category": "entrance",
+    "aliases": [
+      "main door",
+      "exit",
+      "way out",
+      "digital clock",
+      "front door"
+    ],
     "description": "Wooden double door with the digital clock above it.",
-    "position": [-13.2, 2.2, 25.2] },
-  { "id": "security-desk", "name": "Security desk", "category": "service", "aliases": ["guard", "reception", "register", "visitor entry", "help"],
+    "position": [
+      -13.2,
+      2.2,
+      25.2
+    ]
+  },
+  {
+    "id": "security-desk",
+    "name": "Security desk",
+    "category": "service",
+    "aliases": [
+      "guard",
+      "reception",
+      "register",
+      "visitor entry",
+      "help"
+    ],
     "description": "Desk by the entrance where visitors sign in.",
-    "position": [-14.7, 1.3, 23.2] },
-  { "id": "entry-turnstiles", "name": "Entry turnstiles", "category": "landmark", "aliases": ["turnstile", "gate", "barrier", "access gate"],
+    "position": [
+      -14.7,
+      1.3,
+      23.2
+    ]
+  },
+  {
+    "id": "entry-turnstiles",
+    "name": "Entry turnstiles",
+    "category": "landmark",
+    "aliases": [
+      "turnstile",
+      "gate",
+      "barrier",
+      "access gate"
+    ],
     "description": "ID-card turnstiles between the entrance and the hostel.",
-    "position": [-12.6, 1.4, 21.0] },
-  { "id": "lifts", "name": "Lifts", "category": "service", "aliases": ["lift", "elevator", "elevators"],
-    "description": "Steel lift doors at the back of the lobby.",
-    "position": [-12.8, 2.0, 15.4] },
-  { "id": "visitor-seating", "name": "Visitor seating", "category": "seating", "aliases": ["waiting area", "chairs", "sofa", "sit"],
+    "position": [
+      -12.6,
+      1.4,
+      21.0
+    ]
+  },
+  {
+    "id": "lifts",
+    "name": "Lifts",
+    "category": "service",
+    "aliases": [
+      "lift",
+      "elevator",
+      "elevators"
+    ],
+    "description": "Steel lift doors at the back of the lobby (label marks the waiting spot in front of them).",
+    "position": [
+      -12.6,
+      2.0,
+      16.3
+    ]
+  },
+  {
+    "id": "visitor-seating",
+    "name": "Visitor seating",
+    "category": "seating",
+    "aliases": [
+      "waiting area",
+      "chairs",
+      "sofa",
+      "sit"
+    ],
     "description": "Row of chairs under the notice boards.",
-    "position": [-14.8, 1.2, 16.9] },
-  { "id": "notice-boards", "name": "Notice boards", "category": "landmark", "aliases": ["notice board", "announcements", "information"],
+    "position": [
+      -14.8,
+      1.2,
+      16.9
+    ]
+  },
+  {
+    "id": "notice-boards",
+    "name": "Notice boards",
+    "category": "landmark",
+    "aliases": [
+      "notice board",
+      "announcements",
+      "information"
+    ],
     "description": "Hostel notices above the visitor seating.",
-    "position": [-15.6, 1.9, 17.4] },
-  { "id": "corridor-link", "name": "Ground-floor corridor", "category": "room", "aliases": ["passage", "link corridor"],
+    "position": [
+      -15.6,
+      1.9,
+      17.4
+    ]
+  },
+  {
+    "id": "corridor-link",
+    "name": "Ground-floor corridor",
+    "category": "room",
+    "aliases": [
+      "passage",
+      "link corridor"
+    ],
     "description": "Corridor from the lobby to the east wing.",
-    "position": [-5.5, 2.2, 13.1], "zone": [[-9.5, 12.3], [-2.9, 12.3], [-2.9, 14.0], [-9.5, 14.0]] },
-  { "id": "east-wing", "name": "East wing corridor", "category": "room", "aliases": ["east wing", "rooms", "hostel rooms", "corridor a"],
+    "position": [
+      -5.5,
+      2.2,
+      13.1
+    ],
+    "zone": [
+      [
+        -9.5,
+        12.3
+      ],
+      [
+        -2.9,
+        12.3
+      ],
+      [
+        -2.9,
+        14.0
+      ],
+      [
+        -9.5,
+        14.0
+      ]
+    ]
+  },
+  {
+    "id": "east-wing",
+    "name": "East wing corridor",
+    "category": "room",
+    "aliases": [
+      "east wing",
+      "rooms",
+      "hostel rooms",
+      "corridor a"
+    ],
     "description": "Long corridor of student rooms, 44 m.",
-    "position": [-1.8, 2.2, -8.0], "zone": [[-2.9, -30.1], [-0.6, -30.1], [-0.6, 14.0], [-2.9, 14.0]] },
-  { "id": "north-wing", "name": "North wing corridor", "category": "room", "aliases": ["north wing", "rooms", "hostel rooms", "corridor b"],
+    "position": [
+      -1.8,
+      2.2,
+      -8.0
+    ],
+    "zone": [
+      [
+        -2.9,
+        -30.1
+      ],
+      [
+        -0.6,
+        -30.1
+      ],
+      [
+        -0.6,
+        14.0
+      ],
+      [
+        -2.9,
+        14.0
+      ]
+    ]
+  },
+  {
+    "id": "north-wing",
+    "name": "North wing corridor",
+    "category": "room",
+    "aliases": [
+      "north wing",
+      "rooms",
+      "hostel rooms",
+      "corridor b"
+    ],
     "description": "Corridor of student rooms joining the east and west wings, 30 m.",
-    "position": [-15.0, 2.2, -31.1], "zone": [[-31.0, -32.2], [-0.6, -32.2], [-0.6, -30.1], [-31.0, -30.1]] },
-  { "id": "west-wing", "name": "West wing corridor", "category": "room", "aliases": ["west wing", "rooms", "hostel rooms", "corridor c"],
+    "position": [
+      -15.0,
+      2.2,
+      -31.1
+    ],
+    "zone": [
+      [
+        -31.0,
+        -32.2
+      ],
+      [
+        -0.6,
+        -32.2
+      ],
+      [
+        -0.6,
+        -30.1
+      ],
+      [
+        -31.0,
+        -30.1
+      ]
+    ]
+  },
+  {
+    "id": "west-wing",
+    "name": "West wing corridor",
+    "category": "room",
+    "aliases": [
+      "west wing",
+      "rooms",
+      "hostel rooms",
+      "corridor c"
+    ],
     "description": "Corridor of student rooms, 19 m.",
-    "position": [-25.4, 2.2, -20.0], "zone": [[-26.5, -30.1], [-24.5, -30.1], [-24.5, -11.4], [-26.5, -11.4]] },
-  { "id": "staircase", "name": "Staircase", "category": "service", "aliases": ["stairs", "steps", "upstairs"],
+    "position": [
+      -25.4,
+      2.2,
+      -20.0
+    ],
+    "zone": [
+      [
+        -26.5,
+        -30.1
+      ],
+      [
+        -24.5,
+        -30.1
+      ],
+      [
+        -24.5,
+        -11.4
+      ],
+      [
+        -26.5,
+        -11.4
+      ]
+    ]
+  },
+  {
+    "id": "staircase",
+    "name": "Staircase",
+    "category": "service",
+    "aliases": [
+      "stairs",
+      "steps",
+      "upstairs"
+    ],
     "description": "Stair landing with a window, off the north wing.",
-    "position": [-13.3, 1.8, -28.6], "zone": [[-14.6, -30.1], [-12.1, -30.1], [-12.1, -27.4], [-14.6, -27.4]] },
-  { "id": "fire-extinguisher-east", "name": "Fire extinguisher (east wing)", "category": "service", "aliases": ["fire extinguisher", "extinguisher", "fire safety", "emergency"],
+    "position": [
+      -13.3,
+      1.8,
+      -28.6
+    ],
+    "zone": [
+      [
+        -14.6,
+        -30.1
+      ],
+      [
+        -12.1,
+        -30.1
+      ],
+      [
+        -12.1,
+        -27.4
+      ],
+      [
+        -14.6,
+        -27.4
+      ]
+    ]
+  },
+  {
+    "id": "fire-extinguisher-east",
+    "name": "Fire extinguisher (east wing)",
+    "category": "service",
+    "aliases": [
+      "fire extinguisher",
+      "extinguisher",
+      "fire safety",
+      "emergency"
+    ],
     "description": "Red extinguisher at the lobby end of the east wing.",
-    "position": [-0.9, 1.1, 11.4] },
-  { "id": "fire-extinguisher-north", "name": "Fire extinguisher (north corner)", "category": "service", "aliases": ["fire extinguisher", "extinguisher", "fire safety", "emergency"],
+    "position": [
+      -0.9,
+      1.1,
+      11.4
+    ]
+  },
+  {
+    "id": "fire-extinguisher-north",
+    "name": "Fire extinguisher (north corner)",
+    "category": "service",
+    "aliases": [
+      "fire extinguisher",
+      "extinguisher",
+      "fire safety",
+      "emergency"
+    ],
     "description": "Red extinguisher at the north-east corner.",
-    "position": [-0.9, 1.1, -29.4] },
-  { "id": "orange-door", "name": "Orange door", "category": "landmark", "aliases": ["end door", "corridor end"],
+    "position": [
+      -0.9,
+      1.1,
+      -29.4
+    ]
+  },
+  {
+    "id": "orange-door",
+    "name": "Orange door",
+    "category": "landmark",
+    "aliases": [
+      "end door",
+      "corridor end"
+    ],
     "description": "Orange door at the west end of the north wing.",
-    "position": [-30.6, 1.6, -31.2] },
-  { "id": "water-buckets", "name": "Water buckets", "category": "landmark", "aliases": ["buckets", "water"],
+    "position": [
+      -30.6,
+      1.6,
+      -31.2
+    ]
+  },
+  {
+    "id": "water-buckets",
+    "name": "Water buckets",
+    "category": "landmark",
+    "aliases": [
+      "buckets",
+      "water"
+    ],
     "description": "Blue buckets at the north end of the west wing.",
-    "position": [-25.2, 0.9, -27.6] }
+    "position": [
+      -25.2,
+      0.9,
+      -27.6
+    ]
+  }
 ]

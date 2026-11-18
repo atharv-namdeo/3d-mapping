@@ -3,41 +3,41 @@
   "kind": "object",
   "hint": "tall fixture (wall unit / partition)",
   "position": [
-   -3.567,
-   -15.235
+   -11.431,
+   12.748
   ],
-  "height_m": 2.53,
-  "footprint_m2": 4.76,
+  "height_m": 2.59,
+  "footprint_m2": 5.85,
   "size_m": [
-   2.0,
-   6.3
+   2.6,
+   6.25
   ]
  },
  {
   "kind": "object",
   "hint": "tall fixture (wall unit / partition)",
   "position": [
-   -3.042,
-   -6.958
+   -27.294,
+   -9.609
   ],
-  "height_m": 2.51,
-  "footprint_m2": 4.48,
+  "height_m": 2.57,
+  "footprint_m2": 4.52,
+  "size_m": [
+   3.65,
+   2.85
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall fixture (wall unit / partition)",
+  "position": [
+   -24.188,
+   -12.267
+  ],
+  "height_m": 2.59,
+  "footprint_m2": 3.43,
   "size_m": [
    1.35,
-   8.8
-  ]
- },
- {
-  "kind": "object",
-  "hint": "tall fixture (wall unit / partition)",
-  "position": [
-   -24.429,
-   -22.296
-  ],
-  "height_m": 2.55,
-  "footprint_m2": 3.62,
-  "size_m": [
-   1.6,
    5.9
   ]
  },
@@ -45,209 +45,125 @@
   "kind": "object",
   "hint": "tall fixture (wall unit / partition)",
   "position": [
-   -1.314,
-   -14.197
+   -0.656,
+   -27.666
   ],
   "height_m": 2.57,
-  "footprint_m2": 2.8,
+  "footprint_m2": 3.01,
   "size_m": [
-   1.7,
-   9.1
+   0.6,
+   12.5
   ]
  },
  {
   "kind": "object",
   "hint": "tall fixture (wall unit / partition)",
   "position": [
-   -24.319,
-   -12.501
+   -14.361,
+   12.807
   ],
-  "height_m": 2.56,
-  "footprint_m2": 2.65,
+  "height_m": 2.45,
+  "footprint_m2": 1.95,
   "size_m": [
-   1.5,
-   4.4
-  ]
- },
- {
-  "kind": "object",
-  "hint": "tall fixture (wall unit / partition)",
-  "position": [
-   -0.649,
-   -27.375
-  ],
-  "height_m": 2.57,
-  "footprint_m2": 2.57,
-  "size_m": [
-   0.65,
-   11.7
-  ]
- },
- {
-  "kind": "object",
-  "hint": "tall fixture (wall unit / partition)",
-  "position": [
-   -2.801,
-   2.436
-  ],
-  "height_m": 2.51,
-  "footprint_m2": 2.03,
-  "size_m": [
-   1.35,
-   2.65
-  ]
- },
- {
-  "kind": "object",
-  "hint": "tall fixture (wall unit / partition)",
-  "position": [
-   -3.04,
-   -0.876
-  ],
-  "height_m": 2.53,
-  "footprint_m2": 1.97,
-  "size_m": [
-   1.6,
-   3.0
-  ]
- },
- {
-  "kind": "object",
-  "hint": "tall fixture (wall unit / partition)",
-  "position": [
-   -2.856,
-   5.186
-  ],
-  "height_m": 2.47,
-  "footprint_m2": 1.64,
-  "size_m": [
-   1.4,
+   1.65,
    2.4
   ]
  },
  {
   "kind": "object",
-  "hint": "tall object (shelf / cabinet / appliance / pillar)",
+  "hint": "tall fixture (wall unit / partition)",
   "position": [
-   -14.18,
-   12.722
+   -3.662,
+   -20.192
   ],
-  "height_m": 2.47,
-  "footprint_m2": 1.25,
-  "size_m": [
-   1.6,
-   1.9
-  ]
- },
- {
-  "kind": "object",
-  "hint": "tall object (shelf / cabinet / appliance / pillar)",
-  "position": [
-   -24.208,
-   -17.72
-  ],
-  "height_m": 2.56,
-  "footprint_m2": 1.21,
-  "size_m": [
-   1.25,
-   2.35
-  ]
- },
- {
-  "kind": "object",
-  "hint": "tall object (shelf / cabinet / appliance / pillar)",
-  "position": [
-   -14.773,
-   15.464
-  ],
-  "height_m": 2.59,
-  "footprint_m2": 1.02,
-  "size_m": [
-   1.4,
-   2.05
-  ]
- },
- {
-  "kind": "object",
-  "hint": "tall object (shelf / cabinet / appliance / pillar)",
-  "position": [
-   -12.146,
-   15.276
-  ],
-  "height_m": 2.58,
-  "footprint_m2": 0.82,
-  "size_m": [
-   1.35,
-   2.35
-  ]
- },
- {
-  "kind": "object",
-  "hint": "tall object (shelf / cabinet / appliance / pillar)",
-  "position": [
-   -3.653,
-   -20.127
-  ],
-  "height_m": 2.42,
-  "footprint_m2": 0.78,
+  "height_m": 2.5,
+  "footprint_m2": 1.84,
   "size_m": [
    1.45,
-   1.5
+   3.15
   ]
  },
  {
   "kind": "object",
-  "hint": "tall object (shelf / cabinet / appliance / pillar)",
+  "hint": "tall fixture (wall unit / partition)",
   "position": [
-   -11.11,
-   13.115
+   -14.806,
+   15.47
   ],
-  "height_m": 2.55,
-  "footprint_m2": 0.7,
+  "height_m": 2.59,
+  "footprint_m2": 1.77,
   "size_m": [
-   1.2,
-   1.75
+   1.85,
+   2.85
   ]
  },
  {
   "kind": "object",
   "hint": "tall object (shelf / cabinet / appliance / pillar)",
   "position": [
-   -14.476,
-   25.386
+   -14.334,
+   25.421
   ],
-  "height_m": 2.56,
-  "footprint_m2": 0.68,
+  "height_m": 2.57,
+  "footprint_m2": 1.29,
   "size_m": [
-   1.2,
-   1.65
+   1.4,
+   2.25
   ]
  },
  {
   "kind": "object",
   "hint": "tall object (shelf / cabinet / appliance / pillar)",
   "position": [
-   -17.188,
-   16.003
+   -12.404,
+   25.638
   ],
-  "height_m": 2.44,
-  "footprint_m2": 0.63,
+  "height_m": 2.59,
+  "footprint_m2": 0.98,
   "size_m": [
-   0.7,
-   1.75
+   1.7,
+   1.25
   ]
  },
  {
   "kind": "object",
   "hint": "tall object (shelf / cabinet / appliance / pillar)",
   "position": [
-   -12.255,
-   25.641
+   -3.53,
+   -22.533
   ],
-  "height_m": 2.54,
-  "footprint_m2": 0.29,
+  "height_m": 2.48,
+  "footprint_m2": 0.41,
   "size_m": [
    1.0,
+   1.2
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall object (shelf / cabinet / appliance / pillar)",
+  "position": [
+   -1.849,
+   9.386
+  ],
+  "height_m": 2.56,
+  "footprint_m2": 0.22,
+  "size_m": [
+   0.3,
+   0.9
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall object (shelf / cabinet / appliance / pillar)",
+  "position": [
+   -11.131,
+   10.772
+  ],
+  "height_m": 2.42,
+  "footprint_m2": 0.16,
+  "size_m": [
+   0.7,
    0.65
   ]
  },
@@ -255,27 +171,41 @@
   "kind": "object",
   "hint": "tall object (shelf / cabinet / appliance / pillar)",
   "position": [
-   -11.631,
-   11.734
+   -10.672,
+   23.24
   ],
-  "height_m": 2.59,
-  "footprint_m2": 0.14,
+  "height_m": 2.39,
+  "footprint_m2": 0.12,
   "size_m": [
-   0.4,
-   0.85
+   0.25,
+   1.0
   ]
  },
  {
   "kind": "object",
   "hint": "tall object (shelf / cabinet / appliance / pillar)",
   "position": [
-   -24.584,
-   -18.984
+   -2.656,
+   -20.405
   ],
-  "height_m": 2.48,
-  "footprint_m2": 0.12,
+  "height_m": 2.58,
+  "footprint_m2": 0.11,
   "size_m": [
-   0.45,
+   0.25,
+   0.65
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall object (shelf / cabinet / appliance / pillar)",
+  "position": [
+   -11.717,
+   16.526
+  ],
+  "height_m": 2.51,
+  "footprint_m2": 0.11,
+  "size_m": [
+   0.65,
    0.4
   ]
  },
@@ -283,50 +213,36 @@
   "kind": "object",
   "hint": "tall object (shelf / cabinet / appliance / pillar)",
   "position": [
-   -11.359,
-   12.332
+   -1.91,
+   -19.597
+  ],
+  "height_m": 2.6,
+  "footprint_m2": 0.1,
+  "size_m": [
+   0.2,
+   0.55
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall object (shelf / cabinet / appliance / pillar)",
+  "position": [
+   -13.375,
+   16.07
   ],
   "height_m": 2.58,
   "footprint_m2": 0.1,
   "size_m": [
-   0.35,
-   0.4
-  ]
- },
- {
-  "kind": "object",
-  "hint": "tall object (shelf / cabinet / appliance / pillar)",
-  "position": [
-   -3.158,
-   -19.2
-  ],
-  "height_m": 2.41,
-  "footprint_m2": 0.09,
-  "size_m": [
-   0.3,
-   0.45
-  ]
- },
- {
-  "kind": "object",
-  "hint": "tall object (shelf / cabinet / appliance / pillar)",
-  "position": [
-   -11.002,
-   16.065
-  ],
-  "height_m": 2.51,
-  "footprint_m2": 0.08,
-  "size_m": [
-   0.4,
-   0.35
+   0.5,
+   0.3
   ]
  },
  {
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -4.954,
-   12.787
+   -5.179,
+   12.789
   ],
   "radius_m": 1.1
  },
@@ -334,26 +250,17 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -3.604,
-   12.787
+   -3.904,
+   12.789
   ],
-  "radius_m": 1.1
+  "radius_m": 1.06
  },
  {
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -2.254,
-   12.837
-  ],
-  "radius_m": 1.05
- },
- {
-  "kind": "zone",
-  "hint": "open area",
-  "position": [
-   -13.454,
-   14.537
+   -3.179,
+   12.789
   ],
   "radius_m": 1.05
  },
@@ -361,8 +268,8 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -2.254,
-   -21.088
+   -25.029,
+   -15.661
   ],
   "radius_m": 1.01
  },
@@ -370,26 +277,8 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -7.454,
-   12.987
-  ],
-  "radius_m": 0.97
- },
- {
-  "kind": "zone",
-  "hint": "open area",
-  "position": [
-   -1.704,
-   -25.513
-  ],
-  "radius_m": 0.91
- },
- {
-  "kind": "zone",
-  "hint": "open area",
-  "position": [
-   -1.604,
-   -28.263
+   -7.304,
+   12.989
   ],
   "radius_m": 0.9
  },
@@ -397,44 +286,53 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -1.704,
-   6.637
+   -1.629,
+   -25.136
   ],
-  "radius_m": 0.9
+  "radius_m": 0.86
  },
  {
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -25.154,
-   -16.063
+   -29.429,
+   -11.311
   ],
-  "radius_m": 0.89
+  "radius_m": 0.86
  },
  {
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -9.704,
-   13.387
+   -29.479,
+   -11.061
   ],
-  "radius_m": 0.89
+  "radius_m": 0.86
  },
  {
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -10.004,
-   14.037
+   -13.429,
+   14.939
   ],
-  "radius_m": 0.88
+  "radius_m": 0.86
  },
  {
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -12.537,
-   -30.947
+   -13.379,
+   14.989
+  ],
+  "radius_m": 0.86
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -1.579,
+   -28.386
   ],
   "radius_m": 0.85
  },
@@ -442,8 +340,8 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -2.004,
-   -2.488
+   -25.179,
+   -19.011
   ],
   "radius_m": 0.85
  },
@@ -451,17 +349,53 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -1.904,
-   0.737
+   -2.029,
+   -2.961
   ],
-  "radius_m": 0.82
+  "radius_m": 0.85
  },
  {
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -1.554,
-   -31.113
+   -1.929,
+   0.589
+  ],
+  "radius_m": 0.85
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -1.689,
+   6.609
+  ],
+  "radius_m": 0.85
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -12.479,
+   -30.961
+  ],
+  "radius_m": 0.81
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -1.979,
+   -8.761
+  ],
+  "radius_m": 0.81
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -1.529,
+   -31.161
   ],
   "radius_m": 0.8
  },
@@ -469,26 +403,26 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -12.704,
-   -29.413
+   -12.829,
+   12.789
   ],
-  "radius_m": 0.8
+  "radius_m": 0.79
  },
  {
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -12.654,
-   -29.313
+   -12.929,
+   18.689
   ],
-  "radius_m": 0.8
+  "radius_m": 0.79
  },
  {
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -2.204,
-   -11.713
+   -1.779,
+   -21.811
   ],
   "radius_m": 0.78
  },
@@ -496,8 +430,8 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -2.004,
-   -8.513
+   -2.479,
+   -18.736
   ],
   "radius_m": 0.78
  },
@@ -505,8 +439,35 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -1.454,
-   -29.663
+   -1.779,
+   3.889
+  ],
+  "radius_m": 0.78
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -2.179,
+   -11.686
+  ],
+  "radius_m": 0.76
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -2.029,
+   -5.361
+  ],
+  "radius_m": 0.76
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -12.679,
+   -29.486
   ],
   "radius_m": 0.75
  },
@@ -514,8 +475,8 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -12.554,
-   -28.363
+   -12.629,
+   -29.361
   ],
   "radius_m": 0.75
  },
@@ -523,8 +484,8 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -2.204,
-   -12.638
+   -11.979,
+   18.764
   ],
   "radius_m": 0.75
  },
@@ -532,17 +493,8 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -1.704,
-   4.062
-  ],
-  "radius_m": 0.75
- },
- {
-  "kind": "zone",
-  "hint": "open area",
-  "position": [
-   -12.804,
-   18.887
+   -25.429,
+   -11.486
   ],
   "radius_m": 0.74
  },
@@ -550,8 +502,8 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -11.954,
-   22.012
+   -25.179,
+   -8.911
   ],
   "radius_m": 0.74
  },
@@ -559,17 +511,8 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -7.029,
-   -31.013
-  ],
-  "radius_m": 0.73
- },
- {
-  "kind": "zone",
-  "hint": "open area",
-  "position": [
-   -2.404,
-   -18.763
+   -1.979,
+   -6.211
   ],
   "radius_m": 0.72
  },
@@ -577,35 +520,26 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -2.554,
-   -18.513
+   -8.704,
+   -31.061
   ],
-  "radius_m": 0.72
+  "radius_m": 0.71
  },
  {
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -12.804,
-   12.737
+   -12.529,
+   -28.411
   ],
-  "radius_m": 0.72
+  "radius_m": 0.71
  },
  {
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -12.754,
-   12.887
-  ],
-  "radius_m": 0.72
- },
- {
-  "kind": "zone",
-  "hint": "open area",
-  "position": [
-   -16.129,
-   -31.113
+   -16.629,
+   -31.111
   ],
   "radius_m": 0.7
  },
@@ -613,8 +547,8 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -10.679,
-   -31.113
+   -10.354,
+   -31.111
   ],
   "radius_m": 0.7
  },
@@ -622,8 +556,8 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -10.554,
-   -31.113
+   -7.954,
+   -31.086
   ],
   "radius_m": 0.7
  },
@@ -631,8 +565,8 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -10.429,
-   -31.113
+   -2.279,
+   -15.386
   ],
   "radius_m": 0.7
  },
@@ -640,8 +574,8 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -9.454,
-   -31.113
+   -25.379,
+   -14.011
   ],
   "radius_m": 0.7
  },
@@ -649,8 +583,8 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -8.804,
-   -31.063
+   -25.329,
+   -10.536
   ],
   "radius_m": 0.7
  },
@@ -658,8 +592,8 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -4.504,
-   -30.963
+   -2.029,
+   -6.961
   ],
   "radius_m": 0.7
  },
@@ -667,8 +601,8 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -2.304,
-   -14.713
+   -1.929,
+   -4.386
   ],
   "radius_m": 0.7
  },
@@ -676,8 +610,8 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -2.004,
-   -7.313
+   -1.829,
+   -1.036
   ],
   "radius_m": 0.7
  },
@@ -685,26 +619,8 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -1.854,
-   -1.163
-  ],
-  "radius_m": 0.7
- },
- {
-  "kind": "zone",
-  "hint": "open area",
-  "position": [
-   -25.129,
-   -12.513
-  ],
-  "radius_m": 0.69
- },
- {
-  "kind": "zone",
-  "hint": "open area",
-  "position": [
-   -1.904,
-   -3.988
+   -7.204,
+   -31.061
   ],
   "radius_m": 0.68
  },
@@ -712,17 +628,44 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -2.254,
-   -5.563
+   -4.354,
+   -30.961
   ],
-  "radius_m": 0.66
+  "radius_m": 0.68
  },
  {
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -25.404,
-   -22.363
+   -10.179,
+   11.839
+  ],
+  "radius_m": 0.68
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -2.229,
+   -14.461
+  ],
+  "radius_m": 0.67
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -2.179,
+   -14.361
+  ],
+  "radius_m": 0.67
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -1.679,
+   5.089
   ],
   "radius_m": 0.65
  },
@@ -730,8 +673,8 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -25.404,
-   -17.713
+   -10.179,
+   13.989
   ],
   "radius_m": 0.65
  },
@@ -739,17 +682,26 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -1.954,
-   -6.413
+   -25.429,
+   -22.111
   ],
-  "radius_m": 0.65
+  "radius_m": 0.64
  },
  {
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -14.054,
-   -31.238
+   -2.129,
+   -13.411
+  ],
+  "radius_m": 0.61
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -14.304,
+   -31.261
   ],
   "radius_m": 0.6
  },
@@ -757,8 +709,8 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -25.154,
-   -18.413
+   -13.854,
+   -31.211
   ],
   "radius_m": 0.6
  },
@@ -766,8 +718,8 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -10.154,
-   11.787
+   -27.429,
+   -11.261
   ],
   "radius_m": 0.6
  },
@@ -775,26 +727,8 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -2.404,
-   -16.213
-  ],
-  "radius_m": 0.59
- },
- {
-  "kind": "zone",
-  "hint": "open area",
-  "position": [
-   -1.654,
-   10.237
-  ],
-  "radius_m": 0.59
- },
- {
-  "kind": "zone",
-  "hint": "open area",
-  "position": [
-   -25.554,
-   -21.438
+   -1.629,
+   10.339
   ],
   "radius_m": 0.55
  },
@@ -802,81 +736,18 @@
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -11.154,
-   18.537
+   -12.979,
+   23.089
   ],
-  "radius_m": 0.55
+  "radius_m": 0.5
  },
  {
   "kind": "zone",
   "hint": "open area",
   "position": [
-   -11.204,
-   18.637
+   -25.379,
+   -23.911
   ],
-  "radius_m": 0.55
- },
- {
-  "kind": "zone",
-  "hint": "open area",
-  "position": [
-   -25.554,
-   -19.913
-  ],
-  "radius_m": 0.54
- },
- {
-  "kind": "zone",
-  "hint": "open area",
-  "position": [
-   -12.854,
-   16.912
-  ],
-  "radius_m": 0.51
- },
- {
-  "kind": "zone",
-  "hint": "open area",
-  "position": [
-   -13.004,
-   23.087
-  ],
-  "radius_m": 0.49
- },
- {
-  "kind": "zone",
-  "hint": "open area",
-  "position": [
-   -12.954,
-   23.137
-  ],
-  "radius_m": 0.49
- },
- {
-  "kind": "zone",
-  "hint": "open area",
-  "position": [
-   -1.604,
-   11.337
-  ],
-  "radius_m": 0.45
- },
- {
-  "kind": "zone",
-  "hint": "open area",
-  "position": [
-   -16.754,
-   15.087
-  ],
-  "radius_m": 0.45
- },
- {
-  "kind": "zone",
-  "hint": "open area",
-  "position": [
-   -10.954,
-   16.762
-  ],
-  "radius_m": 0.45
+  "radius_m": 0.47
  }
 ]

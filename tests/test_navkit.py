@@ -104,6 +104,30 @@ class SyntheticOffice(unittest.TestCase):
                 build_scene(scene, verbose=False)
 
 
+class Surfels(unittest.TestCase):
+    def test_discs_lie_flat_on_surfaces_and_close_gaps(self):
+        from navkit.surfels import to_surfels
+        rng = np.random.default_rng(4)
+        # A 2 m x 2 m floor and a wall, sampled with 4 cm gaps like a fused scan.
+        g = np.arange(0, 2, 0.04)
+        X, Z = np.meshgrid(g, g)
+        floor = np.c_[X.ravel(), np.zeros(X.size), Z.ravel()]
+        wall = np.c_[X.ravel(), Z.ravel(), np.zeros(X.size)]
+        pts = np.vstack([floor, wall]) + rng.normal(0, 0.003, (2 * X.size, 3))
+        cloud = to_surfels(Cloud(pts, np.full((len(pts), 3), 200, np.uint8)), log=lambda *_: None)
+        w, x, y, z = cloud.quats.T
+        normal = np.stack([2 * (x * z + y * w), 2 * (y * z - x * w), 1 - 2 * (x * x + y * y)], 1)
+        inner = (pts[:, 0] > 0.2) & (pts[:, 0] < 1.8)
+        on_floor = inner & (np.abs(pts[:, 1]) < 0.02) & (pts[:, 2] > 0.2) & (pts[:, 2] < 1.8)
+        on_wall = inner & (np.abs(pts[:, 2]) < 0.02) & (pts[:, 1] > 0.2) & (pts[:, 1] < 1.8)
+        self.assertGreater(np.mean(np.abs(normal[on_floor, 1]) > 0.95), 0.95, "floor discs face up")
+        self.assertGreater(np.mean(np.abs(normal[on_wall, 2]) > 0.95), 0.95, "wall discs face out of the wall")
+        np.testing.assert_allclose(np.linalg.norm(cloud.quats, axis=1), 1, atol=1e-9)
+        # Wide enough to close a 4 cm gap (neighbouring 2-sigma footprints overlap), thin across the surface.
+        self.assertTrue(np.all(2 * cloud.scales[on_floor, 0] >= 0.04 * 0.99))
+        self.assertTrue(np.all(cloud.scales[on_floor, 2] <= 0.005))
+
+
 class Formats(unittest.TestCase):
     def test_nav_encoding_is_bit_exact(self):
         boxes, _ = synth.layout()
