@@ -125,7 +125,7 @@ const SEGMENTS = {
     await t.page.keyboard.press('g');
     await t.until(() => !window.nammaSpace.navigator.active, 18);
     await t.hold(2);
-    await t.caption('Aliases work too: “stairs” finds the Staircase 70 m away. Shift+Enter jumps straight there.');
+    await t.caption('Aliases work too: “stairs” finds the Staircase on the far side of the loop. Shift+Enter jumps straight there.');
     await t.page.keyboard.press('/');
     await t.type('stairs');
     await t.hold(2);
@@ -133,11 +133,12 @@ const SEGMENTS = {
     await t.until(() => !window.nammaSpace.director.busy, 4);
     await t.hold(2.5);
     await t.caption('What the planner uses: green = walkable floor found in the scan, amber = tight spots.');
-    await t.js(() => { const a = window.nammaSpace; a.deselect(); a.toggleNavOverlay(); a.setMode('blueprint'); });
+    await t.js(() => { const a = window.nammaSpace; a.deselect(); a.toggleNavOverlay(); a.player.pitch = -0.5; });
+    await t.hold(2.5);
     await t.click('#map-expand');
     await t.hold(4);
     await t.click('#map-expand');
-    await t.js(() => { const a = window.nammaSpace; a.toggleNavOverlay(); a.setMode('photoreal'); });
+    await t.js(() => window.nammaSpace.toggleNavOverlay());
   } },
 
   // ── Real capture: walkthrough, POIs, search, route ─────────────────────────────
