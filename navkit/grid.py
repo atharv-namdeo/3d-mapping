@@ -62,7 +62,8 @@ def _hysteresis(count: np.ndarray, low: float, high: float) -> np.ndarray:
 def build_grid(xyz: np.ndarray, *, res: float = 0.05, agent: AgentSpec | None = None,
                weight: np.ndarray | None = None, margin: float = 0.6,
                seed_xz: tuple[float, float] | None = None, gap_fill: float = 0.15,
-               context_margin: float = 1.2) -> NavGrid:
+               context_margin: float = 1.2, walked_xz: np.ndarray | None = None,
+               walked_radius: float = 0.3) -> NavGrid:
     """Extract the walkable floor from points already expressed in the navigation frame.
 
     1. Floor evidence   — points within ``floor_band`` of y = 0.
@@ -70,6 +71,10 @@ def build_grid(xyz: np.ndarray, *, res: float = 0.05, agent: AgentSpec | None = 
     3. A cell is walkable when the floor was *observed* there and nothing blocks it;
        unobserved space is never assumed to be free.
     4. Only the connected region the visitor can actually reach is kept.
+
+    ``walked_xz`` (optional) is a path someone physically walked during capture (PoseCam
+    poses). A body passed there, so a ``walked_radius`` band around it is observed, free
+    floor — this bridges spots where monocular depth left gaps in the floor.
     """
     agent = agent or AgentSpec()
     y = xyz[:, 1]
@@ -80,6 +85,8 @@ def build_grid(xyz: np.ndarray, *, res: float = 0.05, agent: AgentSpec | None = 
         raise RuntimeError("almost no floor points — is the floor plane / scale right?")
 
     fx, fz = xyz[is_floor, 0], xyz[is_floor, 2]
+    if walked_xz is not None and len(walked_xz):
+        fx, fz = np.concatenate([fx, walked_xz[:, 0]]), np.concatenate([fz, walked_xz[:, 1]])
     x0 = float(np.percentile(fx, 0.5) - margin)
     z0 = float(np.percentile(fz, 0.5) - margin)
     W = int(np.ceil((np.percentile(fx, 99.5) + margin - x0) / res))
@@ -104,12 +111,23 @@ def build_grid(xyz: np.ndarray, *, res: float = 0.05, agent: AgentSpec | None = 
 
     # Bridge sampling gaps in the floor (dark grout, glossy tiles) without leaking through walls.
     floor_closed = ndi.binary_closing(floor_seen, structure=_disk(round(gap_fill / res)), border_value=0)
-    walkable = floor_closed & ~ndi.binary_dilation(obstacle, structure=np.ones((3, 3)))
+    walked = np.zeros((H, W), bool)
+    if walked_xz is not None and len(walked_xz):
+        wi = np.floor((walked_xz[:, 0] - x0) / res).astype(np.int64)
+        wj = np.floor((walked_xz[:, 1] - z0) / res).astype(np.int64)
+        ok = (wi >= 0) & (wi < W) & (wj >= 0) & (wj < H)
+        walked[wj[ok], wi[ok]] = True
+        walked = ndi.binary_dilation(walked, structure=_disk(round(walked_radius / res)))
+        obstacle &= ~walked
+    walkable = (floor_closed | walked) & ~ndi.binary_dilation(obstacle, structure=np.ones((3, 3)))
+    walkable |= walked
     walkable = ndi.binary_opening(walkable, structure=_disk(1))
 
     labels, n = ndi.label(walkable)  # 4-connectivity: diagonal pinholes do not connect rooms
     if n == 0:
         raise RuntimeError("no walkable area found")
+    if seed_xz is None and walked_xz is not None and len(walked_xz):
+        seed_xz = tuple(walked_xz[len(walked_xz) // 2])
     if seed_xz is not None:
         si, sj = int((seed_xz[0] - x0) // res), int((seed_xz[1] - z0) // res)
         keep = labels[sj, si] if 0 <= si < W and 0 <= sj < H and labels[sj, si] else 0
@@ -142,5 +160,6 @@ def build_grid(xyz: np.ndarray, *, res: float = 0.05, agent: AgentSpec | None = 
         "walkable_area_m2": round(float(walkable.sum()) * res * res, 2),
         "floor_density_per_cell": round(density, 2),
         "regions_discarded": int(n - 1),
+        "walked_cells": int(walked.sum()),
     }
     return NavGrid(res, x0, z0, walkable, height, stats)

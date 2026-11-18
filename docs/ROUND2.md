@@ -19,6 +19,18 @@ walls or scale. `navkit` (Python, numpy + scipy only) derives the navigation dat
 The whole step takes about 3 s for the 1 M-splat home capture, so it fits inside the
 Round 3 on-site turnaround.
 
+### PoseCam captures (the hostel scene)
+
+`navkit posecam` turns a raw PoseCam session into the same kind of input without a GPU:
+per-frame metric depth (Depth Anything V2) placed with ARCore's poses. Monocular depth gets
+absolute scale wrong for an unfamiliar camera — on the hostel capture it overestimated by
+1.75× — so the scale is **measured**: ORB features are triangulated between frames using ARCore's
+metric camera motion and compared with the predicted depth (154 frame pairs, median 0.572).
+A second, independent check agrees: with that scale the phone sits 1.33 m above the floor and
+the per-frame floor correction averages 1.03. Frames are fused into 4 cm voxels kept only when
+seen from at least two frames. The walked path is passed to the grid as observed free floor —
+a person demonstrably stood there — which bridges gaps where depth was noisy.
+
 ## 2. In the browser (`app/`, no build step)
 
 ```
@@ -74,9 +86,15 @@ video is recorded from the real app with `node scripts/record_demo.cjs` (see the
   Distances are consistent but could be off by roughly ±10 %. New captures should set
   `calibration.ceilingHeight` from one tape measurement (see [CAPTURE_SOP.md](CAPTURE_SOP.md));
   `navkit` then derives the scale from the ceiling plane, tested to within 1 % on ground truth.
-- **The Round 1 PoseCam point clouds are not navigable**: under 4 % of their points lie on a
-  floor plane (monocular depth noise), and the builder refuses them with a clear error instead of
-  producing a bad map. The Round 2 demo therefore uses the Gaussian-splat capture.
+- **The hostel scene is a point cloud, not photoreal.** It comes from 640×480 PoseCam frames and
+  monocular depth; walls and corridors are clear, fine detail is not. A Gaussian splat trained on the
+  same session (GPU) would make it photoreal; the navigation data would not change.
+- **The hostel upload has frames 0–5,499 of 6,908**, so the last ~47 s of the walk (the final corridor
+  leg) has no images and is left out of the map.
+- Room numbers were not readable at 640×480, so individual rooms are not yet tagged — only wings,
+  lobby features, stairs and safety equipment.
+- Round 1's per-frame PoseCam clouds were not navigable (under 4 % of points on a floor plane); the
+  fused, scale-corrected pipeline above replaces them.
 - **One flat floor per scene.** Stairs, ramps and tiered seating need a height-aware grid.
 - **The office scene is synthetic** and labelled as such; it exists for ground truth and to show
   venue-scale routing.

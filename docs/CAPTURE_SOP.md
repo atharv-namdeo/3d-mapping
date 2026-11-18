@@ -38,7 +38,30 @@ The navigator can only route over floor it has **seen**. Every rule below exists
 
 For more than ~300 m², record one video per wing with 2 m of shared corridor between them.
 
-## 3. Train a Gaussian splat
+## 3a. PoseCam route (no GPU needed) — used for the hostel scene
+
+Record with the team's PoseCam app instead of the plain camera. It saves ARCore's metric,
+gravity-aligned pose for every frame, so scale and "which way is up" are measured, not guessed.
+
+1. Copy the **raw session folder** off the phone (`frames/`, `poses.csv`, `intrinsics.json`, `imu.csv`,
+   `manifest.json`) — not the "Export for pipeline" MP4. **Zip it before uploading**: a 4-minute
+   session is ~7,000 files, which Drive serves one by one and slowly.
+2. Check `manifest.json`: `tracked_frame_count` should equal `frame_count` and
+   `longest_tracking_gap_s` should be near 0.
+3. Build the point cloud and walked path (CPU, ~6 min for 700 frames; installs PyTorch the first time):
+   ```bash
+   pip install torch --index-url https://download.pytorch.org/whl/cpu
+   pip install transformers opencv-python-headless
+   python -m navkit posecam path/to/session app/scenes/myspace
+   ```
+   It estimates depth per frame (Depth Anything V2), **fixes the depth scale by triangulating image
+   features against ARCore's metric camera motion**, finds the floor, fuses frames into a 4 cm voxel
+   cloud (keeping only voxels seen from ≥ 2 frames) and saves the walked path. The log prints two
+   independent checks — the triangulated scale and the per-frame floor correction (should be ≈ 1.0).
+4. `scene.json` for a PoseCam scene uses `"up": [0, 1, 0]` and `"metresPerUnit": 1.0`; then continue
+   with step 4 below. `navkit build` treats the walked path as observed free floor.
+
+## 3b. Train a Gaussian splat (photoreal view; needs a GPU)
 
 Any tool that exports a standard 3DGS `.ply` (fields `f_dc_*`, `opacity`, `scale_*`, `rot_*`) works:
 

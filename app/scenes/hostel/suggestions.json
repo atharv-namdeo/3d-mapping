@@ -1,0 +1,882 @@
+[
+ {
+  "kind": "object",
+  "hint": "tall fixture (wall unit / partition)",
+  "position": [
+   -3.567,
+   -15.235
+  ],
+  "height_m": 2.53,
+  "footprint_m2": 4.76,
+  "size_m": [
+   2.0,
+   6.3
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall fixture (wall unit / partition)",
+  "position": [
+   -3.042,
+   -6.958
+  ],
+  "height_m": 2.51,
+  "footprint_m2": 4.48,
+  "size_m": [
+   1.35,
+   8.8
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall fixture (wall unit / partition)",
+  "position": [
+   -24.429,
+   -22.296
+  ],
+  "height_m": 2.55,
+  "footprint_m2": 3.62,
+  "size_m": [
+   1.6,
+   5.9
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall fixture (wall unit / partition)",
+  "position": [
+   -1.314,
+   -14.197
+  ],
+  "height_m": 2.57,
+  "footprint_m2": 2.8,
+  "size_m": [
+   1.7,
+   9.1
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall fixture (wall unit / partition)",
+  "position": [
+   -24.319,
+   -12.501
+  ],
+  "height_m": 2.56,
+  "footprint_m2": 2.65,
+  "size_m": [
+   1.5,
+   4.4
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall fixture (wall unit / partition)",
+  "position": [
+   -0.649,
+   -27.375
+  ],
+  "height_m": 2.57,
+  "footprint_m2": 2.57,
+  "size_m": [
+   0.65,
+   11.7
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall fixture (wall unit / partition)",
+  "position": [
+   -2.801,
+   2.436
+  ],
+  "height_m": 2.51,
+  "footprint_m2": 2.03,
+  "size_m": [
+   1.35,
+   2.65
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall fixture (wall unit / partition)",
+  "position": [
+   -3.04,
+   -0.876
+  ],
+  "height_m": 2.53,
+  "footprint_m2": 1.97,
+  "size_m": [
+   1.6,
+   3.0
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall fixture (wall unit / partition)",
+  "position": [
+   -2.856,
+   5.186
+  ],
+  "height_m": 2.47,
+  "footprint_m2": 1.64,
+  "size_m": [
+   1.4,
+   2.4
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall object (shelf / cabinet / appliance / pillar)",
+  "position": [
+   -14.18,
+   12.722
+  ],
+  "height_m": 2.47,
+  "footprint_m2": 1.25,
+  "size_m": [
+   1.6,
+   1.9
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall object (shelf / cabinet / appliance / pillar)",
+  "position": [
+   -24.208,
+   -17.72
+  ],
+  "height_m": 2.56,
+  "footprint_m2": 1.21,
+  "size_m": [
+   1.25,
+   2.35
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall object (shelf / cabinet / appliance / pillar)",
+  "position": [
+   -14.773,
+   15.464
+  ],
+  "height_m": 2.59,
+  "footprint_m2": 1.02,
+  "size_m": [
+   1.4,
+   2.05
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall object (shelf / cabinet / appliance / pillar)",
+  "position": [
+   -12.146,
+   15.276
+  ],
+  "height_m": 2.58,
+  "footprint_m2": 0.82,
+  "size_m": [
+   1.35,
+   2.35
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall object (shelf / cabinet / appliance / pillar)",
+  "position": [
+   -3.653,
+   -20.127
+  ],
+  "height_m": 2.42,
+  "footprint_m2": 0.78,
+  "size_m": [
+   1.45,
+   1.5
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall object (shelf / cabinet / appliance / pillar)",
+  "position": [
+   -11.11,
+   13.115
+  ],
+  "height_m": 2.55,
+  "footprint_m2": 0.7,
+  "size_m": [
+   1.2,
+   1.75
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall object (shelf / cabinet / appliance / pillar)",
+  "position": [
+   -14.476,
+   25.386
+  ],
+  "height_m": 2.56,
+  "footprint_m2": 0.68,
+  "size_m": [
+   1.2,
+   1.65
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall object (shelf / cabinet / appliance / pillar)",
+  "position": [
+   -17.188,
+   16.003
+  ],
+  "height_m": 2.44,
+  "footprint_m2": 0.63,
+  "size_m": [
+   0.7,
+   1.75
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall object (shelf / cabinet / appliance / pillar)",
+  "position": [
+   -12.255,
+   25.641
+  ],
+  "height_m": 2.54,
+  "footprint_m2": 0.29,
+  "size_m": [
+   1.0,
+   0.65
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall object (shelf / cabinet / appliance / pillar)",
+  "position": [
+   -11.631,
+   11.734
+  ],
+  "height_m": 2.59,
+  "footprint_m2": 0.14,
+  "size_m": [
+   0.4,
+   0.85
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall object (shelf / cabinet / appliance / pillar)",
+  "position": [
+   -24.584,
+   -18.984
+  ],
+  "height_m": 2.48,
+  "footprint_m2": 0.12,
+  "size_m": [
+   0.45,
+   0.4
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall object (shelf / cabinet / appliance / pillar)",
+  "position": [
+   -11.359,
+   12.332
+  ],
+  "height_m": 2.58,
+  "footprint_m2": 0.1,
+  "size_m": [
+   0.35,
+   0.4
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall object (shelf / cabinet / appliance / pillar)",
+  "position": [
+   -3.158,
+   -19.2
+  ],
+  "height_m": 2.41,
+  "footprint_m2": 0.09,
+  "size_m": [
+   0.3,
+   0.45
+  ]
+ },
+ {
+  "kind": "object",
+  "hint": "tall object (shelf / cabinet / appliance / pillar)",
+  "position": [
+   -11.002,
+   16.065
+  ],
+  "height_m": 2.51,
+  "footprint_m2": 0.08,
+  "size_m": [
+   0.4,
+   0.35
+  ]
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -4.954,
+   12.787
+  ],
+  "radius_m": 1.1
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -3.604,
+   12.787
+  ],
+  "radius_m": 1.1
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -2.254,
+   12.837
+  ],
+  "radius_m": 1.05
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -13.454,
+   14.537
+  ],
+  "radius_m": 1.05
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -2.254,
+   -21.088
+  ],
+  "radius_m": 1.01
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -7.454,
+   12.987
+  ],
+  "radius_m": 0.97
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -1.704,
+   -25.513
+  ],
+  "radius_m": 0.91
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -1.604,
+   -28.263
+  ],
+  "radius_m": 0.9
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -1.704,
+   6.637
+  ],
+  "radius_m": 0.9
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -25.154,
+   -16.063
+  ],
+  "radius_m": 0.89
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -9.704,
+   13.387
+  ],
+  "radius_m": 0.89
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -10.004,
+   14.037
+  ],
+  "radius_m": 0.88
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -12.537,
+   -30.947
+  ],
+  "radius_m": 0.85
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -2.004,
+   -2.488
+  ],
+  "radius_m": 0.85
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -1.904,
+   0.737
+  ],
+  "radius_m": 0.82
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -1.554,
+   -31.113
+  ],
+  "radius_m": 0.8
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -12.704,
+   -29.413
+  ],
+  "radius_m": 0.8
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -12.654,
+   -29.313
+  ],
+  "radius_m": 0.8
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -2.204,
+   -11.713
+  ],
+  "radius_m": 0.78
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -2.004,
+   -8.513
+  ],
+  "radius_m": 0.78
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -1.454,
+   -29.663
+  ],
+  "radius_m": 0.75
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -12.554,
+   -28.363
+  ],
+  "radius_m": 0.75
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -2.204,
+   -12.638
+  ],
+  "radius_m": 0.75
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -1.704,
+   4.062
+  ],
+  "radius_m": 0.75
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -12.804,
+   18.887
+  ],
+  "radius_m": 0.74
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -11.954,
+   22.012
+  ],
+  "radius_m": 0.74
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -7.029,
+   -31.013
+  ],
+  "radius_m": 0.73
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -2.404,
+   -18.763
+  ],
+  "radius_m": 0.72
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -2.554,
+   -18.513
+  ],
+  "radius_m": 0.72
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -12.804,
+   12.737
+  ],
+  "radius_m": 0.72
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -12.754,
+   12.887
+  ],
+  "radius_m": 0.72
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -16.129,
+   -31.113
+  ],
+  "radius_m": 0.7
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -10.679,
+   -31.113
+  ],
+  "radius_m": 0.7
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -10.554,
+   -31.113
+  ],
+  "radius_m": 0.7
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -10.429,
+   -31.113
+  ],
+  "radius_m": 0.7
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -9.454,
+   -31.113
+  ],
+  "radius_m": 0.7
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -8.804,
+   -31.063
+  ],
+  "radius_m": 0.7
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -4.504,
+   -30.963
+  ],
+  "radius_m": 0.7
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -2.304,
+   -14.713
+  ],
+  "radius_m": 0.7
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -2.004,
+   -7.313
+  ],
+  "radius_m": 0.7
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -1.854,
+   -1.163
+  ],
+  "radius_m": 0.7
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -25.129,
+   -12.513
+  ],
+  "radius_m": 0.69
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -1.904,
+   -3.988
+  ],
+  "radius_m": 0.68
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -2.254,
+   -5.563
+  ],
+  "radius_m": 0.66
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -25.404,
+   -22.363
+  ],
+  "radius_m": 0.65
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -25.404,
+   -17.713
+  ],
+  "radius_m": 0.65
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -1.954,
+   -6.413
+  ],
+  "radius_m": 0.65
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -14.054,
+   -31.238
+  ],
+  "radius_m": 0.6
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -25.154,
+   -18.413
+  ],
+  "radius_m": 0.6
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -10.154,
+   11.787
+  ],
+  "radius_m": 0.6
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -2.404,
+   -16.213
+  ],
+  "radius_m": 0.59
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -1.654,
+   10.237
+  ],
+  "radius_m": 0.59
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -25.554,
+   -21.438
+  ],
+  "radius_m": 0.55
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -11.154,
+   18.537
+  ],
+  "radius_m": 0.55
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -11.204,
+   18.637
+  ],
+  "radius_m": 0.55
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -25.554,
+   -19.913
+  ],
+  "radius_m": 0.54
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -12.854,
+   16.912
+  ],
+  "radius_m": 0.51
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -13.004,
+   23.087
+  ],
+  "radius_m": 0.49
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -12.954,
+   23.137
+  ],
+  "radius_m": 0.49
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -1.604,
+   11.337
+  ],
+  "radius_m": 0.45
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -16.754,
+   15.087
+  ],
+  "radius_m": 0.45
+ },
+ {
+  "kind": "zone",
+  "hint": "open area",
+  "position": [
+   -10.954,
+   16.762
+  ],
+  "radius_m": 0.45
+ }
+]

@@ -31,9 +31,15 @@ python3 -m http.server 8080          # any static server works; there is no buil
 **Tests** (no dependencies for the first; numpy/scipy/pillow for the second):
 
 ```bash
-npm test                 # 35 tests: grid, planner, search, spatial index, guidance, shipped scenes
+npm test                 # 37 tests: grid, planner, search, spatial index, guidance, shipped scenes
 node scripts/record_demo.cjs demo-out   # re-record the demonstration video from the live app
 pip install -r navkit/requirements.txt && npm run test:pipeline   # pipeline vs. ground truth
+```
+
+**Build a scene from a PoseCam session** (CPU only — see [docs/CAPTURE_SOP.md](docs/CAPTURE_SOP.md)):
+
+```bash
+python -m navkit posecam path/to/posecam-session app/scenes/hostel && python -m navkit build app/scenes/hostel
 ```
 
 **Rebuild a scene from its reconstruction** (`nav.json`, floor plan, web-ready splat):

@@ -18,7 +18,17 @@ def main(argv: list[str] | None = None) -> int:
     build.add_argument("--all", action="store_true", help=f"build every scene under {SCENES_ROOT}")
     synth = sub.add_parser("synth", help="generate the synthetic ground-truth office capture")
     synth.add_argument("scene", type=Path, nargs="?", default=SCENES_ROOT / "office")
+    pc = sub.add_parser("posecam", help="PoseCam session -> metric point cloud + walked path (CPU only)")
+    pc.add_argument("session", type=Path, help="raw PoseCam session folder (frames/, poses.csv, intrinsics.json)")
+    pc.add_argument("scene", type=Path, help="scene folder to write source.ply and trajectory.json into")
+    pc.add_argument("--stride", type=int, default=8, help="use every Nth frame (default 8 = ~4 per second)")
+    pc.add_argument("--max-depth", type=float, default=5.0, help="ignore depth beyond this many metres")
     args = parser.parse_args(argv)
+
+    if args.command == "posecam":
+        from .posecam import build as build_posecam
+        build_posecam(args.session, args.scene, stride=args.stride, max_depth=args.max_depth)
+        return 0
 
     if args.command == "synth":
         from .synth import write_scene

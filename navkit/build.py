@@ -144,7 +144,12 @@ def build_scene(scene_dir: str | Path, *, verbose: bool = True) -> dict:
         size = cloud.scales.max(axis=1)
         confident = cloud.select((cloud.opacity > 0.5) & (size < np.percentile(size, 90)))
     g = cfg.get("grid", {})
-    grid = build_grid(confident.xyz, res=g.get("resolution", 0.05), agent=agent,
+    walked = None
+    if (scene_dir / "trajectory.json").exists():
+        tr = np.array(json.loads((scene_dir / "trajectory.json").read_text())["points"], float)
+        walked = frame.apply(np.c_[tr[:, 0], np.zeros(len(tr)), tr[:, 1]])[:, [0, 2]]
+        log(f"  using {len(walked):,} walked-path samples as observed free floor")
+    grid = build_grid(confident.xyz, res=g.get("resolution", 0.05), agent=agent, walked_xz=walked,
                       seed_xz=tuple(g["seed"]) if g.get("seed") else None,
                       gap_fill=g.get("gapFill", 0.15))
     log(f"  grid {grid.shape[1]}×{grid.shape[0]} @ {grid.res} m, walkable {grid.stats['walkable_area_m2']} m²")

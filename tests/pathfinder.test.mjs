@@ -82,3 +82,15 @@ test('planning is fast enough to re-run every frame on a venue-sized grid', () =
   assert.ok(route && polylineLength(route.points) > 60);
   assert.ok(ms < 400, `planning took ${ms.toFixed(0)} ms`);
 });
+
+test('an object beside a sealed pocket is reached from the side you can actually get to', () => {
+  // The pocket P is closer to the target T than the open room, but walled off from A.
+  const rows = ['##########', '#A.....#P#', '#......####', '#....T....#', '##########'].map((r) => r.padEnd(11, '#').slice(0, 11));
+  const { grid, marks } = gridFromArt(rows, { res: 0.1, scale: 6 });
+  const target = [marks.T[0] + 0.6 * 2.5, marks.T[1] - 0.6 * 1.5];   // inside the wall block next to the pocket
+  assert.ok(!grid.isFree(...target), 'the target is an object/wall, not floor');
+  const route = findPath(grid, marks.A, target);
+  assert.ok(route, 'falls back to a reachable spot instead of giving up');
+  assertCollisionFree(grid, route, WALKER.standard.radius);
+  assert.ok(Math.hypot(route.goal[0] - target[0], route.goal[1] - target[1]) < 4);
+});

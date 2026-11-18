@@ -1,3 +1,6 @@
 numpy>=1.24
 scipy>=1.11
 pillow>=10.0
+# Only for `python -m navkit posecam` (CPU is fine):
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+#   pip install transformers opencv-python-headless

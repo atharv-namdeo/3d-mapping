@@ -158,6 +158,23 @@ function roundCorners(grid, pts, radius, iterations = 2) {
   return cur;
 }
 
+/** Reachable standing spot closest (straight-line) to `target`, within `maxDistance` metres. */
+function nearestReachable(grid, start, target, walker, maxDistance) {
+  const field = distanceField(grid, start, walker);
+  let best = null, bestD = maxDistance * maxDistance;
+  const [ti, tj] = grid.cellOf(target[0], target[1]);
+  const r = Math.ceil(maxDistance / grid.res);
+  for (let j = Math.max(0, tj - r); j <= Math.min(grid.height - 1, tj + r); j++) {
+    for (let i = Math.max(0, ti - r); i <= Math.min(grid.width - 1, ti + r); i++) {
+      if (!Number.isFinite(field[j * grid.width + i])) continue;
+      const [cx, cz] = grid.centerOf(i, j);
+      const d = (cx - target[0]) ** 2 + (cz - target[1]) ** 2;
+      if (d < bestD) { bestD = d; best = [cx, cz]; }
+    }
+  }
+  return best;
+}
+
 export function polylineLength(pts) {
   let total = 0;
   for (let k = 1; k < pts.length; k++) total += Math.hypot(pts[k][0] - pts[k - 1][0], pts[k][1] - pts[k - 1][1]);
@@ -175,9 +192,17 @@ export function polylineLength(pts) {
 export function findPath(grid, from, to, walker = WALKER.standard) {
   const t0 = performance.now();
   const start = grid.nearestFree(from[0], from[1], walker.radius, 3);
-  const goal = grid.nearestFree(to[0], to[1], walker.radius, 4);
+  let goal = grid.nearestFree(to[0], to[1], walker.radius, 4);
   if (!start || !goal) return null;
-  const result = astar(grid, start, goal, walker);
+  let result = astar(grid, start, goal, walker);
+  if (!result && !grid.isFree(to[0], to[1])) {
+    // The target is an object, not floor. Its closest free spot can sit in a pocket cut off from the visitor (behind a counter,
+    // past a turnstile the scan shows as closed). Fall back to the closest spot that is
+    // actually reachable on foot, if one lies near the destination.
+    goal = nearestReachable(grid, start, to, walker, 2.5);
+    if (!goal) return null;
+    result = astar(grid, start, goal, walker);
+  }
   if (!result) return null;
 
   const raw = result.cells.map((k) => grid.centerOf(k % grid.width, Math.floor(k / grid.width)));

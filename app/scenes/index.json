@@ -1,6 +1,19 @@
 {
   "scenes": [
-    { "id": "home", "name": "Home — Kitchen, Dining & Lounge", "kind": "Real capture · Gaussian splat" },
-    { "id": "office", "name": "Office floor — synthetic benchmark", "kind": "Synthetic ground truth · point cloud" }
+    {
+      "id": "hostel",
+      "name": "Hostel \u2014 lobby & corridor loop",
+      "kind": "Real capture \u00b7 PoseCam point cloud"
+    },
+    {
+      "id": "home",
+      "name": "Home \u2014 Kitchen, Dining & Lounge",
+      "kind": "Real capture \u00b7 Gaussian splat"
+    },
+    {
+      "id": "office",
+      "name": "Office floor \u2014 synthetic benchmark",
+      "kind": "Synthetic ground truth \u00b7 point cloud"
+    }
   ]
 }
