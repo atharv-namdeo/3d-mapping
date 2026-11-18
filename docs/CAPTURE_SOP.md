@@ -66,7 +66,9 @@ gravity-aligned pose for every frame, so scale and "which way is up" are measure
 **Surfels.** With `view.surfels`, every point becomes a small disc lying on its local surface (normal
 from its neighbours) and just wide enough to meet them, so walls and floors render as surfaces instead of
 separate squares. The phone version is built from a sparser sample with wider discs, not cut from the
-full one, so it has no extra gaps.
+full one, so it has no extra gaps. The plain points are written as well and are the default for the
+hostel (`"defaultStyle": "points"`): they are sharper up close, the discs look more solid. Visitors switch
+with the **Points / Surfaces** button or `P`; `?style=surfaces` opens a scene in the disc view.
 
 ## 3b. Train a Gaussian splat (photoreal view; needs a GPU)
 

@@ -193,43 +193,71 @@ export class Viewer {
     return splats;
   }
 
-  /** Swap in a higher-detail splat set once it is ready, then free the old one. */
-  async upgradePhotoreal(baseUrl, assets, { onProgress = () => {} } = {}) {
-    const next = await this.#loadSplats(baseUrl + assets.splat, onProgress, assets.splatCount * 32);
+  /** Make `obj` the visible capture, replacing (and optionally freeing) the current one. */
+  #show(obj, { free = false } = {}) {
     const old = this.photoreal;
-    this.photoreal = next;
-    this.scene.add(next);
+    if (old === obj) return;
     if (old) {
       this.scene.remove(old);
-      try { old.dispose?.(); } catch { /* already gone */ }
+      if (free) { try { old.dispose?.(); } catch { /* already gone */ } }
     }
-    this.setMode(this.mode);
+    this.photoreal = obj;
+    this.scene.add(obj);
+    this.setMode(this.mode === 'blueprint' && !old ? 'photoreal' : this.mode);
   }
 
-  async loadPhotoreal(baseUrl, assets, { lite = false, pointSize = 0.04, onProgress = () => {} } = {}) {
-    if (assets.splat) {
-      const useLite = lite && assets.splatLite;
-      const url = baseUrl + (useLite ? assets.splatLite : assets.splat);
-      this.photoreal = await this.#loadSplats(url, onProgress, (useLite ? assets.splatLiteCount : assets.splatCount) * 32);
-    } else if (assets.points) {
-      const buffer = await (await fetch(baseUrl + assets.points)).arrayBuffer();
-      const STRIDE = 15, n = Math.floor(buffer.byteLength / STRIDE);
-      const view = new DataView(buffer);
-      const pos = new Float32Array(n * 3), col = new Uint8Array(n * 3);
-      for (let k = 0; k < n; k++) {
-        for (let a = 0; a < 3; a++) {
-          pos[k * 3 + a] = view.getFloat32(k * STRIDE + a * 4, true);
-          col[k * 3 + a] = view.getUint8(k * STRIDE + 12 + a);
-        }
+  /** Swap the surface view for its full-detail version once ready, then free the light one. */
+  async upgradePhotoreal(baseUrl, assets, { onProgress = () => {} } = {}) {
+    const next = await this.#loadSplats(baseUrl + assets.splat, onProgress, assets.splatCount * 32);
+    const old = this.styles.surfaces;
+    this.styles.surfaces = next;
+    if (this.photoreal === old) this.#show(next, { free: true });
+    else { try { old?.dispose?.(); } catch { /* ignore */ } }
+  }
+
+  async #loadPoints(url, expectedBytes, pointSize, onProgress) {
+    const buffer = await (await Viewer.download(url, expectedBytes, onProgress)).arrayBuffer();
+    const STRIDE = 15, n = Math.floor(buffer.byteLength / STRIDE);
+    const view = new DataView(buffer);
+    const pos = new Float32Array(n * 3), col = new Uint8Array(n * 3);
+    for (let k = 0; k < n; k++) {
+      for (let a = 0; a < 3; a++) {
+        pos[k * 3 + a] = view.getFloat32(k * STRIDE + a * 4, true);
+        col[k * 3 + a] = view.getUint8(k * STRIDE + 12 + a);
       }
-      const g = new THREE.BufferGeometry();
-      g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-      g.setAttribute('color', new THREE.BufferAttribute(col, 3, true));
-      this.photoreal = new THREE.Points(g, new THREE.PointsMaterial({ size: pointSize, vertexColors: true, sizeAttenuation: true }));
-      this.photoreal.frustumCulled = false;
-      onProgress(1);
     }
-    if (this.photoreal) this.scene.add(this.photoreal);
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('color', new THREE.BufferAttribute(col, 3, true));
+    const points = new THREE.Points(g, new THREE.PointsMaterial({ size: pointSize, vertexColors: true, sizeAttenuation: true }));
+    points.frustumCulled = false;
+    onProgress(1);
+    return points;
+  }
+
+  /** Which capture styles this scene offers: 'points' (sharp dots) and/or 'surfaces' (splats/discs). */
+  static stylesOf(assets) {
+    return [assets.points && 'points', assets.splat && 'surfaces'].filter(Boolean);
+  }
+
+  /**
+   * Show the capture in a given style, downloading it the first time it is asked for.
+   * @param {'points'|'surfaces'} style
+   */
+  async loadPhotoreal(baseUrl, assets, { style, lite = false, pointSize = 0.04, onProgress = () => {} } = {}) {
+    this.styles ??= {};
+    style ??= Viewer.stylesOf(assets).includes('surfaces') ? 'surfaces' : 'points';
+    if (!this.styles[style]) {
+      if (style === 'surfaces') {
+        const useLite = lite && assets.splatLite;
+        const url = baseUrl + (useLite ? assets.splatLite : assets.splat);
+        this.styles.surfaces = await this.#loadSplats(url, onProgress, (useLite ? assets.splatLiteCount : assets.splatCount) * 32);
+      } else {
+        this.styles.points = await this.#loadPoints(baseUrl + assets.points, assets.pointCount * 15, pointSize, onProgress);
+      }
+    }
+    this.style = style;
+    this.#show(this.styles[style]);
     this.setMode('photoreal');
   }
 

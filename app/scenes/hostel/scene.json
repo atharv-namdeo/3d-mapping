@@ -19,9 +19,12 @@
     "defaultMode": "photoreal",
     "surfels": true,
     "maxSplats": 1500000,
-    "liteSplats": 400000
+    "liteSplats": 400000,
+    "pointSize": 0.035,
+    "maxPoints": 1400000,
+    "defaultStyle": "points"
   },
-  "description": "Real capture with the team's PoseCam app (Nothing Phone A059, ARCore poses). Geometry from per-frame metric depth (1,376 frames) placed with ARCore's metric poses; depth scale fixed by triangulation against the poses; the walked path counts as observed floor. Rendered as oriented surface discs (surfels) so walls and floors read as continuous surfaces.",
+  "description": "Real capture with the team's PoseCam app (Nothing Phone A059, ARCore poses). Geometry from per-frame metric depth (1,376 frames) placed with ARCore's metric poses; depth scale fixed by triangulation against the poses; the walked path counts as observed floor. Viewable as sharp points (default) or as oriented surface discs (surfels) that read as continuous walls and floors.",
   "spawn": {
     "position": [
       -13.1,

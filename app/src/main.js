@@ -8,6 +8,7 @@
  *   jump=1                 …and jump straight to it
  *   quality=auto|full|lite|off  splat detail (default: lite on phones; elsewhere lite first,
  *                          upgraded to full when the device renders it smoothly)
+ *   style=points|surfaces  how to draw the capture when a scene offers both
  *   capture=1              do not self-animate; an external script drives step(dt)
  */
 import { NavGrid } from './core/navgrid.js';
@@ -107,8 +108,13 @@ class App {
     setTimeout(() => { $('#loading').hidden = true; }, 500);
     if (quality === 'off') return;
 
+    const styles = Viewer.stylesOf(assets);
+    const wanted = params.get('style') ?? this.scene.view?.defaultStyle ?? styles[0];
+    const style = styles.includes(wanted) ? wanted : styles[0];
+    this.styleState = { base, assets, quality, styles };
+    $('#btn-style').hidden = styles.length < 2;
     const hasLite = Boolean(assets.splat && assets.splatLite);
-    const firstLite = hasLite && quality !== 'full';
+    const firstLite = style === 'surfaces' && hasLite && quality !== 'full';
     const label = firstLite ? 'Loading the 3D scan' : 'Loading the 3D scan (full detail)';
     status(`${label}…`);
     const started = performance.now();
@@ -116,10 +122,11 @@ class App {
       const slow = performance.now() - started > 45000 ? ' — slow connection, you can keep using the map' : '';
       status(f < 1 ? `${label}… ${Math.round(f * 100)}%${slow}` : 'Preparing the 3D scan…');
     };
-    this.viewer.loadPhotoreal(base, assets, { lite: firstLite, pointSize: this.scene.view?.pointSize, onProgress: progress })
+    this.viewer.loadPhotoreal(base, assets, { style, lite: firstLite, pointSize: this.scene.view?.pointSize, onProgress: progress })
       .then(() => {
         status(null);
         $('#btn-mode').disabled = !this.viewer.photoreal;
+        this.#syncStyleButton();
         this.setMode(this.scene.view?.defaultMode === 'blueprint' ? 'blueprint' : 'photoreal');
         if (firstLite && quality === 'auto') this.#maybeUpgrade(base, assets);
       })
@@ -128,6 +135,36 @@ class App {
         status(null);
         toast('The 3D scan could not be loaded on this device — showing the blueprint instead.', 'error', 10000);
       });
+  }
+
+  #syncStyleButton() {
+    $('#btn-style').textContent = this.viewer.style === 'points' ? 'Surfaces' : 'Points';
+  }
+
+  /** Switch between the sharp point view and the smooth surface view (downloaded on first use). */
+  async toggleStyle() {
+    const s = this.styleState;
+    if (!s || s.styles.length < 2 || this.switchingStyle) return;
+    const next = this.viewer.style === 'points' ? 'surfaces' : 'points';
+    const pill = $('#scan-status');
+    this.switchingStyle = true;
+    try {
+      const firstTime = !this.viewer.styles?.[next];
+      await this.viewer.loadPhotoreal(s.base, s.assets, {
+        style: next, lite: next === 'surfaces' && s.quality !== 'full', pointSize: this.scene.view?.pointSize,
+        onProgress: (f) => { pill.hidden = false; pill.textContent = f < 1 ? `Loading ${next}… ${Math.round(f * 100)}%` : `Preparing ${next}…`; },
+      });
+      pill.hidden = true;
+      this.setMode('photoreal');
+      this.#syncStyleButton();
+      if (firstTime && next === 'surfaces' && s.quality === 'auto') this.#maybeUpgrade(s.base, s.assets);
+    } catch (err) {
+      console.error(err);
+      pill.hidden = true;
+      toast(`The ${next} view could not be loaded on this device.`, 'error', 6000);
+    } finally {
+      this.switchingStyle = false;
+    }
   }
 
   /** Load full detail only if the light version runs smoothly (≥ 40 fps over a few seconds). */
@@ -355,6 +392,7 @@ class App {
     $('#hud-auto').addEventListener('click', () => this.toggleAutopilot());
     $('#hud-stop').addEventListener('click', () => nav.stop());
     $('#btn-mode').addEventListener('click', () => this.setMode(this.viewer.mode === 'photoreal' ? 'blueprint' : 'photoreal'));
+    $('#btn-style').addEventListener('click', () => this.toggleStyle());
     $('#btn-nav').addEventListener('click', () => this.toggleNavOverlay());
     $('#btn-edit').addEventListener('click', () => this.editor.toggle());
     $('#btn-help').addEventListener('click', () => { $('#help').hidden = false; });
@@ -373,6 +411,7 @@ class App {
       switch (e.code) {
         case 'KeyG': this.toggleAutopilot(); break;
         case 'KeyM': $('#map').classList.toggle('is-expanded'); break;
+        case 'KeyP': this.toggleStyle(); break;
         case 'KeyB': this.setMode(this.viewer.mode === 'photoreal' ? 'blueprint' : 'photoreal'); break;
         case 'KeyV': this.toggleNavOverlay(); break;
         case 'KeyE': this.editor.toggle(); break;

@@ -168,6 +168,9 @@ def build_scene(scene_dir: str | Path, *, verbose: bool = True) -> dict:
         n = write_splat(scene_dir / "scene.splat", level(view.get("maxSplats", 1_300_000)))
         lite = write_splat(scene_dir / "scene.lite.splat", level(view.get("liteSplats", 450_000)))
         assets.update(splat="scene.splat", splatCount=n, splatLite="scene.lite.splat", splatLiteCount=lite, surfels=True)
+        # Keep the plain points too: they look sharper up close, the discs look more solid.
+        pts = write_points(scene_dir / "scene.points.bin", visible, view.get("maxPoints", 1_400_000))
+        assets.update(points="scene.points.bin", pointCount=pts)
     elif visible.is_splat:
         n = write_splat(scene_dir / "scene.splat", visible, view.get("maxSplats"))
         lite = write_splat(scene_dir / "scene.lite.splat", visible, min(n, view.get("liteSplats", 160_000)))
