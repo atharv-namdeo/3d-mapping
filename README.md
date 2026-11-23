@@ -42,9 +42,9 @@ pip install -r navkit/requirements.txt && npm run test:pipeline   # pipeline vs.
 python -m navkit posecam path/to/posecam-session app/scenes/hostel --stride 4 && python -m navkit build app/scenes/hostel
 ```
 
-**Make the hostel photoreal** (needs an NVIDIA GPU — free Colab works): open
-[`notebooks/train_hostel_splat_colab.ipynb`](notebooks/train_hostel_splat_colab.ipynb) in Colab, select a T4 GPU,
-Run all (≈ 1 hour). It trains a Gaussian splat from the PoseCam frames in
+**Make the hostel photoreal** (needs an NVIDIA GPU — free Kaggle or Colab works): run
+[`notebooks/train_hostel_splat_kaggle.ipynb`](notebooks/train_hostel_splat_kaggle.ipynb) on Kaggle (GPU T4, Internet on)
+or [`notebooks/train_hostel_splat_colab.ipynb`](notebooks/train_hostel_splat_colab.ipynb) on Colab (≈ 1 hour). It trains a Gaussian splat from the PoseCam frames in
 [`datasets/hostel_posecam_nerfstudio.zip`](datasets/hostel_posecam_nerfstudio.zip) (made with
 `python -m navkit nerfstudio`) and saves `splat.ply` to Google Drive.
 

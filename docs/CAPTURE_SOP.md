@@ -80,8 +80,9 @@ python -m navkit nerfstudio path/to/session datasets/myspace_nerfstudio --scene 
 ```
 
 This writes `images/`, `transforms.json` and `sparse_pc.ply` (a starting cloud from the fused scan).
-Train on a GPU with [`notebooks/train_hostel_splat_colab.ipynb`](../notebooks/train_hostel_splat_colab.ipynb)
-(free Colab T4; change the dataset URL for another space) or locally:
+Train on a GPU with [`notebooks/train_hostel_splat_kaggle.ipynb`](../notebooks/train_hostel_splat_kaggle.ipynb)
+(free Kaggle T4) or [`notebooks/train_hostel_splat_colab.ipynb`](../notebooks/train_hostel_splat_colab.ipynb)
+(free Colab T4) — change the dataset URL for another space — or locally:
 
 ```bash
 ns-train splatfacto --data datasets/myspace_nerfstudio --max-num-iterations 30000 \
