@@ -128,6 +128,37 @@ class Surfels(unittest.TestCase):
         self.assertTrue(np.all(cloud.scales[on_floor, 2] <= 0.005))
 
 
+class TrainedSplats(unittest.TestCase):
+    def test_gaussian_ply_round_trip(self):
+        from navkit.io_ply import write_gaussian_ply
+        rng = np.random.default_rng(6)
+        q = rng.normal(size=(200, 4))
+        q /= np.linalg.norm(q, axis=1, keepdims=True)
+        cloud = Cloud(rng.normal(size=(200, 3)), rng.integers(0, 255, (200, 3)).astype(np.uint8),
+                      rng.uniform(0.05, 0.95, 200), rng.uniform(0.01, 0.2, (200, 3)), q)
+        with tempfile.TemporaryDirectory() as tmp:
+            write_gaussian_ply(Path(tmp) / "g.ply", cloud)
+            back = read_ply(Path(tmp) / "g.ply")
+        np.testing.assert_allclose(back.xyz, cloud.xyz, atol=1e-6)
+        np.testing.assert_allclose(back.scales, cloud.scales, rtol=1e-5)
+        np.testing.assert_allclose(back.opacity, cloud.opacity, atol=1e-6)
+        self.assertLessEqual(np.abs(back.rgb.astype(int) - cloud.rgb).max(), 1)
+
+    def test_undo_nerfstudio_dataparser(self):
+        # Nerfstudio's defaults re-centre, rotate and rescale: p_ns = s * (R p + t).
+        from navkit.nerfstudio import undo_dataparser
+        rng = np.random.default_rng(7)
+        R, s, t = rotation([0.2, 1, 0.3], 33), 0.071, np.array([1.5, -0.4, 2.0])
+        p = rng.normal(size=(500, 3)) * 10
+        p_ns = s * (p @ R.T + t)
+        with tempfile.TemporaryDirectory() as tmp:
+            f = Path(tmp) / "dataparser_transforms.json"
+            f.write_text(json.dumps({"transform": np.c_[R, t].tolist(), "scale": s}))
+            frame = undo_dataparser(f)
+        np.testing.assert_allclose(frame.apply(p_ns), p, atol=1e-9)
+        self.assertAlmostEqual(frame.scale, 1 / s)
+
+
 class Formats(unittest.TestCase):
     def test_nav_encoding_is_bit_exact(self):
         boxes, _ = synth.layout()

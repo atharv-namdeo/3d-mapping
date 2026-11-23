@@ -66,3 +66,6 @@ monomap/capture/**/_frames/
 data/sources/
 app/scenes/*/source.ply
 node_modules/
+
+# Prepared training datasets (small enough to ship with the repo)
+!datasets/*.zip

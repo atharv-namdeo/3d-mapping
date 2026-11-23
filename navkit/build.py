@@ -157,7 +157,23 @@ def build_scene(scene_dir: str | Path, *, verbose: bool = True) -> dict:
     view = cfg.get("view", {})
     visible = crop_for_viewing(cloud, grid, view.get("cropMargin", 2.5), view.get("ceiling", 4.0))
     assets: dict[str, object] = {"floorplan": "floorplan.png"}
-    if not visible.is_splat and view.get("surfels"):
+    if view.get("splatSource"):
+        # A splat trained elsewhere (GPU) on this capture, in the same source frame as source.ply.
+        trained = read_ply(scene_dir / view["splatSource"])
+        if not trained.is_splat:
+            raise RuntimeError(f"{view['splatSource']} is not a Gaussian-splat PLY")
+        if view.get("splatTransforms"):
+            from .nerfstudio import undo_dataparser
+            trained = transform_cloud(trained, undo_dataparser(scene_dir / view["splatTransforms"]))
+        trained = crop_for_viewing(transform_cloud(trained, frame), grid, view.get("cropMargin", 2.5), view.get("ceiling", 4.0))
+        log(f"  trained splat: {len(trained):,} gaussians after cropping")
+        n = write_splat(scene_dir / "scene.splat", trained, view.get("maxSplats"))
+        lite = write_splat(scene_dir / "scene.lite.splat", trained, min(n, view.get("liteSplats", 400_000)))
+        assets.update(splat="scene.splat", splatCount=n, splatLite="scene.lite.splat", splatLiteCount=lite, trained=True)
+        if not visible.is_splat:
+            pts = write_points(scene_dir / "scene.points.bin", visible, view.get("maxPoints", 1_400_000))
+            assets.update(points="scene.points.bin", pointCount=pts)
+    elif not visible.is_splat and view.get("surfels"):
         # Each level of detail gets its own surfels, so the sparser phone version uses
         # larger discs instead of leaving the gaps a plain subset would.
         from .surfels import to_surfels

@@ -88,7 +88,9 @@ video is recorded from the real app with `node scripts/record_demo.cjs` (see the
   `navkit` then derives the scale from the ceiling plane, tested to within 1 % on ground truth.
 - **The hostel scene is not photoreal.** It comes from 640×480 PoseCam frames and monocular depth,
   viewable as sharp points (default) or as oriented surface discs (`navkit/surfels.py`, button
-  **Surfaces** / key `P`) that read as continuous walls and floors but are softer up close. A Gaussian splat trained on the same
+  **Surfaces** / key `P`) that read as continuous walls and floors but are softer up close. A
+  photoreal splat needs GPU training: the dataset (`datasets/hostel_posecam_nerfstudio.zip`, ARCore
+  poses, no COLMAP) and a Colab notebook are ready; `view.splatSource` imports the result. A Gaussian splat trained on the same
   session (GPU) would make it photoreal; the navigation data would not change.
 - In the hostel lobby, noisy depth separates the space in front of the lifts from the rest by a gap
   narrower than a person, so the Lifts label marks the waiting spot just in front of the doors.

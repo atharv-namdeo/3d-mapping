@@ -226,6 +226,7 @@ def build(session: str | Path, out_dir: str | Path, *, stride: int = 8, max_dept
     (out_dir / "trajectory.json").write_text(json.dumps({
         "note": "PoseCam camera path in nav coordinates (metres, +Y up, floor at 0); a person walked here.",
         "camera_above_floor_m": round(cam_above_floor, 3),
+        "floor_offset_m": round(floor0, 4),
         "depth_scale": round(scale, 4),
         "points": walked[::3, [0, 2]].round(3).tolist(),
     }))

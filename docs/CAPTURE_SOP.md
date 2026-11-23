@@ -72,6 +72,29 @@ with the **Points / Surfaces** button or `P`; `?style=surfaces` opens a scene in
 
 ## 3b. Train a Gaussian splat (photoreal view; needs a GPU)
 
+**From a PoseCam session (no COLMAP — recommended).** PoseCam's ARCore poses go straight into
+Nerfstudio (same camera axes), so scale and gravity stay exact and the splat lines up with the map:
+
+```bash
+python -m navkit nerfstudio path/to/session datasets/myspace_nerfstudio --scene app/scenes/myspace
+```
+
+This writes `images/`, `transforms.json` and `sparse_pc.ply` (a starting cloud from the fused scan).
+Train on a GPU with [`notebooks/train_hostel_splat_colab.ipynb`](../notebooks/train_hostel_splat_colab.ipynb)
+(free Colab T4; change the dataset URL for another space) or locally:
+
+```bash
+ns-train splatfacto --data datasets/myspace_nerfstudio --max-num-iterations 30000 \
+    nerfstudio-data --orientation-method none --center-method none --auto-scale-poses False --load-3D-points True
+ns-export gaussian-splat --load-config outputs/.../config.yml --output-dir export
+```
+
+The four `nerfstudio-data` flags keep the capture's own frame. Copy `export/splat.ply` into the scene folder,
+set `"view": {"splatSource": "trained_splat.ply"}` (plus `"splatTransforms": "dataparser_transforms.json"` only
+if it was trained with Nerfstudio's default re-centring) and run `python -m navkit build app/scenes/myspace`.
+
+**From a plain video (photoreal only, scale estimated):**
+
 Any tool that exports a standard 3DGS `.ply` (fields `f_dc_*`, `opacity`, `scale_*`, `rot_*`) works:
 
 - **Nerfstudio splatfacto** (used for the shipped home scene; needs an NVIDIA/CUDA GPU):

@@ -107,3 +107,22 @@ def write_points(path: str | Path, cloud: Cloud, limit: int | None = None, seed:
     out["c"] = cloud.rgb[idx]
     out.tofile(path)
     return len(idx)
+
+
+def write_gaussian_ply(path: str | Path, cloud: Cloud) -> None:
+    """Write a standard 3D-Gaussian-Splatting PLY (degree-0 colour), readable by read_ply and splat tools."""
+    n = len(cloud)
+    fields = ["x", "y", "z", "f_dc_0", "f_dc_1", "f_dc_2", "opacity", "scale_0", "scale_1", "scale_2",
+              "rot_0", "rot_1", "rot_2", "rot_3"]
+    data = np.zeros((n, len(fields)), "<f4")
+    data[:, 0:3] = cloud.xyz
+    data[:, 3:6] = (cloud.rgb / 255.0 - 0.5) / SH_C0
+    op = np.clip(cloud.opacity, 1e-4, 1 - 1e-4)
+    data[:, 6] = np.log(op / (1 - op))
+    data[:, 7:10] = np.log(np.maximum(cloud.scales, 1e-8))
+    data[:, 10:14] = cloud.quats
+    header = "ply\nformat binary_little_endian 1.0\nelement vertex %d\n" % n
+    header += "".join(f"property float {f}\n" for f in fields) + "end_header\n"
+    with open(path, "wb") as fh:
+        fh.write(header.encode("ascii"))
+        fh.write(data.tobytes())

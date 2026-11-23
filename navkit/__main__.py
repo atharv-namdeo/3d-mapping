@@ -23,7 +23,17 @@ def main(argv: list[str] | None = None) -> int:
     pc.add_argument("scene", type=Path, help="scene folder to write source.ply and trajectory.json into")
     pc.add_argument("--stride", type=int, default=8, help="use every Nth frame (default 8 = ~4 per second)")
     pc.add_argument("--max-depth", type=float, default=5.0, help="ignore depth beyond this many metres")
+    ns = sub.add_parser("nerfstudio", help="PoseCam session -> Nerfstudio dataset for GPU splat training")
+    ns.add_argument("session", type=Path)
+    ns.add_argument("dataset", type=Path, help="output folder (images/, transforms.json, sparse_pc.ply)")
+    ns.add_argument("--scene", type=Path, required=True, help="scene built from this session with `navkit posecam`")
+    ns.add_argument("--stride", type=int, default=4)
     args = parser.parse_args(argv)
+
+    if args.command == "nerfstudio":
+        from .nerfstudio import export_dataset
+        export_dataset(args.session, args.dataset, stride=args.stride, scene_dir=args.scene)
+        return 0
 
     if args.command == "posecam":
         from .posecam import build as build_posecam
