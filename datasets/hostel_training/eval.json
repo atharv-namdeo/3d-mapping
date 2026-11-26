@@ -1,0 +1,17 @@
+{
+  "experiment_name": "hostel",
+  "method_name": "splatfacto",
+  "checkpoint": "D:\\Antigravity\\Projects\\Namma Space\\3d-mapping\\training\\outputs\\hostel\\splatfacto\\2026-11-26_163054\\nerfstudio_models\\step-000029999.ckpt",
+  "results": {
+    "psnr": 24.516433715820312,
+    "psnr_std": 2.726425886154175,
+    "ssim": 0.847049355506897,
+    "ssim_std": 0.05275645852088928,
+    "lpips": 0.25137507915496826,
+    "lpips_std": 0.06885596364736557,
+    "num_rays_per_sec": 19957860.0,
+    "num_rays_per_sec_std": 2931783.0,
+    "fps": 64.96699523925781,
+    "fps_std": 9.543563842773438
+  }
+}

@@ -17,14 +17,13 @@
   "view": {
     "floorplanCeiling": 1.9,
     "defaultMode": "photoreal",
-    "surfels": true,
-    "maxSplats": 1500000,
-    "liteSplats": 400000,
+    "liteSplats": 250000,
     "pointSize": 0.035,
     "maxPoints": 1400000,
-    "defaultStyle": "points"
+    "defaultStyle": "surfaces",
+    "splatSource": "../../../datasets/hostel_trained_splat.ply"
   },
-  "description": "Real capture with the team's PoseCam app (Nothing Phone A059, ARCore poses). Geometry from per-frame metric depth (1,376 frames) placed with ARCore's metric poses; depth scale fixed by triangulation against the poses; the walked path counts as observed floor. Viewable as sharp points (default) or as oriented surface discs (surfels) that read as continuous walls and floors.",
+  "description": "Real capture with the team's PoseCam app (Nothing Phone A059, ARCore poses). Photoreal view: a Gaussian splat trained with Nerfstudio splatfacto (30,000 steps) directly on the PoseCam frames and ARCore poses (no COLMAP); PSNR 24.5 dB on 137 held-out frames. Points view: per-frame metric depth (1,376 frames) placed with the ARCore poses. The walked path counts as observed floor.",
   "spawn": {
     "position": [
       -13.1,

@@ -72,3 +72,4 @@ node_modules/
 
 # Local splat training runs (scripts/train_splat_local.py)
 training/
+!datasets/*.ply

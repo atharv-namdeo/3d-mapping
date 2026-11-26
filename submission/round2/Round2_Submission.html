@@ -84,7 +84,7 @@
 
 <h2>5. Scenes and honest limits</h2>
 <ul>
-  <li><b>Hostel</b> — <b>our own capture</b>: one 4-minute PoseCam walk (Nothing Phone A059), 174 m, lobby + three corridors, 179 m² of walkable floor, 16 tagged places and zones. Metric scale from ARCore. Viewable as sharp points or as smooth surface discs (button / key P); not photoreal (640×480 frames). The uploaded session had frames 0–5,499 of 6,908, so the last corridor leg is not mapped. Individual room numbers were not readable and are not yet tagged.</li>
+  <li><b>Hostel</b> — <b>our own capture</b>: one 4-minute PoseCam walk (Nothing Phone A059), 174 m, lobby + three corridors, 179 m² of walkable floor, 16 tagged places and zones. Metric scale from ARCore. <b>Photoreal view:</b> a Gaussian splat trained on a teammate’s NVIDIA GPU directly from the PoseCam frames and ARCore poses (no COLMAP), PSNR 24.5 dB / SSIM 0.85 on 137 held-out frames, aligned with the map to a median 4.3 cm. The raw points stay one click away (key P). The uploaded session had frames 0–5,499 of 6,908, so the last corridor leg is not mapped. Individual room numbers were not readable and are not yet tagged.</li>
   <li><b>Home</b> — a Gaussian-splat scene from our teammate’s training workspace, kept as a photoreal example. Scale estimated (about ±10 %); splat scenes can instead use a one-measurement calibration (floor-to-ceiling height), tested to within 1 % on ground truth.</li>
   <li><b>Office</b> — 24 m × 16 m, <b>synthetic</b>, built from a known layout to measure accuracy and show multi-room routing. Clearly labelled as synthetic in the app.</li>
   <li>One flat floor per scene; stairs, ramps and tiered seating are not yet handled.</li>

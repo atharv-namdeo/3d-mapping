@@ -86,12 +86,12 @@ video is recorded from the real app with `node scripts/record_demo.cjs` (see the
   Distances are consistent but could be off by roughly ±10 %. New captures should set
   `calibration.ceilingHeight` from one tape measurement (see [CAPTURE_SOP.md](CAPTURE_SOP.md));
   `navkit` then derives the scale from the ceiling plane, tested to within 1 % on ground truth.
-- **The hostel scene is not photoreal.** It comes from 640×480 PoseCam frames and monocular depth,
-  viewable as sharp points (default) or as oriented surface discs (`navkit/surfels.py`, button
-  **Surfaces** / key `P`) that read as continuous walls and floors but are softer up close. A
-  photoreal splat needs GPU training: the dataset (`datasets/hostel_posecam_nerfstudio.zip`, ARCore
-  poses, no COLMAP) and a Colab notebook are ready; `view.splatSource` imports the result. A Gaussian splat trained on the same
-  session (GPU) would make it photoreal; the navigation data would not change.
+- **The hostel's photoreal view is a Gaussian splat trained by a teammate on their own NVIDIA GPU**
+  (`scripts/train_splat_local.py`: Nerfstudio splatfacto, 30,000 steps, directly on the 1,376 PoseCam
+  frames and ARCore poses — no COLMAP). On 137 held-out frames: **PSNR 24.5 dB, SSIM 0.85, LPIPS 0.25**
+  (`datasets/hostel_training/eval.json`). It lands on the scan without manual alignment: confident
+  Gaussians are a median 4.3 cm from the fused geometry. Detail is limited by PoseCam's 640×480 frames;
+  a 4K video of the same walk would be sharper. The raw points stay available (button **Points**, key `P`).
 - In the hostel lobby, noisy depth separates the space in front of the lifts from the rest by a gap
   narrower than a person, so the Lifts label marks the waiting spot just in front of the doors.
 - **The hostel upload has frames 0–5,499 of 6,908**, so the last ~47 s of the walk (the final corridor

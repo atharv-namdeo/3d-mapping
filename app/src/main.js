@@ -138,7 +138,9 @@ class App {
   }
 
   #syncStyleButton() {
-    $('#btn-style').textContent = this.viewer.style === 'points' ? 'Surfaces' : 'Points';
+    // A trained splat is the real photoreal capture; generated surfels are only smoothed points.
+    const surfaces = this.styleState?.assets?.trained ? 'Photoreal' : 'Surfaces';
+    $('#btn-style').textContent = this.viewer.style === 'points' ? surfaces : 'Points';
   }
 
   /** Switch between the sharp point view and the smooth surface view (downloaded on first use). */
@@ -152,7 +154,10 @@ class App {
       const firstTime = !this.viewer.styles?.[next];
       await this.viewer.loadPhotoreal(s.base, s.assets, {
         style: next, lite: next === 'surfaces' && s.quality !== 'full', pointSize: this.scene.view?.pointSize,
-        onProgress: (f) => { pill.hidden = false; pill.textContent = f < 1 ? `Loading ${next}… ${Math.round(f * 100)}%` : `Preparing ${next}…`; },
+        onProgress: (f) => {
+          const name = next === 'points' ? 'points' : (s.assets.trained ? 'photoreal view' : 'surfaces');
+          pill.hidden = false; pill.textContent = f < 1 ? `Loading ${name}… ${Math.round(f * 100)}%` : `Preparing ${name}…`;
+        },
       });
       pill.hidden = true;
       this.setMode('photoreal');

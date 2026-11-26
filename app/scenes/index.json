@@ -3,7 +3,7 @@
     {
       "id": "hostel",
       "name": "Hostel \u2014 lobby & corridor loop",
-      "kind": "Real capture \u00b7 PoseCam, surface discs"
+      "kind": "Real capture \u00b7 PoseCam, trained Gaussian splat"
     },
     {
       "id": "home",
