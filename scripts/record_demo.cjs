@@ -98,9 +98,9 @@ class Take {
 
 const SEGMENTS = {
   // ── Our own capture: the hostel, recorded with PoseCam ─────────────────────────
-  hostel: { query: 'scene=hostel', settle: 0, async run(t) {
+  hostel: { query: 'scene=hostel&quality=full', settle: 110, waitPhotoreal: true, async run(t) {
     await t.js(() => { const a = window.nammaSpace; a.player.place(-13.1, 23.1, Math.PI); a.player.pitch = -0.05; });
-    await t.caption('Our hostel, captured with our PoseCam app: one 4-minute walk, 174 m, ARCore poses in real metres.');
+    await t.caption('Our hostel, captured with our PoseCam app (one 4-minute walk, 174 m) and trained into a photoreal Gaussian splat.');
     await t.hold(2.5);
     await t.look(Math.PI, 0, 4);
     await t.caption('Free first-person roaming (W A S D + mouse). Walls and objects stop you.');
@@ -293,7 +293,7 @@ function card(title, lines, images = []) {
 }
 
 const CARDS = {
-  posecam: ['From one phone walk to a map', ['PoseCam saves ARCore’s pose for every frame — metres, gravity up. A depth network estimates depth per frame on a CPU; its scale is <b style="color:#fff">measured</b> by triangulating image features against ARCore’s motion (154 frame pairs).', 'Check: the phone then sits 1.33 m above the floor. Frames fuse into 4 cm voxels seen from ≥ 2 views; the walked path counts as floor.'],
+  posecam: ['From one phone walk to a photoreal, navigable map', ['PoseCam saves ARCore’s pose for every frame — metres, gravity up. A depth network estimates depth per frame on a CPU; its scale is <b style="color:#fff">measured</b> by triangulating image features against ARCore’s motion (154 frame pairs).', 'The walkable map comes from that geometry. A Gaussian splat trained on the same frames and poses (teammate’s GPU, 30k steps, no COLMAP) gives the photoreal view: <b style="color:#fff">PSNR 24.5 dB</b> on held-out frames, aligned with the map to 4 cm.'],
     () => [[imageData(path.join(OUT, 'hostel_path.png')), 'The 174 m walk recorded by PoseCam (grey: no images uploaded)'], [imageData(path.join(OUT, 'hostel_walk.png')), 'Walkable floor (green) and obstacles (red) found by navkit']]],
   office: ['Venue-scale benchmark', ['A 24 m × 16 m office, <b style="color:#fff">synthetic</b>, generated from a known layout so accuracy can be measured exactly.', 'Same pipeline, same app — long multi-room routes, re-routing and multi-stop trips.']],
   title: ['Namma Space — Round 2', ['POI tagging · spatial search · obstacle-aware navigation', 'PoseCam phone capture → <b style="color:#fff">navkit</b> (metric depth, floor, obstacles) → zero-install web app', '<span style="color:#9aa3b2;font-size:20px">Techfest 2026-27, IIT Bombay · recorded from the live app, frame by frame</span>']],
