@@ -85,13 +85,35 @@ minutes — that is normal. If it ends with **Done**, run the real training:
 python scripts/train_splat_local.py
 ```
 
+### Want it sharper? Train longer with the phone-capture fixes
+
+The standard run takes about 20 minutes on a recent GPU. Two longer presets give a cleaner map:
+
+```bash
+python scripts/train_splat_local.py --quality high
+```
+
+```bash
+python scripts/train_splat_local.py --quality max
+```
+
+| Preset | Steps | Time (RTX 30/40-series) | What it adds |
+|---|---|---|---|
+| `standard` (default) | 30,000 | ~20 min | Plain splatfacto. |
+| `high` | 50,000 | ~45 min | **Exposure correction** (bilateral grid: the phone's auto-exposure no longer leaves blotches and floaters), **pose refinement** (fixes ARCore's few-mm drift, so edges, notice boards and signs are sharper), **no needle-shaped splats** (fewer streaks when you look from off the walked path), longer densification. |
+| `max` | 60,000 | ~1.5 h, 8 GB+ GPU | `high` + splatfacto-big (finer detail, 2–3× more gaussians). |
+
+If `max` runs out of memory, add `--low-vram`, or use `high`. With pose refinement on, the PSNR
+printed at the end can come out a little *lower* than the standard run even when the result looks
+better. That's because the held-out photos keep their raw ARCore poses, so judge by eye in the web app.
+
 The script checks the GPU, unpacks the dataset into `training/`, trains 30,000 steps, measures the
 quality on 137 held-out photos (PSNR; above ~22 dB is good for these 640×480 frames), exports the
 splat and slims it to what the web app uses.
 
 ## 4. Send the result
 
-Upload **`training/hostel_splat.ply`** (≈ 60 MB) and `training/eval.json` to Google Drive, share as
+Upload **`training/hostel_splat.ply`** (≈ 60 MB; up to ≈ 150 MB with `max`) and `training/eval.json` to Google Drive, share as
 *Anyone with the link*, and send the link. It is then imported with:
 
 ```bash

@@ -21,7 +21,8 @@
     "pointSize": 0.035,
     "maxPoints": 1400000,
     "defaultStyle": "surfaces",
-    "splatSource": "../../../datasets/hostel_trained_splat.ply"
+    "splatSource": "../../../datasets/hostel_trained_splat.ply",
+    "maxSplats": 1000000
   },
   "description": "Real capture with the team's PoseCam app (Nothing Phone A059, ARCore poses). Photoreal view: a Gaussian splat trained with Nerfstudio splatfacto (30,000 steps) directly on the PoseCam frames and ARCore poses (no COLMAP); PSNR 24.5 dB on 137 held-out frames. Points view: per-frame metric depth (1,376 frames) placed with the ARCore poses. The walked path counts as observed floor.",
   "spawn": {

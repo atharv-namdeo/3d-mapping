@@ -2,8 +2,10 @@
 """Train the hostel's photoreal Gaussian splat on a laptop/PC with an NVIDIA GPU — one command.
 
     conda activate nerfstudio
-    python scripts/train_splat_local.py              # full quality, about 30-60 min
-    python scripts/train_splat_local.py --quick      # 3,000-step smoke test, about 5 min
+    python scripts/train_splat_local.py --quick                # 3,000-step smoke test, about 5 min
+    python scripts/train_splat_local.py                        # standard, about 20-30 min
+    python scripts/train_splat_local.py --quality high         # sharper, about 45 min
+    python scripts/train_splat_local.py --quality max          # sharpest, about 1.5 h, 8 GB+ GPU
 
 Setup (once) and troubleshooting: docs/TRAIN_SPLAT_LOCAL.md.
 
@@ -122,24 +124,54 @@ def slim_splat(src: Path, dst: Path) -> int:
     return n
 
 
+# Fixes for phone captures, used by "high" and "max":
+#  - bilateral grid: learns each photo's exposure / white-balance change (phone auto-exposure), so it
+#    is not baked into the scene as blotches and floaters; the exported splat has neutral colours;
+#  - camera optimiser (SO3xR3): refines ARCore's poses by millimetres, which sharpens edges and
+#    text that small pose drift smears; the scene keeps PoseCam's metric, gravity-aligned frame;
+#  - scale regularisation: no needle-shaped gaussians, which look like streaks off the walked path;
+#  - colour-corrected metrics: fair PSNR when the bilateral grid is on.
+PHONE_FIXES = [
+    "--pipeline.model.use-bilateral-grid", "True",
+    "--pipeline.model.camera-optimizer.mode", "SO3xR3",
+    "--pipeline.model.use-scale-regularization", "True",
+    "--pipeline.model.color-corrected-metrics", "True",
+]
+PRESETS = {
+    "standard": {"method": "splatfacto", "steps": 30_000, "flags": []},
+    "high": {"method": "splatfacto", "steps": 50_000, "flags": PHONE_FIXES},
+    # splatfacto-big: lower densify / cull thresholds -> more, finer gaussians (more GPU memory).
+    "max": {"method": "splatfacto-big", "steps": 60_000, "flags": PHONE_FIXES},
+}
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--quick", action="store_true", help="3,000 steps to check everything works (~5 min)")
-    ap.add_argument("--iterations", type=int, default=30_000)
+    ap.add_argument("--quality", choices=["standard", "high", "max"], default="standard",
+                    help="standard: 30k steps (~20 min on a recent GPU). high: phone-capture fixes + 50k "
+                         "steps (~45 min). max: high + denser splat, 60k steps (~1.5 h, 8 GB+ GPU)")
+    ap.add_argument("--iterations", type=int, default=None, help="override the step count")
     ap.add_argument("--low-vram", action="store_true", help="keep training images in CPU memory (6 GB GPUs)")
     ap.add_argument("--skip-checks", action="store_true")
     args = ap.parse_args()
-    steps = 3_000 if args.quick else args.iterations
+    preset = PRESETS[args.quality]
+    steps = 3_000 if args.quick else (args.iterations or preset["steps"])
 
     if not args.skip_checks:
         check_environment()
     data = prepare_dataset()
     out_dir = WORK / "outputs"
 
-    say(f"Training splatfacto for {steps:,} steps (keep the laptop plugged in and awake)")
-    cmd = ["ns-train", "splatfacto", "--data", str(data), "--output-dir", str(out_dir),
+    say(f"Training {preset['method']} ({args.quality} quality) for {steps:,} steps "
+        "(keep the laptop plugged in and awake)")
+    cmd = ["ns-train", preset["method"], "--data", str(data), "--output-dir", str(out_dir),
            "--experiment-name", "hostel", "--max-num-iterations", str(steps), "--vis", "tensorboard",
            "--viewer.quit-on-train-completion", "True"]
+    cmd += preset["flags"]
+    if preset["flags"]:
+        # Keep densifying for the same share of the run as the 30k default (15k of 30k), capped.
+        cmd += ["--pipeline.model.stop-split-at", str(min(steps // 2, 25_000))]
     if args.low_vram:
         cmd += ["--pipeline.datamanager.cache-images", "cpu"]
     # These four keep PoseCam's metric, gravity-aligned frame (and load the start cloud as-is).
@@ -152,7 +184,7 @@ def main() -> int:
     if code != 0 or not ckpts:
         print((WORK / "train.log").read_text(encoding="utf-8", errors="replace")[-3000:])
         fail("training did not finish (log above, full log in training/train.log). "
-             "Out of memory? Try --low-vram.")
+             "Out of memory? Add --low-vram, or use a lower --quality.")
     config = Path(ckpts[-1]).parent.parent / "config.yml"
     print(f"Trained in {(time.time() - t0) / 60:.0f} min: {ckpts[-1]}")
 
