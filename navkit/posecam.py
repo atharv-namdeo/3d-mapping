@@ -85,6 +85,30 @@ class DepthModel:
         return np.rot90(depth, k=1).copy()      # back to sensor orientation (undo the clockwise turn)
 
 
+def work_scale(W: int, work_width: int = 640) -> float:
+    """Depth and fusion run at <= work_width pixels wide: the depth network sees 518 px anyway,
+    and 720p/1080p depth maps would only cost RAM (~4 MB each). The splat dataset keeps full size."""
+    return min(1.0, work_width / float(W))
+
+
+def scaled_K(K: np.ndarray, f: float) -> np.ndarray:
+    if f == 1.0:
+        return K
+    Kf = K.copy()
+    Kf[0, 0] *= f
+    Kf[1, 1] *= f
+    Kf[0, 2] = (K[0, 2] + 0.5) * f - 0.5
+    Kf[1, 2] = (K[1, 2] + 0.5) * f - 0.5
+    return Kf
+
+
+def open_image(path, f: float = 1.0, gray: bool = False) -> Image.Image:
+    im = Image.open(path).convert("L" if gray else "RGB")
+    if f != 1.0:
+        im = im.resize((round(im.width * f), round(im.height * f)), Image.BILINEAR)
+    return im
+
+
 def backproject(depth, K, T, step=2):
     h, w = depth.shape
     v, u = np.mgrid[0:h:step, 0:w:step]
@@ -96,7 +120,7 @@ def backproject(depth, K, T, step=2):
     return world, v.ravel(), u.ravel(), z.ravel()
 
 
-def metric_scale(frames, depth_of, K, log=print) -> float:
+def metric_scale(frames, depth_of, K, log=print, f: float = 1.0) -> float:
     """True/predicted depth ratio, from features triangulated with ARCore's metric poses.
 
     Monocular networks get absolute scale wrong for an unfamiliar camera; ARCore's camera
@@ -112,8 +136,8 @@ def metric_scale(frames, depth_of, K, log=print) -> float:
             ib, pb, Tb = frames[a + k]
             if np.linalg.norm(Ta[:3, 3] - Tb[:3, 3]) < 0.3:
                 continue
-            ka, da = orb.detectAndCompute(cv2.imread(pa, 0), None)
-            kb, db = orb.detectAndCompute(cv2.imread(pb, 0), None)
+            ka, da = orb.detectAndCompute(np.asarray(open_image(pa, f, gray=True)), None)
+            kb, db = orb.detectAndCompute(np.asarray(open_image(pb, f, gray=True)), None)
             if da is None or db is None:
                 continue
             m = matcher.match(da, db)
@@ -149,6 +173,10 @@ def build(session: str | Path, out_dir: str | Path, *, stride: int = 8, max_dept
     out_dir.mkdir(parents=True, exist_ok=True)
     K, (W, H), frames, trajectory = load_session(session, stride)
     log(f"[posecam] {len(frames)} frames (stride {stride}), trajectory {len(trajectory)} poses")
+    wf = work_scale(W)
+    if wf != 1.0:
+        log(f"[posecam] frames are {W}x{H}; depth and fusion run at {round(W * wf)}x{round(H * wf)}")
+    K = scaled_K(K, wf)
 
     cache = Path(cache or out_dir / ".depth_cache")
     cache.mkdir(exist_ok=True)
@@ -161,13 +189,13 @@ def build(session: str | Path, out_dir: str | Path, *, stride: int = 8, max_dept
             d = np.load(f)
         else:
             model = model or DepthModel()
-            d = model(Image.open(path).convert("RGB")).astype(np.float16)
+            d = model(open_image(path, wf)).astype(np.float16)
             np.save(f, d)
         depths.append(d.astype(np.float32))
         if n % 100 == 0:
             log(f"  depth {n}/{len(frames)}  ({time.time() - t0:.0f}s)")
 
-    scale = metric_scale(frames, lambda k: depths[k], K, log)
+    scale = metric_scale(frames, lambda k: depths[k], K, log, wf)
     depths = [d * scale for d in depths]
 
     # Floor height: the lowest dense horizontal layer of points seen near each camera.
@@ -196,7 +224,7 @@ def build(session: str | Path, out_dir: str | Path, *, stride: int = 8, max_dept
         p, v, u, z = backproject(d * s, K, T, step=2)
         keep = (z > 0.25) & (z < max_depth)
         p, v, u = p[keep], v[keep], u[keep]
-        rgb = np.asarray(Image.open(path).convert("RGB"))[v, u].astype(np.float64)
+        rgb = np.asarray(open_image(path, wf))[v, u].astype(np.float64)
         ijk = np.floor(p / voxel).astype(np.int64) + (1 << 20)
         key = (ijk[:, 0] << 42) | (ijk[:, 1] << 21) | ijk[:, 2]
         uk, inv = np.unique(key, return_inverse=True)

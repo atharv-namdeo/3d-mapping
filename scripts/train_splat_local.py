@@ -168,6 +168,9 @@ def main() -> int:
     cmd = ["ns-train", preset["method"], "--data", str(data), "--output-dir", str(out_dir),
            "--experiment-name", "hostel", "--max-num-iterations", str(steps), "--vis", "tensorboard",
            "--viewer.quit-on-train-completion", "True"]
+    # Images held as uint8, not float32: with > 500 photos nerfstudio keeps them in CPU RAM, and
+    # float32 needs ~15 GB for 1,400 frames at 1280x720 (uint8: ~4 GB). Same pixels, same result.
+    cmd += ["--pipeline.datamanager.cache-images-type", "uint8"]
     cmd += preset["flags"]
     if preset["flags"]:
         # Keep densifying for the same share of the run as the 30k default (15k of 30k), capped.
